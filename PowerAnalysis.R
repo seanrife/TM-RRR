@@ -25,23 +25,22 @@ options(digits=10,scipen=999)
 #   DPS/no delay: M=.63, SD=.67
 #   DPS/delay: M=.56, SD=.73
 
-# Simulate using parameters least conducive to a 
-# successful replication (conservative)
+# Simulate using parameters least conducive to a successful replication (conservative)
 
 set.seed(4263957) # from random.org
-mx<-.75 #Set mean in experimental group, assuming d~.1
-sdx<-1.21 #Set standard deviation in sample 1
+mx<-.94 #Set mean in experimental group, assuming Cohen's d~.1
+sdx<-1.21 #Set standard deviation in sample 1 (based on MS/no delay condition from T&H)
 my<-.63 #Set mean in control group (based on original value)
-sdy<-1.21 #Set standard deviation in sample 2
-nSims <- 15 #number of experiments
-nLoops <- 1000 # Number of iterations used in simulation
-sampleMin <- 150
-sampleMax <- 200
+sdy<-0.69 #Set standard deviation in sample 2 (based on MS/no delay condition from T&H)
+nSims <- 5 #number of participating labs
+nLoops <- 5000 # Number of iterations used in simulation
+sampleMin <- 80 # minimum of 100 participants per lab
+sampleMax <- 150 # we assume no lab will recruit more than 200 participants
 es.d <-numeric(nSims) #set up empty container for all simulated ES (cohen's d)
 SSn1 <-numeric(nSims) #set up empty container for random sample sizes group 1
 SSn2 <-numeric(nSims) #set up empty container for random sample sizes group 2
-zOut <-numeric(nLoops)
-pOut <-numeric(nLoops)
+zOut <-numeric(nLoops) #set up empty container for z-values
+pOut <-numeric(nLoops) #set up empty container for p-values
 for (n in 1:nLoops){
   # Yes, it's a nested loop. I'm a terrible person with a powerful computer.
   for(i in 1:nSims){ #for each simulated experiment
