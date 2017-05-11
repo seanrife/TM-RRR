@@ -32,7 +32,7 @@ mx<-.94 #Set mean in experimental group, assuming Cohen's d~.1
 sdx<-1.21 #Set standard deviation in sample 1 (based on MS/no delay condition from T&H)
 my<-.63 #Set mean in control group (based on original value)
 sdy<-0.69 #Set standard deviation in sample 2 (based on MS/no delay condition from T&H)
-nSims <- 5 #number of participating labs
+nSims <- 10 #number of participating labs
 nLoops <- 5000 # Number of iterations used in simulation
 sampleMin <- 80 # minimum of 100 participants per lab
 sampleMax <- 150 # we assume no lab will recruit more than 200 participants
