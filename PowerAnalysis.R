@@ -3,6 +3,7 @@
 # Simulation based on code from Lakens (2015)
 # http://daniellakens.blogspot.com/2015/10/practicing-meta-analytic-thinking.html
 
+is.whole <- function(x) {is.numeric(x) && floor(x)==x }
 
 if(!require(ggplot2)){install.packages('ggplot2')}
 library(ggplot2)
@@ -25,28 +26,29 @@ options(digits=10,scipen=999)
 #   DPS/no delay: M=.63, SD=.67
 #   DPS/delay: M=.56, SD=.73
 
-# Simulate using parameters least conducive to a successful replication (conservative)
+# Simulate using conservative parameters
 
 set.seed(4263957) # from random.org
-mx<-.94 #Set mean in experimental group, assuming Cohen's d~.1
+mx<-.767138 #Set mean in experimental group, assuming Cohen's d=.19 (half that of T&H)
 sdx<-1.21 #Set standard deviation in sample 1 (based on MS/no delay condition from T&H)
-my<-.63 #Set mean in control group (based on original value)
-sdy<-0.69 #Set standard deviation in sample 2 (based on MS/no delay condition from T&H)
+my<-.58 #Set mean in control group (based on average across other three conditions from T&H)
+sdy<-0.69 #Set standard deviation in sample 2 (based on average across other three conditions from T&H)
 nSims <- 10 #number of participating labs
 nLoops <- 5000 # Number of iterations used in simulation
-sampleMin <- 80 # minimum of 100 participants per lab
-sampleMax <- 150 # we assume no lab will recruit more than 200 participants
+sampleMin <- 100 # minimum of 100 participants per lab
+sampleMax <- 200 # we assume no lab will recruit more than 200 participants
 es.d <-numeric(nSims) #set up empty container for all simulated ES (cohen's d)
 SSn1 <-numeric(nSims) #set up empty container for random sample sizes group 1
 SSn2 <-numeric(nSims) #set up empty container for random sample sizes group 2
 zOut <-numeric(nLoops) #set up empty container for z-values
 pOut <-numeric(nLoops) #set up empty container for p-values
 for (n in 1:nLoops){
+  if (is.whole(n/1000)) print(paste("Iteration #", n, sep=""))
   # Yes, it's a nested loop. I'm a terrible person with a powerful computer.
   for(i in 1:nSims){ #for each simulated experiment
-    SampleSize<-sample(sampleMin:sampleMax, 1) #randomly draw a sample between 20 and 50
-    x<-rnorm(n = SampleSize, mean = mx, sd = sdx) #produce  simulated participants
-    y<-rnorm(n = SampleSize, mean = my, sd = sdy) #produce  simulated participants
+    SampleSize<-sample(sampleMin:sampleMax, 1) #randomly draw a sample
+    x<-rnorm(n = round(SampleSize*.25), mean = mx, sd = sdx) #produce  simulated participants in exp. group (1/4 sample size)
+    y<-rnorm(n = round(SampleSize*.75), mean = my, sd = sdy) #produce  simulated participants in ctrl. group (3/4 sample size)
     SSn1[i]<-SampleSize #save sample size group 1
     SSn2[i]<-SampleSize #save sample size group 2
     es.d[i]<-smd(Mean.1= mean(x), Mean.2=mean(y), s.1=sd(x), s.2=sd(y), n.1=SampleSize, n.2=SampleSize, Unbiased=FALSE) #Using Cohen's d due to large(ish) sample
