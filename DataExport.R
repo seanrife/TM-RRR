@@ -5,6 +5,10 @@
 rm(list = ls())
 
 
+##### USER DEFINED #####
+dataDir <- ""
+
+
 # Function to read in and clean datafiles from each lab
 readInFile <- function(filename) {
   df <- read.csv(filename, header = T, stringsAsFactors = F, check.names=F)
@@ -17,9 +21,17 @@ readInFile <- function(filename) {
   names(df) <- gsub(x = names(df),
                     pattern = "\\_SQ001",
                     replacement = "")
-  df <- df[, -c(which(colnames(df)=="DEBRIEFING"):which(colnames(df)=="WTDP2Time"))]
-  df <- df[, -c(which(colnames(df)=="ARTICLETime"):which(colnames(df)=="DEBRIEFINGTime"))]
+  df <- df[, c(which(colnames(df)=="id"), which(colnames(df)=="labID"), which(colnames(df)=="WGTASK_word1"):which(colnames(df)=="WGTASK_word5"))]
   return(df)
 }
+
+files <- list.files(path=dataDir, pattern="*.csv", full.names=T, recursive=F)
+
+lapply(files, function(x) {
+  df <- readInFile(x)
+  write.table(out, "path/to/output", sep="\t", quote=F, row.names=F, col.names=T)
+})
+
+
 
 df <- readInFile("C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\Datasets\\survey_357664_R_data_file.csv")
