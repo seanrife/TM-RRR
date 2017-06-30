@@ -26,4 +26,8 @@ readInFile <- function(filename) {
   return(df)
 }
 
-df <- readInFile("C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\Datasets\\survey_357664_R_data_file.csv")
+files <- list.files(path="C:\\Users\\srife1\\Documents\\GitHub\\TM-RRR", pattern="*.csv", full.names=T, recursive=F)
+
+for (f in files) {
+  df <- readInFile(f)
+}
