@@ -1,10 +1,6 @@
 # Simulated data for RRR of Trafimow and Hughes (2012), Study 3
 # Sean C. Rife / @seanrife / seanrife.com / srife1@murraystate.edu
 
-# Load required libraries
-if(!require(metafor)){install.packages('metafor')}
-library(metafor)
-
 # Clean house
 rm(list = ls())
 
@@ -86,7 +82,7 @@ for (name in labNames){
   FLAG <- 0 #sample(0:1, nCases, replace=T)
 
   # Assign to a dataframe
-  simDF <- data.frame(id,submitdate,lastpage,startlanguage,startdate,
+  simDFmain <- data.frame(id,submitdate,lastpage,startlanguage,startdate,
                       datestamp,CONSENT,CONSENTCHECK_SQ001,essayGroup,
                       delayGroup,labID,WTINTRO,WTMS1,WTMS2,WTDP1,WTDP2,
                       ARTICLE,ARTICLEEVAL_enjoy,ARTICLEEVAL_interesting,
@@ -102,40 +98,58 @@ for (name in labNames){
                       ARTICLETime,ARTICLEEVALTime,groupTime720,WGTASKTime,
                       groupTime721,GenderTime,AgeTime,groupTime722,
                       PurposeTime,UnderstandTime,FamiliarTime,groupTime723,
-                      DEBRIEFINGTime,COUNT,FLAG)
+                      DEBRIEFINGTime)
   
   # Assign column names
-  colnames(simDF) <- c("id", "submitdate", "lastpage", "startlanguage",
-                       "startdate", "datestamp", "CONSENT", "CONSENTCHECK",
-                       "essayGroup", "delayGroup", "labID", "WTINTRO", "WTMS1",
-                       "WTMS2", "WTDP1", "WTDP2", "ARTICLE", "ARTICLEEVAL_enjoy",
-                       "ARTICLEEVAL_interesting", "ARTICLEEVAL_recommend",
-                       "ARTICLEEVAL_stay", "WGTASK_word1",
-                       "WGTASK_word2", "WGTASK_word3",
-                       "WGTASK_word4", "WGTASK_word5",
-                       "Gender", "Age", "Purpose", "Understand", "Familiar",
-                       "DEBRIEFING", "interviewtime", "groupTime715", "CONSENTTime",
-                       "CONSENTCHECKTime", "essayGroupTime", "delayGroupTime",
-                       "labNumTime", "groupTime716", "WTINTROTime", "groupTime717",
-                       "WTMS1Time", "WTMS2Time", "groupTime718", "WTDP1Time",
-                       "WTDP2Time", "groupTime719", "ARTICLETime", "ARTICLEEVALTime",
-                       "groupTime720", "WGTASKTime", "groupTime721", "GenderTime",
-                       "AgeTime", "groupTime722", "PurposeTime", "UnderstandTime",
-                       "FamiliarTime", "groupTime723", "DEBRIEFINGTime", "COUNT", "FLAG")
+  colnames(simDFmain) <- c("id", "submitdate", "lastpage", "startlanguage",
+                           "startdate", "datestamp", "CONSENT", "CONSENTCHECK[SQ001]",
+                           "essayGroup", "delayGroup", "labID", "WTINTRO", "WTMS1",
+                           "WTMS2", "WTDP1", "WTDP2", "ARTICLE", "ARTICLEEVAL[enjoy]",
+                           "ARTICLEEVAL[interesting]", "ARTICLEEVAL[recommend]",
+                           "ARTICLEEVAL[stay]", "WGTASK[word1_SQ001]",
+                           "WGTASK[word2_SQ001]", "WGTASK[word3_SQ001]",
+                           "WGTASK[word4_SQ001]", "WGTASK[word5_SQ001]",
+                           "Gender", "Age", "Purpose", "Understand", "Familiar",
+                           "DEBRIEFING", "interviewtime", "groupTime715", "CONSENTTime",
+                           "CONSENTCHECKTime", "essayGroupTime", "delayGroupTime",
+                           "labNumTime", "groupTime716", "WTINTROTime", "groupTime717",
+                           "WTMS1Time", "WTMS2Time", "groupTime718", "WTDP1Time",
+                           "WTDP2Time", "groupTime719", "ARTICLETime", "ARTICLEEVALTime",
+                           "groupTime720", "WGTASKTime", "groupTime721", "GenderTime",
+                           "AgeTime", "groupTime722", "PurposeTime", "UnderstandTime",
+                           "FamiliarTime", "groupTime723", "DEBRIEFINGTime")
   
   # Assign blank values for time variable for participants in the no delay condition
-  simDF$groupTime719[simDF$delayGroup==2] <- 0
+  simDFmain$groupTime719[simDFmain$delayGroup==2] <- 0
   
   # Change age values to int so they make sense
-  simDF$Age <- round(simDF$Age)
+  simDFmain$Age <- round(simDFmain$Age)
+
+  # Write to an output file
+  write.csv(simDFmain, file = paste0(name,"_main.csv"),row.names=FALSE, na="")
+  
+  # Moving on to ranking dataset
+  
+  simDFrating <- data.frame(id,labID,WGTASK_word1_SQ001,WGTASK_word2_SQ001,
+                            WGTASK_word3_SQ001,WGTASK_word4_SQ001,
+                            WGTASK_word5_SQ001,COUNT)
+  
+  colnames(simDFrating) <- c("id","labID","WORD1","WORD2","WORD3","WORD4",
+                             "WORD5","COUNT")
   
   # Write to an output file
-  df <- rbind(df, simDF)
+  write.csv(simDFrating, file = paste0(name,"_rating.csv"),row.names=FALSE, na="")
+  
+  # Move on to exclusions dataset
+  simDFexclude <- data.frame(id,labID,Purpose,Understand,Familiar,FLAG)
+  
+  colnames(simDFexclude) <- c("id","labID","PURPOSE","RESPONSE1","RESPONSE2",
+                             "FLAG")
+  
+  # Write to an output file
+  write.csv(simDFexclude, file = paste0(name,"_exclude.csv"),row.names=FALSE, na="")
+  
+  
+  
 }
 
-# Clean up the last simulated dataframe
-rm(simDF)
-
-df <- df[, -c(which(colnames(df)=="DEBRIEFING"):which(colnames(df)=="WTDP2Time"))]
-df <- df[, -c(which(colnames(df)=="ARTICLETime"):which(colnames(df)=="DEBRIEFINGTime"))]
-names(df)[names(df) == 'groupTime719'] <- 'DelayTime'
