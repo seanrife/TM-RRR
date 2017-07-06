@@ -40,3 +40,21 @@ for (f in files) {
   df <- readInFile(f)
   assign(file_path_sans_ext(basename(f)),df)
 }
+
+files <- list.files(path=paste0(baseDir,"\\exclusions\\"), pattern="*.csv", full.names=T, recursive=F)
+
+for (f in files) {
+  df <- read.csv(f)
+  assign(file_path_sans_ext(basename(f)),df)
+}
+
+files <- list.files(path=paste0(baseDir, "\\ratings\\"), pattern="*.csv", full.names=T, recursive=F)
+
+for (f in files) {
+  df <- read.csv(f)
+  assign(file_path_sans_ext(basename(f)),df)
+}
+
+rm(df)
+
+
