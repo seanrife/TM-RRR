@@ -4,16 +4,24 @@
 # Clean house
 rm(list = ls())
 
+# Set base directory
+# Looks here for main datasets, and ratings & exclusions in
+# two subdirs: "/ratings" and "/exclusions"
+baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\data"
+
 # Load required libraries
 if(!require(metafor)){install.packages('metafor')}
 library(metafor)
+if(!require(tools)){install.packages('tools')}
+library(tools)
+
 
 # Function to read in and clean datafiles from each lab
 readInFile <- function(filename) {
   df <- read.csv(filename, header = T, stringsAsFactors = F, check.names=F)
   names(df) <- gsub(x = names(df),
-                          pattern = "\\]",
-                          replacement = "")
+                    pattern = "\\]",
+                    replacement = "")
   names(df) <- gsub(x = names(df),
                     pattern = "\\[",
                     replacement = "_")
@@ -26,8 +34,9 @@ readInFile <- function(filename) {
   return(df)
 }
 
-files <- list.files(path="C:\\Users\\srife1\\Documents\\GitHub\\TM-RRR", pattern="*.csv", full.names=T, recursive=F)
+files <- list.files(path=baseDir, pattern="*.csv", full.names=T, recursive=F)
 
 for (f in files) {
   df <- readInFile(f)
+  assign(file_path_sans_ext(basename(f)),df)
 }

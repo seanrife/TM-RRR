@@ -4,6 +4,9 @@
 # Clean house
 rm(list = ls())
 
+# Set export directory
+baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\data"
+
 # Set random number generator
 set.seed(271228065) # from random.org
 
@@ -126,7 +129,7 @@ for (name in labNames){
   simDFmain$Age <- round(simDFmain$Age)
 
   # Write to an output file
-  write.csv(simDFmain, file = paste0(name,"_main.csv"),row.names=FALSE, na="")
+  write.csv(simDFmain, file = paste0(baseDir,"\\", name,"_main.csv"),row.names=FALSE, na="")
   
   # Moving on to ranking dataset
   
@@ -138,7 +141,7 @@ for (name in labNames){
                              "WORD5","COUNT")
   
   # Write to an output file
-  write.csv(simDFrating, file = paste0(name,"_rating.csv"),row.names=FALSE, na="")
+  write.csv(simDFrating, file = paste0(baseDir,"\\ratings\\",name,"_rating.csv"),row.names=FALSE, na="")
   
   # Move on to exclusions dataset
   simDFexclude <- data.frame(id,labID,Purpose,Understand,Familiar,FLAG)
@@ -147,7 +150,7 @@ for (name in labNames){
                              "FLAG")
   
   # Write to an output file
-  write.csv(simDFexclude, file = paste0(name,"_exclude.csv"),row.names=FALSE, na="")
+  write.csv(simDFexclude, file = paste0(baseDir, "\\exclusions\\", name,"_exclude.csv"),row.names=FALSE, na="")
   
   
   
