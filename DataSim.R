@@ -141,7 +141,7 @@ for (name in labNames){
                              "WORD5","COUNT")
   
   # Write to an output file
-  write.csv(simDFrating, file = paste0(baseDir,"\\ratings\\",name,"_rating.csv"),row.names=FALSE, na="")
+  write.csv(simDFrating, file = paste0(baseDir,"\\",name,"_rating.csv"),row.names=FALSE, na="")
   
   # Move on to exclusions dataset
   simDFexclude <- data.frame(id,labID,Purpose,Understand,Familiar,FLAG)
@@ -150,7 +150,7 @@ for (name in labNames){
                              "FLAG")
   
   # Write to an output file
-  write.csv(simDFexclude, file = paste0(baseDir, "\\exclusions\\", name,"_exclude.csv"),row.names=FALSE, na="")
+  write.csv(simDFexclude, file = paste0(baseDir,"\\", name,"_exclude.csv"),row.names=FALSE, na="")
   
   
   
