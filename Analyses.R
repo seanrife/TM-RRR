@@ -21,6 +21,10 @@ if(!require(effsize)){install.packages('effsize')}
 library(effsize)
 if(!require(plotrix)){install.packages('plotrix')}
 library(plotrix)
+if(!require(apaTables)){install.packages('apaTables')}
+library(apaTables)
+
+mergedDF <- data.frame()
 
 # Create dataframe for summary data
 outFrame <- data.frame()
@@ -85,7 +89,10 @@ for (lab in labNames) {
   metaVecES <- c(metaVecES, (m_exp-m_ctrl))
   metaVecSE <- c(metaVecSE, se)
   
+  mergedDF <- rbind(mergedDF, df)
+  
   assign(lab,df)
+  
 }
 
 rm(df_main)
@@ -96,9 +103,25 @@ meta <- rma.uni(yi = metaVecES, sei = metaVecSE)
 
 
 
+#### FOREST PLOT ####
 
-#pirateplot(formula = age ~ favorite.pirate,
-#           data = pirates,
-#           xlab = "Favorite Pirate",
-#           ylab = "Age",
-#           main = "My First Pirate Plot!")
+forest(meta)
+
+
+
+
+#### RUN BETWEEN-LABS ANOVA ####
+betweenLabsAOV <- aov(COUNT~labID, data=mergedDF)
+apa.1way.table(labID, COUNT, mergedDF,"MSD_tab.doc")
+apa.aov.table(betweenLabsAOV,"ANOVA_tab.doc")
+
+
+#### PIRATE PLOT OF MAIN EFFECT ####
+
+mergedDF$originalExperimentCHR <- "Dental Pain"
+mergedDF$originalExperimentCHR[mergedDF$originalExperiment==1] <- "Death"
+pirateplot(formula = COUNT ~ as.factor(originalExperimentCHR),
+           data = mergedDF,
+           xlab = "Condition",
+           ylab = "Number of death-related words",
+           main = "Replication of T&H (2012)")
