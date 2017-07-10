@@ -15,17 +15,22 @@ labNames <- c("Lab1", "Lab2", "Lab3", "Lab4", "Lab5", "Lab6", "Lab7", "Lab8",
 # Load required libraries
 if(!require(metafor)){install.packages('metafor')}
 library(metafor)
-if(!require(tools)){install.packages('tools')}
-library(tools)
 if(!require(yarrr)){install.packages('yarrr')}
 library(yarrr)
+if(!require(effsize)){install.packages('effsize')}
+library(effsize)
+if(!require(plotrix)){install.packages('plotrix')}
+library(plotrix)
 
 # Create dataframe for summary data
 outFrame <- data.frame()
-colnames(outFrame) <- c("labID", "avgAge", "nFemale", "MSn_delay", "DPn_delay",
-                       "MSn_nodelay", "DPn_nodelay", "MSmean_delay", "DPmean_delay",
-                       "MSmean_nodelay", "DPmean_nodelay", "MSsd_delay",
-                       "DPsd_delay", "MSsd_nodelay", "DPsd_nodelay", "delayTime")
+#colnames(outFrame) <- c("labID", "avgAge", "nFemale", "MSn_delay", "DPn_delay",
+#                       "MSn_nodelay", "DPn_nodelay", "MSmean_delay", "DPmean_delay",
+#                       "MSmean_nodelay", "DPmean_nodelay", "MSsd_delay",
+#                       "DPsd_delay", "MSsd_nodelay", "DPsd_nodelay", "delayTime")
+
+metaVecES <- vector()
+metaVecSE <- vector()
 
 # Function to read in and clean datafiles from each lab
 readInFile <- function(filename) {
@@ -62,6 +67,24 @@ for (lab in labNames) {
   df <- df[df$Understand==1,]
   df <- df[df$Familiar==0,]
   
+  df$originalExperiment <- 0
+  df$originalExperiment[df$essayGroup==1 & df$delayGroup==1] <- 1
+  
+  # Calculate tests for primary analysis
+  t <- t.test(df$COUNT ~ df$originalExperiment)
+  m_exp <- mean(df$COUNT[df$originalExperiment==1])
+  sd_exp <- sd(df$COUNT[df$originalExperiment==1])
+  m_ctrl <- mean(df$COUNT[df$originalExperiment==0])
+  sd_ctrl <- sd(df$COUNT[df$originalExperiment==0])
+  n_exp <- length(df$COUNT[df$originalExperiment==1])
+  n_ctrl <- length(df$COUNT[df$originalExperiment==0])
+  r <- cor.test(df$COUNT,df$DelayTime)
+  d <- cohen.d(df$COUNT, as.factor(df$originalExperiment))
+  se <- std.error(df$COUNT)
+  
+  metaVecES <- c(metaVecES, (m_exp-m_ctrl))
+  metaVecSE <- c(metaVecSE, se)
+  
   assign(lab,df)
 }
 
@@ -69,3 +92,13 @@ rm(df_main)
 rm(df_rating)
 rm(df_exclude)
 
+meta <- rma.uni(yi = metaVecES, sei = metaVecSE)
+
+
+
+
+#pirateplot(formula = age ~ favorite.pirate,
+#           data = pirates,
+#           xlab = "Favorite Pirate",
+#           ylab = "Age",
+#           main = "My First Pirate Plot!")
