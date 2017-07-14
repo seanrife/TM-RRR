@@ -6,7 +6,8 @@ rm(list = ls())
 
 # Set base directory
 # Looks here for main datasets, ratings & exclusions
-baseDir <- "D:\\Dropbox\\Research\\TM RRR\\data"
+#baseDir <- "D:\\Dropbox\\Research\\TM RRR\\data" # DESKTOP
+baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\data" # LAPTOP
 
 # Lab names; used for reading in data
 labNames <- c("Lab1", "Lab2", "Lab3", "Lab4", "Lab5", "Lab6", "Lab7", "Lab8",
@@ -23,6 +24,10 @@ if(!require(plotrix)){install.packages('plotrix')}
 library(plotrix)
 if(!require(apaTables)){install.packages('apaTables')}
 library(apaTables)
+if(!require(ggplot2)){install.packages('ggplot2')}
+library(ggplot2)
+
+source("watercolor.R")
 
 mergedDF <- data.frame()
 
@@ -76,23 +81,33 @@ for (lab in labNames) {
   df$originalExperiment <- 0
   df$originalExperiment[df$essayGroup==1 & df$delayGroup==1] <- 1
   
-  # Calculate tests for primary analysis
-  t <- t.test(df$COUNT ~ df$originalExperiment)
-  m_exp <- mean(df$COUNT[df$originalExperiment==1])
-  sd_exp <- sd(df$COUNT[df$originalExperiment==1])
-  m_ctrl <- mean(df$COUNT[df$originalExperiment==0])
-  sd_ctrl <- sd(df$COUNT[df$originalExperiment==0])
-  n_exp <- length(df$COUNT[df$originalExperiment==1])
-  n_ctrl <- length(df$COUNT[df$originalExperiment==0])
-  r <- cor.test(df$COUNT,df$DelayTime)
-  d <- cohen.d(df$COUNT, as.factor(df$originalExperiment))
-  se <- std.error(df$COUNT)
-
-  metaVecES <- c(metaVecES, (m_exp-m_ctrl))
-  metaVecSE <- c(metaVecSE, se)
+  ## ANALYSES ##
   
-  metaVecMeanExp <- c(metaVecMeanExp, m_exp)
-  metaVecMeanCtrl <- c(metaVecMeanCtrl, m_ctrl)
+  # Using the following variable naming scheme:
+    # PRIMARY_ - primary analysis (exact replication of T&H)
+    # LR_ - linear regression of word count on delay
+    # DTA_ - death-thought accessibility test
+  
+  # Calculate tests for primary analysis
+  PRIMARY_t <- t.test(df$COUNT ~ df$originalExperiment)$statistic
+  PRIMARY_t_p <- t.test(df$COUNT ~ df$originalExperiment)$p.value
+  PRIMARY_m_exp <- mean(df$COUNT[df$originalExperiment==1])
+  PRIMARY_sd_exp <- sd(df$COUNT[df$originalExperiment==1])
+  PRIMARY_m_ctrl <- mean(df$COUNT[df$originalExperiment==0])
+  PRIMARY_sd_ctrl <- sd(df$COUNT[df$originalExperiment==0])
+  PRIMARY_n_exp <- length(df$COUNT[df$originalExperiment==1])
+  PRIMARY_n_ctrl <- length(df$COUNT[df$originalExperiment==0])
+  PRIMARY_b <- lm(COUNT~DelayTime, df)
+  PRIMARY_d <- cohen.d(df$COUNT, as.factor(df$originalExperiment))$estimate
+  PRIMARY_d_CI_UPPER <- cohen.d(df$COUNT, as.factor(df$originalExperiment))$conf.int[2]
+  PRIMARY_d_CI_LOWER <- cohen.d(df$COUNT, as.factor(df$originalExperiment))$conf.int[1]
+  PRIMARY_se <- std.error(df$COUNT)
+
+  metaVecES <- c(metaVecES, (PRIMARY_m_exp-PRIMARY_m_ctrl))
+  metaVecSE <- c(metaVecSE, PRIMARY_se)
+  
+  metaVecMeanExp <- c(metaVecMeanExp, PRIMARY_m_exp)
+  metaVecMeanCtrl <- c(metaVecMeanCtrl, PRIMARY_m_ctrl)
   
   mergedDF <- rbind(mergedDF, df)
   

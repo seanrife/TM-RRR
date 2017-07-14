@@ -4,7 +4,9 @@
 # Clean house
 rm(list = ls())
 
-# Set export directory
+# Set base directory
+# Looks here for main datasets, ratings & exclusions
+#baseDir <- "D:\\Dropbox\\Research\\TM RRR\\data"
 baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\data"
 
 # Set random number generator
@@ -49,8 +51,8 @@ for (name in labNames){
   Gender <- sample(1:2, nCases, replace=T)
   Age <- sample(18:36, nCases, replace=T)
   Purpose <- vector(mode="character", length=nCases)
-  Understand <- sample(0:1, nCases, replace=T)
-  Familiar <- sample(0:1, nCases, replace=T)
+  Understand <- sample(c(1,0), size=nCases, replace=TRUE, prob=c(0.9,0.1))#sample(0:1, nCases, replace=T)
+  Familiar <- sample(c(1,0), size=nCases, replace=TRUE, prob=c(0.1,0.9))#sample(0:1, nCases, replace=T)
   DEBRIEFING <- vector(mode="character", length=nCases)
   interviewtime <- vector(mode="character", length=nCases) 
   groupTime715 <- vector(mode="character", length=nCases)
@@ -82,7 +84,7 @@ for (name in labNames){
   groupTime723 <- vector(mode="character", length=nCases)
   DEBRIEFINGTime <- vector(mode="character", length=nCases)
   COUNT <- as.numeric(sample(0:5, nCases, replace=T)) #rnorm(nCases, mean = 2.5, sd = 1)
-  FLAG <- 0 #sample(0:1, nCases, replace=T)
+  FLAG <- sample(c(1,0), size=nCases, replace=TRUE, prob=c(0.1,0.9))
 
   # Assign to a dataframe
   simDFmain <- data.frame(id,submitdate,lastpage,startlanguage,startdate,
