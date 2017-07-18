@@ -26,7 +26,8 @@ if(!require(apaTables)){install.packages('apaTables')}
 library(apaTables)
 if(!require(ggplot2)){install.packages('ggplot2')}
 library(ggplot2)
-
+if(!require(Cairo)){install.packages('Cairo')}
+library(Cairo)
 
 mergedDF <- data.frame()
 dfList <- list()
@@ -125,26 +126,36 @@ THse <- sqrt(((1.21^2)+(.67^2)+(.73^2)+(.67^2))/4)/sqrt(120)
 
 # Forest plot code snipped from Wagenmakers et al. (2016)
 
+Cairo(file="forest_main.png", 
+      bg="white",
+      type="png",
+      units="in", 
+      width=11, height=7, 
+      #pointsize=12, 
+      dpi=600)
+
+
 forest(x = c(THes, metaVecES), sei = c(THse, metaVecSE), xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(c("5.14", format(metaVecMeanExp, digits=3)), c("4.32", format(metaVecMeanCtrl, digits=3))),
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        rows=c(length(labNames)+7, (length(labNames)+2):3), ylim=c(-2, length(labNames)+11),
-       slab = c("SMS Study 1\n(Original Study)", paste0("Study ", seq_len(length(labNames)))))
+       slab = c("Original Study", paste0("Study ", seq_len(length(labNames)))))
 
 abline(h=length(labNames)+5, lwd=1.4)
 text(grconvertX(.019, from = "ndc", "user"), length(labNames)+3.75, "RRR Studies", cex=1.2, pos = 4)
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+10, "Study", cex=1.2)
-text(grconvertX(.18, from = "ndc", "user"), length(labNames)+10, "Smile", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labNames)+10, "Pout", cex=1.2)
-text(grconvertX(.9, from = "ndc", "user"), length(labNames)+10, paste0("Mean difference", " [95% CI]"), cex=1.2)
+text(grconvertX(.18, from = "ndc", "user"), length(labNames)+10, "Delay", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labNames)+10, "Other Cond.", cex=1.2)
+text(grconvertX(.875, from = "ndc", "user"), length(labNames)+10, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=1, lwd=1.4)
 addpoly(meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
 
-win.metafile("forest_main.wmf")
-
 dev.off()
+
+
+
 
 
 #### RUN BETWEEN-LABS ANOVA ####
@@ -160,7 +171,7 @@ apa.aov.table(betweenLabsAOV,"ANOVA_tab.doc")
 mergedDF$originalExperimentCHR <- "Dental Pain"
 mergedDF$originalExperimentCHR[mergedDF$originalExperiment==1] <- "Death"
 
-apatheme=theme_bw()+
+apatheme=
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
@@ -184,10 +195,11 @@ pplots <- ggplot(data = mergedDF, aes(x = originalExperimentCHR, y = COUNT))+
 
 
 
+
 #### LINE GRAPHS OF EACH LAB'S FINDINGS ####
 
 all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT, group = labID)) +
-  geom_smooth(method = "loess", se = FALSE, color = "darkgrey") +
+  geom_smooth(method = "loess", se = T, color = "darkgrey") +
   geom_point(alpha = 0.3, size = 0) +
   facet_wrap(~labID)
 
