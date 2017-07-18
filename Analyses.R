@@ -9,7 +9,7 @@ rm(list = ls())
 #baseDir <- "D:\\Dropbox\\Research\\TM RRR\\data" # DESKTOP
 baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\data" # LAPTOP
 
-# Lab names; used for reading in data
+# Lab names; used for reading in data and labeling
 labNames <- c("Lab1", "Lab2", "Lab3", "Lab4", "Lab5", "Lab6", "Lab7", "Lab8",
               "Lab9", "Lab10", "Lab11", "Lab12", "Lab13", "Lab14", "Lab15")
 
@@ -27,16 +27,9 @@ library(apaTables)
 if(!require(ggplot2)){install.packages('ggplot2')}
 library(ggplot2)
 
-source("watercolor.R")
 
 mergedDF <- data.frame()
-
-# Create dataframe for summary data
-outFrame <- data.frame()
-#colnames(outFrame) <- c("labID", "avgAge", "nFemale", "MSn_delay", "DPn_delay",
-#                       "MSn_nodelay", "DPn_nodelay", "MSmean_delay", "DPmean_delay",
-#                       "MSmean_nodelay", "DPmean_nodelay", "MSsd_delay",
-#                       "DPsd_delay", "MSsd_nodelay", "DPsd_nodelay", "delayTime")
+dfList <- list()
 
 metaVecES <- vector()
 metaVecSE <- vector()
@@ -103,7 +96,7 @@ for (lab in labNames) {
   PRIMARY_d_CI_LOWER <- cohen.d(df$COUNT, as.factor(df$originalExperiment))$conf.int[1]
   PRIMARY_se <- std.error(df$COUNT)
 
-  metaVecES <- c(metaVecES, (PRIMARY_m_exp-PRIMARY_m_ctrl))
+  metaVecES <- c(metaVecES, (PRIMARY_d))
   metaVecSE <- c(metaVecSE, PRIMARY_se)
   
   metaVecMeanExp <- c(metaVecMeanExp, PRIMARY_m_exp)
@@ -111,7 +104,7 @@ for (lab in labNames) {
   
   mergedDF <- rbind(mergedDF, df)
   
-  assign(lab,df)
+  dfList[[lab]] <- df
   
 }
 
@@ -125,17 +118,33 @@ meta <- rma.uni(yi = metaVecES, sei = metaVecSE)
 
 #### FOREST PLOT ####
 
-forest(meta, xlab="Condition", ilab=cbind(c("5.14", metaVecMeanExp),
-                                          c("4.32", metaVecMeanCtrl),
-                                          ilab.xpos=c(grconvertX(.18, from = "ndc", "user")),
-                                          grconvertX(.28, from = "ndc", "user")))
-abline(h=length(labNames)+2, lwd=1.4)
-text(grconvertX(.019, from = "ndc", "user"), length(labNames)+3.75, "RRR Studies", pos = 4)
-text(grconvertX(.053, from = "ndc", "user"), length(labNames)+10, "Study")
-text(grconvertX(.18, from = "ndc", "user"), length(labNames)+10, "Death")
-text(grconvertX(.28, from = "ndc", "user"), length(labNames)+10, "Dental Pain")
-text(grconvertX(.9, from = "ndc", "user"), length(labNames)+10, paste0("Condition", " [95% CI]"))
-addpoly(meta, atransf=FALSE, row=-1, mlab="Meta-Analytic Effect Size:")
+# Raw ES of original study
+THes <- .94-.58
+# SE estimate using pooled SD from original study
+THse <- sqrt(((1.21^2)+(.67^2)+(.73^2)+(.67^2))/4)/sqrt(120)
+
+# Forest plot code snipped from Wagenmakers et al. (2016)
+
+forest(x = c(THes, metaVecES), sei = c(THse, metaVecSE), xlab="Mean difference", cex.lab=1.4,
+       ilab=cbind(c("5.14", format(metaVecMeanExp, digits=3)), c("4.32", format(metaVecMeanCtrl, digits=3))),
+       ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
+                   grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       rows=c(length(labNames)+7, (length(labNames)+2):3), ylim=c(-2, length(labNames)+11),
+       slab = c("SMS Study 1\n(Original Study)", paste0("Study ", seq_len(length(labNames)))))
+
+abline(h=length(labNames)+5, lwd=1.4)
+text(grconvertX(.019, from = "ndc", "user"), length(labNames)+3.75, "RRR Studies", cex=1.2, pos = 4)
+text(grconvertX(.053, from = "ndc", "user"), length(labNames)+10, "Study", cex=1.2)
+text(grconvertX(.18, from = "ndc", "user"), length(labNames)+10, "Smile", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labNames)+10, "Pout", cex=1.2)
+text(grconvertX(.9, from = "ndc", "user"), length(labNames)+10, paste0("Mean difference", " [95% CI]"), cex=1.2)
+
+abline(h=1, lwd=1.4)
+addpoly(meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
+
+win.metafile("forest_main.wmf")
+
+dev.off()
 
 
 #### RUN BETWEEN-LABS ANOVA ####
@@ -144,12 +153,43 @@ apa.1way.table(labID, COUNT, mergedDF,"MSD_tab.doc")
 apa.aov.table(betweenLabsAOV,"ANOVA_tab.doc")
 
 
-#### PIRATE PLOT OF MAIN EFFECT ####
+#### PIRATE PLOTS OF MAIN EFFECT FOR EACH LAB ####
+# Snips borrowed from John Sakaluk
+# https://sakaluk.wordpress.com/2017/02/03/15-make-it-pretty-diy-pirate-plots-in-ggplot2/
 
 mergedDF$originalExperimentCHR <- "Dental Pain"
 mergedDF$originalExperimentCHR[mergedDF$originalExperiment==1] <- "Death"
-pirateplot(formula = COUNT ~ as.factor(originalExperimentCHR),
-           data = mergedDF,
-           xlab = "Condition",
-           ylab = "Number of death-related words",
-           main = "Replication of T&H (2012)")
+
+apatheme=theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_blank(),
+        text=element_text(family='Arial'),
+        legend.title=element_blank(),
+        legend.position=c(.7,.8),
+        axis.line.x = element_line(color='black'),
+        axis.line.y = element_line(color='black'))
+
+pplots <- ggplot(data = mergedDF, aes(x = originalExperimentCHR, y = COUNT))+
+  geom_violin(data= mergedDF, aes(x = originalExperimentCHR, y = COUNT))+
+  geom_jitter(data= mergedDF, aes(x = originalExperimentCHR, y = COUNT), 
+              shape = 1, width = .1)+
+  geom_point(size = 3)+
+  geom_errorbar(ymax= mean(mergedDF$COUNT)+(1.96*std.error(mergedDF$COUNT)), 
+                ymin=mean(mergedDF$COUNT)+(-1.96*std.error(mergedDF$COUNT)), 
+                width = 0.25)+
+  facet_wrap(~labID)+
+  apatheme
+
+
+
+#### LINE GRAPHS OF EACH LAB'S FINDINGS ####
+
+all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT, group = labID)) +
+  geom_smooth(method = "loess", se = FALSE, color = "darkgrey") +
+  geom_point(alpha = 0.3, size = 0) +
+  facet_wrap(~labID)
+
+print(all_linear)
+

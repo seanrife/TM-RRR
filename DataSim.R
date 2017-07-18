@@ -51,8 +51,8 @@ for (name in labNames){
   Gender <- sample(1:2, nCases, replace=T)
   Age <- sample(18:36, nCases, replace=T)
   Purpose <- vector(mode="character", length=nCases)
-  Understand <- sample(c(1,0), size=nCases, replace=TRUE, prob=c(0.9,0.1))#sample(0:1, nCases, replace=T)
-  Familiar <- sample(c(1,0), size=nCases, replace=TRUE, prob=c(0.1,0.9))#sample(0:1, nCases, replace=T)
+  Understand <- sample(c(1,0), size=nCases, replace=TRUE, prob=c(0.9,0.1))
+  Familiar <- sample(c(1,0), size=nCases, replace=TRUE, prob=c(0.1,0.9))
   DEBRIEFING <- vector(mode="character", length=nCases)
   interviewtime <- vector(mode="character", length=nCases) 
   groupTime715 <- vector(mode="character", length=nCases)
@@ -83,7 +83,7 @@ for (name in labNames){
   FamiliarTime <- vector(mode="character", length=nCases)
   groupTime723 <- vector(mode="character", length=nCases)
   DEBRIEFINGTime <- vector(mode="character", length=nCases)
-  COUNT <- as.numeric(sample(0:5, nCases, replace=T)) #rnorm(nCases, mean = 2.5, sd = 1)
+  COUNT <- as.numeric(sample(c(0,5), size=nCases, replace=TRUE, prob=c(0.3,0.7)))
   FLAG <- sample(c(1,0), size=nCases, replace=TRUE, prob=c(0.1,0.9))
 
   # Assign to a dataframe
