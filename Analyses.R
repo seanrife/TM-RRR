@@ -28,9 +28,12 @@ if(!require(ggplot2)){install.packages('ggplot2')}
 library(ggplot2)
 if(!require(Cairo)){install.packages('Cairo')}
 library(Cairo)
-
+if(!require(apaStyle)){install.packages('apaStyle')}
+library(apaStyle)
 mergedDF <- data.frame()
 dfList <- list()
+
+labInfo <- read.csv(paste0(baseDir,"\\LabInfo.csv"), stringsAsFactors=FALSE)
 
 metaVecES <- vector()
 metaVecSE <- vector()
@@ -67,14 +70,22 @@ for (lab in labNames) {
   df <- merge(df_main,df_rating,by=c("id","labID"))
   df <- merge(df,df_exclude,by=c("id","labID"))
   
+  
+  # Put N info into labInfo DF
+  labInfo$N[labInfo$NAME == as.factor(lab)] <- nrow(df)
+  
   # Exclude flagged cases or those who failed exit interview
   df <- df[df$FLAG==0,]
   df <- df[df$Understand==1,]
   df <- df[df$Familiar==0,]
   
+  # Put N info into labInfo DF (without exclusions)
+  labInfo$Nrow[labInfo$NAME == as.factor(lab)] <- nrow(df)
+  
   df$originalExperiment <- 0
   df$originalExperiment[df$essayGroup==1 & df$delayGroup==1] <- 1
-  
+
+    
   ## ANALYSES ##
   
   # Using the following variable naming scheme:
@@ -106,7 +117,9 @@ for (lab in labNames) {
   mergedDF <- rbind(mergedDF, df)
   
   dfList[[lab]] <- df
+
   
+
 }
 
 rm(df_main)
