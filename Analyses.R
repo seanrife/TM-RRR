@@ -6,12 +6,8 @@ rm(list = ls())
 
 # Set base directory
 # Looks here for main datasets, ratings & exclusions
-baseDir <- "D:\\Dropbox\\Research\\TM RRR\\data" # DESKTOP
-#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\data" # LAPTOP
-
-# Lab names; used for reading in data and labeling
-labNames <- c("Lab1", "Lab2", "Lab3", "Lab4", "Lab5", "Lab6", "Lab7", "Lab8",
-              "Lab9", "Lab10", "Lab11", "Lab12", "Lab13", "Lab14", "Lab15")
+#baseDir <- "D:\\Dropbox\\Research\\TM RRR\\data" # DESKTOP
+baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\data" # LAPTOP
 
 # Load required libraries
 if(!require(metafor)){install.packages('metafor')}
@@ -31,6 +27,9 @@ mergedDF <- data.frame()
 dfList <- list()
 
 labInfo <- read.csv(paste0(baseDir,"\\LabInfo.csv"), stringsAsFactors=FALSE)
+
+# Lab names; used for reading in data and labeling
+labNames <- as.vector(labInfo$labID)
 
 metaVecES <- vector()
 metaVecSE <- vector()
@@ -69,7 +68,7 @@ for (lab in labNames) {
   
   
   # Put N info into labInfo DF
-  labInfo$N[labInfo$NAME == as.factor(lab)] <- nrow(df)
+  labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
   
   # Exclude flagged cases or those who failed exit interview
   df <- df[df$FLAG==0,]
@@ -77,7 +76,7 @@ for (lab in labNames) {
   df <- df[df$Familiar==0,]
   
   # Put N info into labInfo DF (without exclusions)
-  labInfo$Nused[labInfo$NAME == as.factor(lab)] <- nrow(df)
+  labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
   
   df$originalExperiment <- 0
   df$originalExperiment[df$essayGroup==1 & df$delayGroup==1] <- 1
@@ -107,10 +106,10 @@ for (lab in labNames) {
   
   
   # For descriptive stats table
-  labInfo$mean_exp[labInfo$NAME == as.factor(lab)] <- format(PRIMARY_m_exp, digits=3)
-  labInfo$sd_exp[labInfo$NAME == as.factor(lab)] <- format(PRIMARY_sd_exp, digits=3)
-  labInfo$mean_ctrl[labInfo$NAME == as.factor(lab)] <- format(PRIMARY_m_ctrl, digits=3)
-  labInfo$sd_ctrl[labInfo$NAME == as.factor(lab)] <- format(PRIMARY_sd_ctrl, digits=3)
+  labInfo$mean_exp[labInfo$labID == as.factor(lab)] <- format(PRIMARY_m_exp, digits=3)
+  labInfo$sd_exp[labInfo$labID == as.factor(lab)] <- format(PRIMARY_sd_exp, digits=3)
+  labInfo$mean_ctrl[labInfo$labID == as.factor(lab)] <- format(PRIMARY_m_ctrl, digits=3)
+  labInfo$sd_ctrl[labInfo$labID == as.factor(lab)] <- format(PRIMARY_sd_ctrl, digits=3)
 
   metaVecES <- c(metaVecES, (PRIMARY_d))
   metaVecSE <- c(metaVecSE, PRIMARY_se)
