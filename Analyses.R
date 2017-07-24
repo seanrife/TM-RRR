@@ -6,8 +6,8 @@ rm(list = ls())
 
 # Set base directory
 # Looks here for main datasets, ratings & exclusions
-#baseDir <- "D:\\Dropbox\\Research\\TM RRR\\data" # DESKTOP
-baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\data" # LAPTOP
+baseDir <- "D:\\Dropbox\\Research\\TM RRR\\data" # DESKTOP
+#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\data" # LAPTOP
 
 # Lab names; used for reading in data and labeling
 labNames <- c("Lab1", "Lab2", "Lab3", "Lab4", "Lab5", "Lab6", "Lab7", "Lab8",
@@ -22,14 +22,11 @@ if(!require(effsize)){install.packages('effsize')}
 library(effsize)
 if(!require(plotrix)){install.packages('plotrix')}
 library(plotrix)
-if(!require(apaTables)){install.packages('apaTables')}
-library(apaTables)
 if(!require(ggplot2)){install.packages('ggplot2')}
 library(ggplot2)
 if(!require(Cairo)){install.packages('Cairo')}
 library(Cairo)
-if(!require(apaStyle)){install.packages('apaStyle')}
-library(apaStyle)
+
 mergedDF <- data.frame()
 dfList <- list()
 
@@ -80,7 +77,7 @@ for (lab in labNames) {
   df <- df[df$Familiar==0,]
   
   # Put N info into labInfo DF (without exclusions)
-  labInfo$Nrow[labInfo$NAME == as.factor(lab)] <- nrow(df)
+  labInfo$Nused[labInfo$NAME == as.factor(lab)] <- nrow(df)
   
   df$originalExperiment <- 0
   df$originalExperiment[df$essayGroup==1 & df$delayGroup==1] <- 1
@@ -107,6 +104,13 @@ for (lab in labNames) {
   PRIMARY_d_CI_UPPER <- cohen.d(df$COUNT, as.factor(df$originalExperiment))$conf.int[2]
   PRIMARY_d_CI_LOWER <- cohen.d(df$COUNT, as.factor(df$originalExperiment))$conf.int[1]
   PRIMARY_se <- std.error(df$COUNT)
+  
+  
+  # For descriptive stats table
+  labInfo$mean_exp[labInfo$NAME == as.factor(lab)] <- format(PRIMARY_m_exp, digits=3)
+  labInfo$sd_exp[labInfo$NAME == as.factor(lab)] <- format(PRIMARY_sd_exp, digits=3)
+  labInfo$mean_ctrl[labInfo$NAME == as.factor(lab)] <- format(PRIMARY_m_ctrl, digits=3)
+  labInfo$sd_ctrl[labInfo$NAME == as.factor(lab)] <- format(PRIMARY_sd_ctrl, digits=3)
 
   metaVecES <- c(metaVecES, (PRIMARY_d))
   metaVecSE <- c(metaVecSE, PRIMARY_se)
@@ -125,6 +129,12 @@ for (lab in labNames) {
 rm(df_main)
 rm(df_rating)
 rm(df_exclude)
+
+
+#### DESCRIPTIVE STATISTICS TABLE ####
+
+write.csv(labInfo, "descriptives.csv", row.names = F)
+
 
 meta <- rma.uni(yi = metaVecES, sei = metaVecSE)
 
