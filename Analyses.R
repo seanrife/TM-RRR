@@ -4,10 +4,30 @@
 # Clean house
 rm(list = ls())
 
+
+#### USER-DEFINED VARIABLES ####
+
 # Set base directory
 # Looks here for main datasets, ratings & exclusions
-#baseDir <- "D:\\Dropbox\\Research\\TM RRR\\data" # DESKTOP
-baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\data" # LAPTOP
+# Should contain a summary file for all labs (LabInfo.csv)
+# Should also contain 3 files for each lab (with lab name appended to the beginning):
+#   1. _main.csv - main dataset
+#   2. _rating.csv - ratings of the words from each lab
+#   3. _exclude - manually-identified exclusions
+
+baseDir <- "D:\\Dropbox\\Research\\TM RRR" # DESKTOP
+#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+
+# Location for output (text and graphs)
+outDir <- paste0(baseDir, "\\output")
+dataDir <- paste0(baseDir, "\\data")
+
+
+# CODE BELOW NEED NOT BE MODIFIED
+
+#### READ IN AND CLEAN DATA ####
+
+extrafont::loadfonts(device="win")
 
 # Load required libraries
 if(!require(metafor)){install.packages('metafor')}
@@ -24,9 +44,9 @@ if(!require(Cairo)){install.packages('Cairo')}
 library(Cairo)
 
 mergedDF <- data.frame()
-dfList <- list()
+# dfList <- list()
 
-labInfo <- read.csv(paste0(baseDir,"\\LabInfo.csv"), stringsAsFactors=FALSE)
+labInfo <- read.csv(paste0(dataDir,"\\LabInfo.csv"), stringsAsFactors=FALSE)
 
 # Lab names; used for reading in data and labeling
 labNames <- as.vector(labInfo$labID)
@@ -57,9 +77,9 @@ readInFile <- function(filename) {
 
 for (lab in labNames) {
 
-  workingLabPathMain <- paste0(baseDir,"\\",lab,"_main.csv")
-  workingLabPathRating <- paste0(baseDir,"\\",lab,"_rating.csv")
-  workingLabPathExclude <- paste0(baseDir,"\\",lab,"_exclude.csv")
+  workingLabPathMain <- paste0(dataDir,"\\",lab,"_main.csv")
+  workingLabPathRating <- paste0(dataDir,"\\",lab,"_rating.csv")
+  workingLabPathExclude <- paste0(dataDir,"\\",lab,"_exclude.csv")
   df_main <- readInFile(workingLabPathMain)
   df_rating <- read.csv(workingLabPathRating)
   df_exclude <- read.csv(workingLabPathExclude)
@@ -86,10 +106,11 @@ for (lab in labNames) {
   
   # Using the following variable naming scheme:
     # PRIMARY_ - primary analysis (exact replication of T&H)
+    # SECONDARY_ - additional analysis not related directly to T&H
     # LR_ - linear regression of word count on delay
     # DTA_ - death-thought accessibility test
   
-  # Calculate tests for primary analysis
+  # Calculate tests/stats for primary analysis
   PRIMARY_t <- t.test(df$COUNT ~ df$originalExperiment)$statistic
   PRIMARY_t_p <- t.test(df$COUNT ~ df$originalExperiment)$p.value
   PRIMARY_m_exp <- mean(df$COUNT[df$originalExperiment==1])
@@ -119,7 +140,7 @@ for (lab in labNames) {
   
   mergedDF <- rbind(mergedDF, df)
   
-  dfList[[lab]] <- df
+  #dfList[[lab]] <- df
 
   
 
@@ -130,16 +151,22 @@ rm(df_rating)
 rm(df_exclude)
 
 
-#### DESCRIPTIVE STATISTICS TABLE ####
+#### RUN ANALYSES & CREATE GRAPHS ####
 
-write.csv(labInfo, "descriptives.csv", row.names = F)
+#### PRIMARY ANALYSES ####
 
+# Create descriptive statistics table
+write.csv(labInfo, paste0(outDir, "\\descriptives.csv"), row.names = F)
 
+# Meta analysis
+sink(paste0(outDir, "\\ma-primary.txt"))
 meta <- rma.uni(yi = metaVecES, sei = metaVecSE)
+meta
+summary(meta)
+sink()
 
 
-
-#### FOREST PLOT ####
+# Forest plot
 
 # Raw ES of original study
 THes <- .94-.58
@@ -148,7 +175,7 @@ THse <- sqrt(((1.21^2)+(.67^2)+(.73^2)+(.67^2))/4)/sqrt(120)
 
 # Forest plot code snipped from Wagenmakers et al. (2016)
 
-Cairo(file="forest_main.png", 
+Cairo(file=paste0(outDir, "\\forest_main.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -177,18 +204,44 @@ addpoly(meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
 dev.off()
 
 
-
-
-
-#### RUN BETWEEN-LABS ANOVA ####
+# Between-labs ANOVA
+sink(paste0(outDir, "\\ANOVA.txt"))
 betweenLabsAOV <- aov(COUNT~labID, data=mergedDF)
-apa.1way.table(labID, COUNT, mergedDF,"MSD_tab.doc")
-apa.aov.table(betweenLabsAOV,"ANOVA_tab.doc")
+betweenLabsAOV
+summary(betweenLabsAOV)
+sink()
 
 
-#### PIRATE PLOTS OF MAIN EFFECT FOR EACH LAB ####
+# Line graphs of each lab's findings
+
+all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT, group = labID)) +
+  labs(x = "Delay Time", y = "Word Count") +
+  geom_smooth(method = "loess", se = T, color = "darkgrey") +
+  geom_point(alpha = 0.3, size = 0) +
+  facet_wrap(~labID, scales = "free_x")
+
+ggsave(paste0(outDir, "\\PRIMARY_line-graphs.png"))
+
+
+
+
+#### ANCILLARY ANALYSES ####
+
+
+
+# Meta analysis
+sink(paste0(outDir, "\\ma-secondary.txt"))
+meta <- rma.uni(yi = metaVecES, sei = metaVecSE)
+meta
+summary(meta)
+sink()
+
+
+
+# Pirate plots from each lab
 # Snips borrowed from John Sakaluk
 # https://sakaluk.wordpress.com/2017/02/03/15-make-it-pretty-diy-pirate-plots-in-ggplot2/
+# May throw font family warnings - should not affect output
 
 mergedDF$originalExperimentCHR <- "Dental Pain"
 mergedDF$originalExperimentCHR[mergedDF$originalExperiment==1] <- "Death"
@@ -205,6 +258,7 @@ apatheme=
         axis.line.y = element_line(color='black'))
 
 pplots <- ggplot(data = mergedDF, aes(x = originalExperimentCHR, y = COUNT))+
+  labs(x = "Condition", y = "Word count") +
   geom_violin(data= mergedDF, aes(x = originalExperimentCHR, y = COUNT))+
   geom_jitter(data= mergedDF, aes(x = originalExperimentCHR, y = COUNT), 
               shape = 1, width = .1)+
@@ -212,18 +266,9 @@ pplots <- ggplot(data = mergedDF, aes(x = originalExperimentCHR, y = COUNT))+
   geom_errorbar(ymax= mean(mergedDF$COUNT)+(1.96*std.error(mergedDF$COUNT)), 
                 ymin=mean(mergedDF$COUNT)+(-1.96*std.error(mergedDF$COUNT)), 
                 width = 0.25)+
-  facet_wrap(~labID)+
+  facet_wrap(~labID, scales = "free_x")+
   apatheme
 
+ggsave(paste0(outDir, "\\PRIMARY_pirate-plot.png"))
 
-
-
-#### LINE GRAPHS OF EACH LAB'S FINDINGS ####
-
-all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT, group = labID)) +
-  geom_smooth(method = "loess", se = T, color = "darkgrey") +
-  geom_point(alpha = 0.3, size = 0) +
-  facet_wrap(~labID)
-
-print(all_linear)
 
