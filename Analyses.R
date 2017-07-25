@@ -8,19 +8,20 @@ rm(list = ls())
 #### USER-DEFINED VARIABLES ####
 
 # Set base directory
-# Looks here for main datasets, ratings & exclusions
+# Uses this to look for main datasets, ratings & exclusions
+#baseDir <- "D:\\Dropbox\\Research\\TM RRR" # DESKTOP
+baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+
+# Set input directory
 # Should contain a summary file for all labs (LabInfo.csv)
 # Should also contain 3 files for each lab (with lab name appended to the beginning):
 #   1. _main.csv - main dataset
 #   2. _rating.csv - ratings of the words from each lab
 #   3. _exclude - manually-identified exclusions
-
-#baseDir <- "D:\\Dropbox\\Research\\TM RRR" # DESKTOP
-baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+dataDir <- paste0(baseDir, "\\data")
 
 # Location for output (text and graphs)
 outDir <- paste0(baseDir, "\\output")
-dataDir <- paste0(baseDir, "\\data")
 
 
 # CODE BELOW NEED NOT BE MODIFIED
@@ -108,6 +109,8 @@ for (lab in labNames) {
   df <- df[df$FLAG==0,]
   df <- df[df$Understand==1,]
   df <- df[df$Familiar==0,]
+  ## ADD REMOVAL BASED ON TIME HERE ##
+  # Exclude if participant took less than 3 minutes to complete the survey
   
   # Put N info into labInfo DF (without exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
@@ -132,8 +135,6 @@ for (lab in labNames) {
     # SECONDARY_ - additional analysis not related directly to T&H
 
   # Calculate tests/stats for primary analysis
-  PRIMARY_t <- t.test(df$COUNT ~ df$originalExperiment)$statistic
-  PRIMARY_t_p <- t.test(df$COUNT ~ df$originalExperiment)$p.value
   PRIMARY_m_exp <- mean(df$COUNT[df$originalExperiment==1])
   PRIMARY_sd_exp <- sd(df$COUNT[df$originalExperiment==1])
   PRIMARY_m_ctrl <- mean(df$COUNT[df$originalExperiment==0])
@@ -164,8 +165,8 @@ for (lab in labNames) {
   
   
   # Calculate tests/stats for secondary analysis
-  SECONDARY_t <- t.test(df$COUNT ~ df$secondaryAnalysis)$statistic
-  SECONDARY_t_p <- t.test(df$COUNT ~ df$secondaryAnalysis)$p.value
+  # Many of these will be identical to primary analyses,
+  # but calculating for the sake of clarity
   SECONDARY_m_exp <- mean(df$COUNT[df$secondaryAnalysis==1])
   SECONDARY_sd_exp <- sd(df$COUNT[df$secondaryAnalysis==1])
   SECONDARY_m_ctrl <- mean(df$COUNT[df$secondaryAnalysis==0])
@@ -275,7 +276,7 @@ ggsave(paste0(outDir, "\\PRIMARY_line-graphs.png"))
 
 # Meta analysis
 sink(paste0(outDir, "\\ma-secondary.txt"))
-meta <- rma.uni(yi = metaVecES, sei = metaVecSE)
+meta <- rma.uni(yi = SECONDARY_metaVecES, sei = SECONDARY_metaVecSE)
 meta
 summary(meta)
 sink()
@@ -314,3 +315,5 @@ pplots <- ggplot(data = mergedDF, aes(x = secondaryAnalysisCHR, y = COUNT))+
   apatheme
 
 ggsave(paste0(outDir, "\\SECONDARY_pirate-plot.png"))
+
+#buhbye!
