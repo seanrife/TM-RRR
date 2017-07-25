@@ -15,8 +15,8 @@ rm(list = ls())
 #   2. _rating.csv - ratings of the words from each lab
 #   3. _exclude - manually-identified exclusions
 
-baseDir <- "D:\\Dropbox\\Research\\TM RRR" # DESKTOP
-#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+#baseDir <- "D:\\Dropbox\\Research\\TM RRR" # DESKTOP
+baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
 
 # Location for output (text and graphs)
 outDir <- paste0(baseDir, "\\output")
@@ -25,9 +25,9 @@ dataDir <- paste0(baseDir, "\\data")
 
 # CODE BELOW NEED NOT BE MODIFIED
 
+################################
 #### READ IN AND CLEAN DATA ####
-
-extrafont::loadfonts(device="win")
+################################
 
 # Load required libraries
 if(!require(metafor)){install.packages('metafor')}
@@ -44,21 +44,33 @@ if(!require(Cairo)){install.packages('Cairo')}
 library(Cairo)
 
 mergedDF <- data.frame()
-# dfList <- list()
 
+# Read in lab info
 labInfo <- read.csv(paste0(dataDir,"\\LabInfo.csv"), stringsAsFactors=FALSE)
+
+# Create dataframes for descriptive tables
+PRIMARY_descriptives <- labInfo
+SECONDARY_descriptives <- labInfo
 
 # Lab names; used for reading in data and labeling
 labNames <- as.vector(labInfo$labID)
 
-metaVecES <- vector()
-metaVecSE <- vector()
-metaVecMeanExp <- vector()
-metaVecMeanCtrl <- vector()
+# Create containers for output data
+PRIMARY_metaVecES <- vector()
+PRIMARY_metaVecSE <- vector()
+PRIMARY_metaVecMeanExp <- vector()
+PRIMARY_metaVecMeanCtrl <- vector()
+SECONDARY_metaVecES <- vector()
+SECONDARY_metaVecSE <- vector()
+SECONDARY_metaVecMeanExp <- vector()
+SECONDARY_metaVecMeanCtrl <- vector()
+
+
 
 # Function to read in and clean datafiles from each lab
 readInFile <- function(filename) {
   df <- read.csv(filename, header = T, stringsAsFactors = F, check.names=F)
+  # LS places problematic characters in variable names. Remove them.
   names(df) <- gsub(x = names(df),
                     pattern = "\\]",
                     replacement = "")
@@ -68,8 +80,10 @@ readInFile <- function(filename) {
   names(df) <- gsub(x = names(df),
                     pattern = "\\_SQ001",
                     replacement = "")
+  # Delete variables we don't need
   df <- df[, -c(which(colnames(df)=="DEBRIEFING"):which(colnames(df)=="WTDP2Time"))]
   df <- df[, -c(which(colnames(df)=="ARTICLETime"):which(colnames(df)=="DEBRIEFINGTime"))]
+  # Change the only time variable we care about to something meaningful
   colnames(df)[ncol(df)] <- "DelayTime"
   return(df)
 }
@@ -98,18 +112,25 @@ for (lab in labNames) {
   # Put N info into labInfo DF (without exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
   
+  
+  # Create group identifiers for original experiment
   df$originalExperiment <- 0
   df$originalExperiment[df$essayGroup==1 & df$delayGroup==1] <- 1
 
-    
+  # Create group identifiers for secondary analysis
+  df$secondaryAnalysis <- 0
+  df$secondaryAnalysis[df$essayGroup==1] <- 1
+  
+  
+  # Add to merged dataframe
+  mergedDF <- rbind(mergedDF, df)
+  
   ## ANALYSES ##
   
   # Using the following variable naming scheme:
     # PRIMARY_ - primary analysis (exact replication of T&H)
     # SECONDARY_ - additional analysis not related directly to T&H
-    # LR_ - linear regression of word count on delay
-    # DTA_ - death-thought accessibility test
-  
+
   # Calculate tests/stats for primary analysis
   PRIMARY_t <- t.test(df$COUNT ~ df$originalExperiment)$statistic
   PRIMARY_t_p <- t.test(df$COUNT ~ df$originalExperiment)$p.value
@@ -127,40 +148,67 @@ for (lab in labNames) {
   
   
   # For descriptive stats table
-  labInfo$mean_exp[labInfo$labID == as.factor(lab)] <- format(PRIMARY_m_exp, digits=3)
-  labInfo$sd_exp[labInfo$labID == as.factor(lab)] <- format(PRIMARY_sd_exp, digits=3)
-  labInfo$mean_ctrl[labInfo$labID == as.factor(lab)] <- format(PRIMARY_m_ctrl, digits=3)
-  labInfo$sd_ctrl[labInfo$labID == as.factor(lab)] <- format(PRIMARY_sd_ctrl, digits=3)
+  PRIMARY_descriptives$mean_exp[PRIMARY_descriptives$labID == as.factor(lab)] <- format(PRIMARY_m_exp, digits=3)
+  PRIMARY_descriptives$sd_exp[PRIMARY_descriptives$labID == as.factor(lab)] <- format(PRIMARY_sd_exp, digits=3)
+  PRIMARY_descriptives$mean_ctrl[PRIMARY_descriptives$labID == as.factor(lab)] <- format(PRIMARY_m_ctrl, digits=3)
+  PRIMARY_descriptives$sd_ctrl[PRIMARY_descriptives$labID == as.factor(lab)] <- format(PRIMARY_sd_ctrl, digits=3)
 
-  metaVecES <- c(metaVecES, (PRIMARY_d))
-  metaVecSE <- c(metaVecSE, PRIMARY_se)
+  PRIMARY_metaVecES <- c(PRIMARY_metaVecES, (PRIMARY_d))
+  PRIMARY_metaVecSE <- c(PRIMARY_metaVecSE, PRIMARY_se)
   
-  metaVecMeanExp <- c(metaVecMeanExp, PRIMARY_m_exp)
-  metaVecMeanCtrl <- c(metaVecMeanCtrl, PRIMARY_m_ctrl)
-  
-  mergedDF <- rbind(mergedDF, df)
-  
-  #dfList[[lab]] <- df
-
+  PRIMARY_metaVecMeanExp <- c(PRIMARY_metaVecMeanExp, PRIMARY_m_exp)
+  PRIMARY_metaVecMeanCtrl <- c(PRIMARY_metaVecMeanCtrl, PRIMARY_m_ctrl)
   
 
+
+  
+  
+  # Calculate tests/stats for secondary analysis
+  SECONDARY_t <- t.test(df$COUNT ~ df$secondaryAnalysis)$statistic
+  SECONDARY_t_p <- t.test(df$COUNT ~ df$secondaryAnalysis)$p.value
+  SECONDARY_m_exp <- mean(df$COUNT[df$secondaryAnalysis==1])
+  SECONDARY_sd_exp <- sd(df$COUNT[df$secondaryAnalysis==1])
+  SECONDARY_m_ctrl <- mean(df$COUNT[df$secondaryAnalysis==0])
+  SECONDARY_sd_ctrl <- sd(df$COUNT[df$secondaryAnalysis==0])
+  SECONDARY_n_exp <- length(df$COUNT[df$secondaryAnalysis==1])
+  SECONDARY_n_ctrl <- length(df$COUNT[df$secondaryAnalysis==0])
+  SECONDARY_d <- cohen.d(df$COUNT, as.factor(df$secondaryAnalysis))$estimate
+  SECONDARY_d_CI_UPPER <- cohen.d(df$COUNT, as.factor(df$secondaryAnalysis))$conf.int[2]
+  SECONDARY_d_CI_LOWER <- cohen.d(df$COUNT, as.factor(df$secondaryAnalysis))$conf.int[1]
+  SECONDARY_se <- std.error(df$COUNT)
+  
+  
+  # For descriptive stats table
+  SECONDARY_descriptives$mean_exp[SECONDARY_descriptives$labID == as.factor(lab)] <- format(SECONDARY_m_exp, digits=3)
+  SECONDARY_descriptives$sd_exp[SECONDARY_descriptives$labID == as.factor(lab)] <- format(SECONDARY_sd_exp, digits=3)
+  SECONDARY_descriptives$mean_ctrl[SECONDARY_descriptives$labID == as.factor(lab)] <- format(SECONDARY_m_ctrl, digits=3)
+  SECONDARY_descriptives$sd_ctrl[SECONDARY_descriptives$labID == as.factor(lab)] <- format(SECONDARY_sd_ctrl, digits=3)
+
+  SECONDARY_metaVecES <- c(SECONDARY_metaVecES, (SECONDARY_d))
+  SECONDARY_metaVecSE <- c(SECONDARY_metaVecSE, SECONDARY_se)
+  
 }
 
+# Clean things up by deleting leftover dataframes
 rm(df_main)
 rm(df_rating)
 rm(df_exclude)
 
 
+######################################
 #### RUN ANALYSES & CREATE GRAPHS ####
+######################################
 
 #### PRIMARY ANALYSES ####
 
-# Create descriptive statistics table
-write.csv(labInfo, paste0(outDir, "\\descriptives.csv"), row.names = F)
+# Create descriptive statistics tables
+write.csv(PRIMARY_descriptives, paste0(outDir, "\\PRIMARY_descriptives.csv"), row.names = F)
+write.csv(SECONDARY_descriptives, paste0(outDir, "\\SECONDARY_descriptives.csv"), row.names = F)
+
 
 # Meta analysis
 sink(paste0(outDir, "\\ma-primary.txt"))
-meta <- rma.uni(yi = metaVecES, sei = metaVecSE)
+meta <- rma.uni(yi = PRIMARY_metaVecES, sei = PRIMARY_metaVecSE)
 meta
 summary(meta)
 sink()
@@ -184,8 +232,8 @@ Cairo(file=paste0(outDir, "\\forest_main.png"),
       dpi=600)
 
 
-forest(x = c(THes, metaVecES), sei = c(THse, metaVecSE), xlab="Mean difference", cex.lab=1.4,
-       ilab=cbind(c("5.14", format(metaVecMeanExp, digits=3)), c("4.32", format(metaVecMeanCtrl, digits=3))),
+forest(x = c(THes, PRIMARY_metaVecES), sei = c(THse, PRIMARY_metaVecSE), xlab="Mean difference", cex.lab=1.4,
+       ilab=cbind(c("5.14", format(PRIMARY_metaVecMeanExp, digits=3)), c("4.32", format(PRIMARY_metaVecMeanCtrl, digits=3))),
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        rows=c(length(labNames)+7, (length(labNames)+2):3), ylim=c(-2, length(labNames)+11),
@@ -223,11 +271,7 @@ all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT, group = labID)) +
 ggsave(paste0(outDir, "\\PRIMARY_line-graphs.png"))
 
 
-
-
-#### ANCILLARY ANALYSES ####
-
-
+#### SECONDARY ANALYSES ####
 
 # Meta analysis
 sink(paste0(outDir, "\\ma-secondary.txt"))
@@ -243,8 +287,8 @@ sink()
 # https://sakaluk.wordpress.com/2017/02/03/15-make-it-pretty-diy-pirate-plots-in-ggplot2/
 # May throw font family warnings - should not affect output
 
-mergedDF$originalExperimentCHR <- "Dental Pain"
-mergedDF$originalExperimentCHR[mergedDF$originalExperiment==1] <- "Death"
+mergedDF$secondaryAnalysisCHR <- "Dental Pain"
+mergedDF$secondaryAnalysisCHR[mergedDF$secondaryAnalysis==1] <- "Death"
 
 apatheme=
   theme(panel.grid.major = element_blank(),
@@ -257,10 +301,10 @@ apatheme=
         axis.line.x = element_line(color='black'),
         axis.line.y = element_line(color='black'))
 
-pplots <- ggplot(data = mergedDF, aes(x = originalExperimentCHR, y = COUNT))+
+pplots <- ggplot(data = mergedDF, aes(x = secondaryAnalysisCHR, y = COUNT))+
   labs(x = "Condition", y = "Word count") +
-  geom_violin(data= mergedDF, aes(x = originalExperimentCHR, y = COUNT))+
-  geom_jitter(data= mergedDF, aes(x = originalExperimentCHR, y = COUNT), 
+  geom_violin(data= mergedDF, aes(x = secondaryAnalysisCHR, y = COUNT))+
+  geom_jitter(data= mergedDF, aes(x = secondaryAnalysisCHR, y = COUNT), 
               shape = 1, width = .1)+
   geom_point(size = 3)+
   geom_errorbar(ymax= mean(mergedDF$COUNT)+(1.96*std.error(mergedDF$COUNT)), 
@@ -269,6 +313,4 @@ pplots <- ggplot(data = mergedDF, aes(x = originalExperimentCHR, y = COUNT))+
   facet_wrap(~labID, scales = "free_x")+
   apatheme
 
-ggsave(paste0(outDir, "\\PRIMARY_pirate-plot.png"))
-
-
+ggsave(paste0(outDir, "\\SECONDARY_pirate-plot.png"))
