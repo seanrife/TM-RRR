@@ -9,8 +9,8 @@ rm(list = ls())
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-#baseDir <- "D:\\Dropbox\\Research\\TM RRR" # DESKTOP
-baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+baseDir <- "D:\\Dropbox\\Research\\TM RRR" # DESKTOP
+#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
 
 # Set input directory
 # Should contain a summary file for all labs (LabInfo.csv)
@@ -61,6 +61,8 @@ PRIMARY_metaVecES <- vector()
 PRIMARY_metaVecSE <- vector()
 PRIMARY_metaVecMeanExp <- vector()
 PRIMARY_metaVecMeanCtrl <- vector()
+PRIMARY_metaVecR <- vector()
+PRIMARY_metaVecN <- vector()
 SECONDARY_metaVecES <- vector()
 SECONDARY_metaVecSE <- vector()
 SECONDARY_metaVecMeanExp <- vector()
@@ -139,12 +141,8 @@ for (lab in labNames) {
   PRIMARY_sd_exp <- sd(df$COUNT[df$originalExperiment==1])
   PRIMARY_m_ctrl <- mean(df$COUNT[df$originalExperiment==0])
   PRIMARY_sd_ctrl <- sd(df$COUNT[df$originalExperiment==0])
-  PRIMARY_n_exp <- length(df$COUNT[df$originalExperiment==1])
-  PRIMARY_n_ctrl <- length(df$COUNT[df$originalExperiment==0])
-  PRIMARY_b <- lm(COUNT~DelayTime, df)
+  PRIMARY_r <- cor.test(df$COUNT, df$DelayTime)
   PRIMARY_d <- cohen.d(df$COUNT, as.factor(df$originalExperiment))$estimate
-  PRIMARY_d_CI_UPPER <- cohen.d(df$COUNT, as.factor(df$originalExperiment))$conf.int[2]
-  PRIMARY_d_CI_LOWER <- cohen.d(df$COUNT, as.factor(df$originalExperiment))$conf.int[1]
   PRIMARY_se <- std.error(df$COUNT)
   
   
@@ -154,7 +152,10 @@ for (lab in labNames) {
   PRIMARY_descriptives$mean_ctrl[PRIMARY_descriptives$labID == as.factor(lab)] <- format(PRIMARY_m_ctrl, digits=3)
   PRIMARY_descriptives$sd_ctrl[PRIMARY_descriptives$labID == as.factor(lab)] <- format(PRIMARY_sd_ctrl, digits=3)
 
-  PRIMARY_metaVecES <- c(PRIMARY_metaVecES, (PRIMARY_d))
+  PRIMARY_metaVecR <- c(PRIMARY_metaVecR, PRIMARY_r$estimate)
+  PRIMARY_metaVecN <- c(PRIMARY_metaVecN, (PRIMARY_r$parameter + 2))
+  
+  PRIMARY_metaVecES <- c(PRIMARY_metaVecES, PRIMARY_d)
   PRIMARY_metaVecSE <- c(PRIMARY_metaVecSE, PRIMARY_se)
   
   PRIMARY_metaVecMeanExp <- c(PRIMARY_metaVecMeanExp, PRIMARY_m_exp)
@@ -188,6 +189,9 @@ for (lab in labNames) {
   SECONDARY_metaVecES <- c(SECONDARY_metaVecES, (SECONDARY_d))
   SECONDARY_metaVecSE <- c(SECONDARY_metaVecSE, SECONDARY_se)
   
+  SECONDARY_metaVecMeanExp <- c(SECONDARY_metaVecMeanExp, SECONDARY_m_exp)
+  SECONDARY_metaVecMeanCtrl <- c(SECONDARY_metaVecMeanCtrl, SECONDARY_m_ctrl)
+  
 }
 
 # Clean things up by deleting leftover dataframes
@@ -208,11 +212,19 @@ write.csv(SECONDARY_descriptives, paste0(outDir, "\\SECONDARY_descriptives.csv")
 
 
 # Meta analysis
-sink(paste0(outDir, "\\ma-primary.txt"))
+sink(paste0(outDir, "\\ma-primary-bg.txt"))
 meta <- rma.uni(yi = PRIMARY_metaVecES, sei = PRIMARY_metaVecSE)
-meta
 summary(meta)
 sink()
+
+
+# Meta analysis
+es <- escalc(measure="COR", ri=PRIMARY_metaVecR, ni=PRIMARY_metaVecN)
+sink(paste0(outDir, "\\ma-primary-cont.txt"))
+meta <- rma.uni(es)
+summary(meta)
+sink()
+
 
 
 # Forest plot
@@ -277,43 +289,35 @@ ggsave(paste0(outDir, "\\PRIMARY_line-graphs.png"))
 # Meta analysis
 sink(paste0(outDir, "\\ma-secondary.txt"))
 meta <- rma.uni(yi = SECONDARY_metaVecES, sei = SECONDARY_metaVecSE)
-meta
 summary(meta)
 sink()
 
 
 
-# Pirate plots from each lab
-# Snips borrowed from John Sakaluk
-# https://sakaluk.wordpress.com/2017/02/03/15-make-it-pretty-diy-pirate-plots-in-ggplot2/
-# May throw font family warnings - should not affect output
+# Forest plot code snipped from Wagenmakers et al. (2016)
 
-mergedDF$secondaryAnalysisCHR <- "Dental Pain"
-mergedDF$secondaryAnalysisCHR[mergedDF$secondaryAnalysis==1] <- "Death"
+Cairo(file=paste0(outDir, "\\forest_secondary.png"), 
+      bg="white",
+      type="png",
+      units="in", 
+      width=11, height=7, 
+      #pointsize=12, 
+      dpi=600)
 
-apatheme=
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(),
-        panel.border = element_blank(),
-        text=element_text(family='Arial'),
-        legend.title=element_blank(),
-        legend.position=c(.7,.8),
-        axis.line.x = element_line(color='black'),
-        axis.line.y = element_line(color='black'))
 
-pplots <- ggplot(data = mergedDF, aes(x = secondaryAnalysisCHR, y = COUNT))+
-  labs(x = "Condition", y = "Word count") +
-  geom_violin(data= mergedDF, aes(x = secondaryAnalysisCHR, y = COUNT))+
-  geom_jitter(data= mergedDF, aes(x = secondaryAnalysisCHR, y = COUNT), 
-              shape = 1, width = .1)+
-  geom_point(size = 3)+
-  geom_errorbar(ymax= mean(mergedDF$COUNT)+(1.96*std.error(mergedDF$COUNT)), 
-                ymin=mean(mergedDF$COUNT)+(-1.96*std.error(mergedDF$COUNT)), 
-                width = 0.25)+
-  facet_wrap(~labID, scales = "free_x")+
-  apatheme
+forest(x = SECONDARY_metaVecES, sei = SECONDARY_metaVecSE, xlab="Mean difference", cex.lab=1.4,
+       ilab=cbind(format(SECONDARY_metaVecMeanExp, digits=3), format(SECONDARY_metaVecMeanCtrl, digits=3)),
+       ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
+                   grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ylim=c(-2, length(labNames)+3),
+       slab = paste0("Study ", seq_len(length(labNames))))
 
-ggsave(paste0(outDir, "\\SECONDARY_pirate-plot.png"))
+text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
+text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Dental Pain", cex=1.2)
+text(grconvertX(.875, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
-#buhbye!
+abline(h=0, lwd=1.4)
+addpoly(meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
+
+dev.off()
