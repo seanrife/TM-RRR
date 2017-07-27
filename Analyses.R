@@ -9,8 +9,8 @@ rm(list = ls())
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-baseDir <- "D:\\Dropbox\\Research\\TM RRR" # DESKTOP
-#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+#baseDir <- "D:\\Dropbox\\Research\\TM RRR" # DESKTOP
+baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
 
 # Set input directory
 # Should contain a summary file for all labs (LabInfo.csv)
@@ -114,10 +114,18 @@ for (lab in labNames) {
   ## ADD REMOVAL BASED ON TIME HERE ##
   # Exclude if participant took less than 3 minutes to complete the survey
   
-  # Put N info into labInfo DF (without exclusions)
+  # Put N info into labInfo DF (with exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
   
+  # Put % female intoLabInfo DF
+  TotalWithGender <- table(df$Gender)[names(table(df$Gender))==2] + table(df$Gender)[names(table(df$Gender))==1]
+  labInfo$percFemale[labInfo$labID == as.factor(lab)] <- format(100*(table(df$Gender)[names(table(df$Gender))==2]/TotalWithGender), digits=3)
+
+  # Get mean and SD of age
+  labInfo$ageMean[labInfo$labID == as.factor(lab)] <- format(mean(df$Age), digits=3)
+  labInfo$ageSD[labInfo$labID == as.factor(lab)] <- format(sd(df$Age), digits=3)
   
+    
   # Create group identifiers for original experiment
   df$originalExperiment <- 0
   df$originalExperiment[df$essayGroup==1 & df$delayGroup==1] <- 1
@@ -142,9 +150,7 @@ for (lab in labNames) {
   PRIMARY_m_ctrl <- mean(df$COUNT[df$originalExperiment==0])
   PRIMARY_sd_ctrl <- sd(df$COUNT[df$originalExperiment==0])
   PRIMARY_r <- cor.test(df$COUNT, df$DelayTime)
-  PRIMARY_d <- cohen.d(df$COUNT, as.factor(df$originalExperiment))$estimate
   PRIMARY_se <- std.error(df$COUNT)
-  
   
   # For descriptive stats table
   PRIMARY_descriptives$mean_exp[PRIMARY_descriptives$labID == as.factor(lab)] <- format(PRIMARY_m_exp, digits=3)
@@ -155,7 +161,7 @@ for (lab in labNames) {
   PRIMARY_metaVecR <- c(PRIMARY_metaVecR, PRIMARY_r$estimate)
   PRIMARY_metaVecN <- c(PRIMARY_metaVecN, (PRIMARY_r$parameter + 2))
   
-  PRIMARY_metaVecES <- c(PRIMARY_metaVecES, PRIMARY_d)
+  PRIMARY_metaVecES <- c(PRIMARY_metaVecES, (PRIMARY_m_exp-PRIMARY_m_ctrl))
   PRIMARY_metaVecSE <- c(PRIMARY_metaVecSE, PRIMARY_se)
   
   PRIMARY_metaVecMeanExp <- c(PRIMARY_metaVecMeanExp, PRIMARY_m_exp)
@@ -209,20 +215,19 @@ rm(df_exclude)
 # Create descriptive statistics tables
 write.csv(PRIMARY_descriptives, paste0(outDir, "\\PRIMARY_descriptives.csv"), row.names = F)
 write.csv(SECONDARY_descriptives, paste0(outDir, "\\SECONDARY_descriptives.csv"), row.names = F)
-
+write.csv(labInfo, paste0(outDir, "\\labDescriptives.csv"), row.names = F)
 
 # Meta analysis
 sink(paste0(outDir, "\\ma-primary-bg.txt"))
-meta <- rma.uni(yi = PRIMARY_metaVecES, sei = PRIMARY_metaVecSE)
-summary(meta)
+metaRAW <- rma.uni(yi = PRIMARY_metaVecES, sei = PRIMARY_metaVecSE)
+summary(metaRAW)
 sink()
-
 
 # Meta analysis
 es <- escalc(measure="COR", ri=PRIMARY_metaVecR, ni=PRIMARY_metaVecN)
 sink(paste0(outDir, "\\ma-primary-cont.txt"))
-meta <- rma.uni(es)
-summary(meta)
+metaR <- rma.uni(es)
+summary(metaR)
 sink()
 
 
@@ -246,7 +251,7 @@ Cairo(file=paste0(outDir, "\\forest_main.png"),
 
 
 forest(x = c(THes, PRIMARY_metaVecES), sei = c(THse, PRIMARY_metaVecSE), xlab="Mean difference", cex.lab=1.4,
-       ilab=cbind(c("5.14", format(PRIMARY_metaVecMeanExp, digits=3)), c("4.32", format(PRIMARY_metaVecMeanCtrl, digits=3))),
+       ilab=cbind(c(".94", format(PRIMARY_metaVecMeanExp, digits=3)), c(".58", format(PRIMARY_metaVecMeanCtrl, digits=3))),
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        rows=c(length(labNames)+7, (length(labNames)+2):3), ylim=c(-2, length(labNames)+11),
@@ -260,7 +265,7 @@ text(grconvertX(.28, from = "ndc", "user"), length(labNames)+10, "Other Cond.", 
 text(grconvertX(.875, from = "ndc", "user"), length(labNames)+10, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=1, lwd=1.4)
-addpoly(meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
+addpoly(metaRAW, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
 
 dev.off()
 
@@ -279,7 +284,7 @@ all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT, group = labID)) +
   labs(x = "Delay Time", y = "Word Count") +
   geom_smooth(method = "loess", se = T, color = "darkgrey") +
   geom_point(alpha = 0.3, size = 0) +
-  facet_wrap(~labID, scales = "free_x")
+  facet_wrap(~labID, scales = "free")
 
 ggsave(paste0(outDir, "\\PRIMARY_line-graphs.png"))
 
