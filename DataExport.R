@@ -29,9 +29,6 @@ files <- list.files(path=dataDir, pattern="*.csv", full.names=T, recursive=F)
 
 lapply(files, function(x) {
   df <- readInFile(x)
-  write.table(out, "path/to/output", sep="\t", quote=F, row.names=F, col.names=T)
+  write.table(df, paste0(dataDir,"/out.csv"), sep="\t", quote=F, row.names=F, col.names=T, append=T)
 })
 
-
-
-df <- readInFile("C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\Datasets\\survey_357664_R_data_file.csv")
