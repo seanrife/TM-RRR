@@ -6,8 +6,8 @@ rm(list = ls())
 
 # Set base directory
 # Looks here for main datasets, ratings & exclusions
-#baseDir <- "D:\\Dropbox\\Research\\TM RRR\\data"
-baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\data"
+baseDir <- "D:\\Dropbox\\Research\\TM RRR\\data"
+#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\data"
 
 # Set random number generator
 set.seed(271228065) # from random.org
@@ -43,11 +43,36 @@ for (name in labNames){
   ARTICLEEVAL_interesting <- sample(0:1, nCases, replace=T)
   ARTICLEEVAL_recommend <- sample(0:1, nCases, replace=T)
   ARTICLEEVAL_stay <- sample(0:1, nCases, replace=T)
-  WGTASK_word1_SQ001 <- vector(mode="character", length=nCases)
-  WGTASK_word2_SQ001 <- vector(mode="character", length=nCases)
-  WGTASK_word3_SQ001 <- vector(mode="character", length=nCases)
-  WGTASK_word4_SQ001 <- vector(mode="character", length=nCases)
-  WGTASK_word5_SQ001 <- vector(mode="character", length=nCases)
+  WGTASK_word1_response <- vector(mode="character", length=nCases)
+  WGTASK_word2_response <- vector(mode="character", length=nCases)
+  WGTASK_word3_response <- vector(mode="character", length=nCases)
+  WGTASK_word4_response <- vector(mode="character", length=nCases)
+  WGTASK_word5_response <- vector(mode="character", length=nCases)
+  WSCTASK_S1_response <- vector(mode="character", length=nCases)
+  WSCTASK_S2_response <- vector(mode="character", length=nCases)
+  WSCTASK_S3_response <- vector(mode="character", length=nCases)
+  WSCTASK_S4_response <- vector(mode="character", length=nCases)
+  WSCTASK_S5_response <- vector(mode="character", length=nCases)
+  WSCTASK_S6_response <- vector(mode="character", length=nCases)
+  WSCTASK_S7_response <- vector(mode="character", length=nCases)
+  WSCTASK_S8_response <- vector(mode="character", length=nCases)
+  WSCTASK_S9_response <- vector(mode="character", length=nCases)
+  WSCTASK_S10_response <- vector(mode="character", length=nCases)
+  WSCTASK_S11_response <- vector(mode="character", length=nCases)
+  WSCTASK_S12_response <- vector(mode="character", length=nCases)
+  WSCTASK_S13_response <- vector(mode="character", length=nCases)
+  WSCTASK_S14_response <- vector(mode="character", length=nCases)
+  WSCTASK_S15_response <- vector(mode="character", length=nCases)
+  WSCTASK_S16_response <- vector(mode="character", length=nCases)
+  WSCTASK_S17_response <- vector(mode="character", length=nCases)
+  WSCTASK_S18_response <- vector(mode="character", length=nCases)
+  WSCTASK_S19_response <- vector(mode="character", length=nCases)
+  WSCTASK_S20_response <- vector(mode="character", length=nCases)
+  WSCTASK_S21_response <- vector(mode="character", length=nCases)
+  WSCTASK_S22_response <- vector(mode="character", length=nCases)
+  WSCTASK_S23_response <- vector(mode="character", length=nCases)
+  WSCTASK_S24_response <- vector(mode="character", length=nCases)
+  WSCTASK_S25_response <- vector(mode="character", length=nCases)
   Gender <- sample(1:2, nCases, replace=T)
   Age <- sample(18:36, nCases, replace=T)
   Purpose <- vector(mode="character", length=nCases)
@@ -74,6 +99,8 @@ for (name in labNames){
   ARTICLEEVALTime <- vector(mode="character", length=nCases)
   groupTime720 <- vector(mode="character", length=nCases)
   WGTASKTime <- vector(mode="character", length=nCases)
+  groupTime1019 <- as.numeric(sample(60:360, nCases, replace=T))
+  WSCTASKTime <- vector(mode="character", length=nCases)
   groupTime721 <- vector(mode="character", length=nCases)
   GenderTime <- vector(mode="character", length=nCases)
   AgeTime <- vector(mode="character", length=nCases)
@@ -83,7 +110,8 @@ for (name in labNames){
   FamiliarTime <- vector(mode="character", length=nCases)
   groupTime723 <- vector(mode="character", length=nCases)
   DEBRIEFINGTime <- vector(mode="character", length=nCases)
-  COUNT <- as.numeric(sample(c(0,5), size=nCases, replace=TRUE, prob=c(0.3,0.7)))
+  COUNT_DV1 <- as.numeric(sample(c(0,5), size=nCases, replace=TRUE, prob=c(0.3,0.7)))
+  COUNT_DV2 <- as.numeric(sample(c(0,5), size=nCases, replace=TRUE, prob=c(0.3,0.7)))
   FLAG <- sample(c(1,0), size=nCases, replace=TRUE, prob=c(0.1,0.9))
 
   # Assign to a dataframe
@@ -92,37 +120,63 @@ for (name in labNames){
                       delayGroup,labID,WTINTRO,WTMS1,WTMS2,WTDP1,WTDP2,
                       ARTICLE,ARTICLEEVAL_enjoy,ARTICLEEVAL_interesting,
                       ARTICLEEVAL_recommend,ARTICLEEVAL_stay,
-                      WGTASK_word1_SQ001,WGTASK_word2_SQ001,
-                      WGTASK_word3_SQ001,WGTASK_word4_SQ001,
-                      WGTASK_word5_SQ001,Gender,Age,Purpose,
-                      Understand,Familiar,DEBRIEFING,interviewtime,
-                      groupTime715,CONSENTTime,CONSENTCHECKTime,
-                      essayGroupTime,delayGroupTime,labNumTime,groupTime716,
-                      WTINTROTime,groupTime717,WTMS1Time,WTMS2Time,
-                      groupTime718,WTDP1Time,WTDP2Time,groupTime719,
-                      ARTICLETime,ARTICLEEVALTime,groupTime720,WGTASKTime,
+                      WGTASK_word1_response,WGTASK_word2_response,
+                      WGTASK_word3_response,WGTASK_word4_response,
+                      WGTASK_word5_response,WSCTASK_S1_response,
+                      WSCTASK_S2_response,WSCTASK_S3_response,
+                      WSCTASK_S4_response,WSCTASK_S5_response,
+                      WSCTASK_S6_response,WSCTASK_S7_response,
+                      WSCTASK_S8_response,WSCTASK_S9_response,
+                      WSCTASK_S10_response,WSCTASK_S11_response,
+                      WSCTASK_S12_response,WSCTASK_S13_response,
+                      WSCTASK_S14_response,WSCTASK_S15_response,
+                      WSCTASK_S16_response,WSCTASK_S17_response,
+                      WSCTASK_S18_response,WSCTASK_S19_response,
+                      WSCTASK_S20_response,WSCTASK_S21_response,
+                      WSCTASK_S22_response,WSCTASK_S23_response,
+                      WSCTASK_S24_response,WSCTASK_S25_response,
+                      Gender,Age,Purpose,Understand,Familiar,
+                      DEBRIEFING,interviewtime,groupTime715,CONSENTTime,
+                      CONSENTCHECKTime,essayGroupTime,delayGroupTime,
+                      labNumTime,groupTime716,WTINTROTime,groupTime717,
+                      WTMS1Time,WTMS2Time,groupTime718,WTDP1Time,
+                      WTDP2Time,groupTime719,ARTICLETime,ARTICLEEVALTime,
+                      groupTime720,WGTASKTime,groupTime1019,WGTASKTime,
                       groupTime721,GenderTime,AgeTime,groupTime722,
-                      PurposeTime,UnderstandTime,FamiliarTime,groupTime723,
-                      DEBRIEFINGTime)
+                      PurposeTime,UnderstandTime,FamiliarTime,
+                      groupTime723,DEBRIEFINGTime)
   
   # Assign column names
-  colnames(simDFmain) <- c("id", "submitdate", "lastpage", "startlanguage",
-                           "startdate", "datestamp", "CONSENT", "CONSENTCHECK[SQ001]",
-                           "essayGroup", "delayGroup", "labID", "WTINTRO", "WTMS1",
-                           "WTMS2", "WTDP1", "WTDP2", "ARTICLE", "ARTICLEEVAL[enjoy]",
-                           "ARTICLEEVAL[interesting]", "ARTICLEEVAL[recommend]",
-                           "ARTICLEEVAL[stay]", "WGTASK[word1_SQ001]",
-                           "WGTASK[word2_SQ001]", "WGTASK[word3_SQ001]",
-                           "WGTASK[word4_SQ001]", "WGTASK[word5_SQ001]",
-                           "Gender", "Age", "Purpose", "Understand", "Familiar",
-                           "DEBRIEFING", "interviewtime", "groupTime715", "CONSENTTime",
-                           "CONSENTCHECKTime", "essayGroupTime", "delayGroupTime",
-                           "labNumTime", "groupTime716", "WTINTROTime", "groupTime717",
-                           "WTMS1Time", "WTMS2Time", "groupTime718", "WTDP1Time",
-                           "WTDP2Time", "groupTime719", "ARTICLETime", "ARTICLEEVALTime",
-                           "groupTime720", "WGTASKTime", "groupTime721", "GenderTime",
-                           "AgeTime", "groupTime722", "PurposeTime", "UnderstandTime",
-                           "FamiliarTime", "groupTime723", "DEBRIEFINGTime")
+  colnames(simDFmain) <- c("id","submitdate","lastpage","startlanguage","startdate",
+                           "datestamp","CONSENT","CONSENTCHECK_SQ001","essayGroup",
+                           "delayGroup","labID","WTINTRO","WTMS1","WTMS2","WTDP1","WTDP2",
+                           "ARTICLE","ARTICLEEVAL_enjoy","ARTICLEEVAL_interesting",
+                           "ARTICLEEVAL_recommend","ARTICLEEVAL_stay",
+                           "WGTASK_word1_response","WGTASK_word2_response",
+                           "WGTASK_word3_response","WGTASK_word4_response",
+                           "WGTASK_word5_response","WSCTASK_S1_response",
+                           "WSCTASK_S2_response","WSCTASK_S3_response",
+                           "WSCTASK_S4_response","WSCTASK_S5_response",
+                           "WSCTASK_S6_response","WSCTASK_S7_response",
+                           "WSCTASK_S8_response","WSCTASK_S9_response",
+                           "WSCTASK_S10_response","WSCTASK_S11_response",
+                           "WSCTASK_S12_response","WSCTASK_S13_response",
+                           "WSCTASK_S14_response","WSCTASK_S15_response",
+                           "WSCTASK_S16_response","WSCTASK_S17_response",
+                           "WSCTASK_S18_response","WSCTASK_S19_response",
+                           "WSCTASK_S20_response","WSCTASK_S21_response",
+                           "WSCTASK_S22_response","WSCTASK_S23_response",
+                           "WSCTASK_S24_response","WSCTASK_S25_response",
+                           "Gender","Age","Purpose","Understand","Familiar",
+                           "DEBRIEFING","interviewtime","groupTime715","CONSENTTime",
+                           "CONSENTCHECKTime","essayGroupTime","delayGroupTime",
+                           "labNumTime","groupTime716","WTINTROTime","groupTime717",
+                           "WTMS1Time","WTMS2Time","groupTime718","WTDP1Time",
+                           "WTDP2Time","groupTime719","ARTICLETime","ARTICLEEVALTime",
+                           "groupTime720","WGTASKTime","groupTime1019","WGTASKTime",
+                           "groupTime721","GenderTime","AgeTime","groupTime722",
+                           "PurposeTime","UnderstandTime","FamiliarTime",
+                           "groupTime723","DEBRIEFINGTime")
   
   # Assign blank values for time variable for participants in the no delay condition
   simDFmain$groupTime719[simDFmain$delayGroup==2] <- 0
@@ -135,15 +189,26 @@ for (name in labNames){
   
   # Moving on to ranking dataset
   
-  simDFrating <- data.frame(id,labID,WGTASK_word1_SQ001,WGTASK_word2_SQ001,
-                            WGTASK_word3_SQ001,WGTASK_word4_SQ001,
-                            WGTASK_word5_SQ001,COUNT)
+  simDF1rating <- data.frame(id,labID,WGTASK_word1_response,WGTASK_word2_response,
+                            WGTASK_word3_response,WGTASK_word4_response,
+                            WGTASK_word5_response,COUNT_DV1)
   
-  colnames(simDFrating) <- c("id","labID","WORD1","WORD2","WORD3","WORD4",
-                             "WORD5","COUNT")
+  colnames(simDF1rating) <- c("id","labID","WORD1","WORD2","WORD3","WORD4",
+                             "WORD5","COUNT_DV1")
   
   # Write to an output file
-  write.csv(simDFrating, file = paste0(baseDir,"\\",name,"_rating.csv"),row.names=FALSE, na="")
+  write.csv(simDF1rating, file = paste0(baseDir,"\\",name,"_DV1_rating.csv"),row.names=FALSE, na="")
+  
+  
+  simDF2rating <- data.frame(id,labID,WSCTASK_S1_response,WSCTASK_S5_response,
+                             WSCTASK_S12_response,WSCTASK_S15_response,
+                             WSCTASK_S19_response,WSCTASK_S22_response,COUNT_DV2)
+  
+  colnames(simDF2rating) <- c("id","labID","WORD1","WORD2","WORD3","WORD4",
+                              "WORD5","WORD6","COUNT_DV2")
+  
+  # Write to an output file
+  write.csv(simDF2rating, file = paste0(baseDir,"\\",name,"_DV2_rating.csv"),row.names=FALSE, na="")
   
   # Move on to exclusions dataset
   simDFexclude <- data.frame(id,labID,Purpose,Understand,Familiar,FLAG)

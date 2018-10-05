@@ -9,8 +9,8 @@ rm(list = ls())
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-#baseDir <- "D:\\Dropbox\\Research\\TM RRR" # DESKTOP
-baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+baseDir <- "D:\\Dropbox\\Research\\TM RRR" # DESKTOP
+#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
 
 # Set input directory
 # Should contain a summary file for all labs (LabInfo.csv)
@@ -50,25 +50,38 @@ mergedDF <- data.frame()
 labInfo <- read.csv(paste0(dataDir,"\\LabInfo.csv"), stringsAsFactors=FALSE)
 
 # Create dataframes for descriptive tables
-PRIMARY_descriptives <- labInfo
-SECONDARY_descriptives <- labInfo
+PRIMARY_DV1_descriptives <- labInfo
+PRIMARY_DV2_descriptives <- labInfo
+SECONDARY_DV1_descriptives <- labInfo
+SECONDARY_DV2_descriptives <- labInfo
 
 # Lab names; used for reading in data and labeling
 labNames <- as.vector(labInfo$labID)
 
-# Create containers for output data
-PRIMARY_metaVecES <- vector()
-PRIMARY_metaVecSE <- vector()
-PRIMARY_metaVecMeanExp <- vector()
-PRIMARY_metaVecMeanCtrl <- vector()
-PRIMARY_metaVecR <- vector()
-PRIMARY_metaVecN <- vector()
-SECONDARY_metaVecES <- vector()
-SECONDARY_metaVecSE <- vector()
-SECONDARY_metaVecMeanExp <- vector()
-SECONDARY_metaVecMeanCtrl <- vector()
+# Initialize containers for output data
+PRIMARY_DV1_metaVecES <- vector()
+PRIMARY_DV1_metaVecSE <- vector()
+PRIMARY_DV1_metaVecMeanExp <- vector()
+PRIMARY_DV1_metaVecMeanCtrl <- vector()
+PRIMARY_DV1_metaVecR <- vector()
+PRIMARY_DV1_metaVecN <- vector()
 
+PRIMARY_DV2_metaVecES <- vector()
+PRIMARY_DV2_metaVecSE <- vector()
+PRIMARY_DV2_metaVecMeanExp <- vector()
+PRIMARY_DV2_metaVecMeanCtrl <- vector()
+PRIMARY_DV2_metaVecR <- vector()
+PRIMARY_DV2_metaVecN <- vector()
 
+SECONDARY_DV1_metaVecES <- vector()
+SECONDARY_DV1_metaVecSE <- vector()
+SECONDARY_DV1_metaVecMeanExp <- vector()
+SECONDARY_DV1_metaVecMeanCtrl <- vector()
+
+SECONDARY_DV2_metaVecES <- vector()
+SECONDARY_DV2_metaVecSE <- vector()
+SECONDARY_DV2_metaVecMeanExp <- vector()
+SECONDARY_DV2_metaVecMeanCtrl <- vector()
 
 # Function to read in and clean datafiles from each lab
 readInFile <- function(filename) {
@@ -95,12 +108,15 @@ readInFile <- function(filename) {
 for (lab in labNames) {
 
   workingLabPathMain <- paste0(dataDir,"\\",lab,"_main.csv")
-  workingLabPathRating <- paste0(dataDir,"\\",lab,"_rating.csv")
+  workingLabPathRating_DV1 <- paste0(dataDir,"\\",lab,"_DV1_rating.csv")
+  workingLabPathRating_DV2 <- paste0(dataDir,"\\",lab,"_DV2_rating.csv")
   workingLabPathExclude <- paste0(dataDir,"\\",lab,"_exclude.csv")
   df_main <- readInFile(workingLabPathMain)
-  df_rating <- read.csv(workingLabPathRating)
+  df_rating_DV1 <- read.csv(workingLabPathRating_DV1)
+  df_rating_DV2 <- read.csv(workingLabPathRating_DV2)
   df_exclude <- read.csv(workingLabPathExclude)
-  df <- merge(df_main,df_rating,by=c("id","labID"))
+  df <- merge(df_main,df_rating_DV1,by=c("id","labID"))
+  df <- merge(df,df_rating_DV2,by=c("id","labID"))
   df <- merge(df,df_exclude,by=c("id","labID"))
   
   
@@ -141,68 +157,119 @@ for (lab in labNames) {
   ## ANALYSES ##
   
   # Using the following variable naming scheme:
-    # PRIMARY_ - primary analysis (exact replication of T&H)
+    # PRIMARY_DV1 - primary analysis (exact replication of T&H)
+    # PRIMARY_DV2 - primary analysis using alternate DV
     # SECONDARY_ - additional analysis not related directly to T&H
 
   # Calculate tests/stats for primary analysis
-  PRIMARY_m_exp <- mean(df$COUNT[df$originalExperiment==1])
-  PRIMARY_sd_exp <- sd(df$COUNT[df$originalExperiment==1])
-  PRIMARY_m_ctrl <- mean(df$COUNT[df$originalExperiment==0])
-  PRIMARY_sd_ctrl <- sd(df$COUNT[df$originalExperiment==0])
-  PRIMARY_r <- cor.test(df$COUNT, df$DelayTime)
-  PRIMARY_se <- std.error(df$COUNT)
+  PRIMARY_DV1_m_exp <- mean(df$COUNT_DV1[df$originalExperiment==1])
+  PRIMARY_DV1_sd_exp <- sd(df$COUNT_DV1[df$originalExperiment==1])
+  PRIMARY_DV1_m_ctrl <- mean(df$COUNT_DV1[df$originalExperiment==0])
+  PRIMARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$originalExperiment==0])
+  PRIMARY_DV1_r <- cor.test(df$COUNT_DV1, df$DelayTime)
+  PRIMARY_DV1_se <- std.error(df$COUNT_DV1)
   
   # For descriptive stats table
-  PRIMARY_descriptives$mean_exp[PRIMARY_descriptives$labID == as.factor(lab)] <- format(PRIMARY_m_exp, digits=3)
-  PRIMARY_descriptives$sd_exp[PRIMARY_descriptives$labID == as.factor(lab)] <- format(PRIMARY_sd_exp, digits=3)
-  PRIMARY_descriptives$mean_ctrl[PRIMARY_descriptives$labID == as.factor(lab)] <- format(PRIMARY_m_ctrl, digits=3)
-  PRIMARY_descriptives$sd_ctrl[PRIMARY_descriptives$labID == as.factor(lab)] <- format(PRIMARY_sd_ctrl, digits=3)
+  PRIMARY_DV1_descriptives$mean_exp[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_m_exp, digits=3)
+  PRIMARY_DV1_descriptives$sd_exp[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_sd_exp, digits=3)
+  PRIMARY_DV1_descriptives$mean_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_m_ctrl, digits=3)
+  PRIMARY_DV1_descriptives$sd_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_sd_ctrl, digits=3)
 
-  PRIMARY_metaVecR <- c(PRIMARY_metaVecR, PRIMARY_r$estimate)
-  PRIMARY_metaVecN <- c(PRIMARY_metaVecN, (PRIMARY_r$parameter + 2))
+  PRIMARY_DV1_metaVecR <- c(PRIMARY_DV1_metaVecR, PRIMARY_DV1_r$estimate)
+  PRIMARY_DV1_metaVecN <- c(PRIMARY_DV1_metaVecN, (PRIMARY_DV1_r$parameter + 2))
   
-  PRIMARY_metaVecES <- c(PRIMARY_metaVecES, (PRIMARY_m_exp-PRIMARY_m_ctrl))
-  PRIMARY_metaVecSE <- c(PRIMARY_metaVecSE, PRIMARY_se)
+  PRIMARY_DV1_metaVecES <- c(PRIMARY_DV1_metaVecES, (PRIMARY_DV1_m_exp-PRIMARY_DV1_m_ctrl))
+  PRIMARY_DV1_metaVecSE <- c(PRIMARY_DV1_metaVecSE, PRIMARY_DV1_se)
   
-  PRIMARY_metaVecMeanExp <- c(PRIMARY_metaVecMeanExp, PRIMARY_m_exp)
-  PRIMARY_metaVecMeanCtrl <- c(PRIMARY_metaVecMeanCtrl, PRIMARY_m_ctrl)
+  PRIMARY_DV1_metaVecMeanExp <- c(PRIMARY_DV1_metaVecMeanExp, PRIMARY_DV1_m_exp)
+  PRIMARY_DV1_metaVecMeanCtrl <- c(PRIMARY_DV1_metaVecMeanCtrl, PRIMARY_DV1_m_ctrl)
   
 
-
+  # Calculate tests/stats for primary analysis
+  PRIMARY_DV2_m_exp <- mean(df$COUNT_DV2[df$originalExperiment==1])
+  PRIMARY_DV2_sd_exp <- sd(df$COUNT_DV2[df$originalExperiment==1])
+  PRIMARY_DV2_m_ctrl <- mean(df$COUNT_DV2[df$originalExperiment==0])
+  PRIMARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$originalExperiment==0])
+  PRIMARY_DV2_r <- cor.test(df$COUNT_DV2, df$DelayTime)
+  PRIMARY_DV2_se <- std.error(df$COUNT_DV2)
+  
+  # For descriptive stats table
+  PRIMARY_DV2_descriptives$mean_exp[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_m_exp, digits=3)
+  PRIMARY_DV2_descriptives$sd_exp[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_sd_exp, digits=3)
+  PRIMARY_DV2_descriptives$mean_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_m_ctrl, digits=3)
+  PRIMARY_DV2_descriptives$sd_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_sd_ctrl, digits=3)
+  
+  PRIMARY_DV2_metaVecR <- c(PRIMARY_DV2_metaVecR, PRIMARY_DV2_r$estimate)
+  PRIMARY_DV2_metaVecN <- c(PRIMARY_DV2_metaVecN, (PRIMARY_DV2_r$parameter + 2))
+  
+  PRIMARY_DV2_metaVecES <- c(PRIMARY_DV2_metaVecES, (PRIMARY_DV2_m_exp-PRIMARY_DV2_m_ctrl))
+  PRIMARY_DV2_metaVecSE <- c(PRIMARY_DV2_metaVecSE, PRIMARY_DV2_se)
+  
+  PRIMARY_DV2_metaVecMeanExp <- c(PRIMARY_DV2_metaVecMeanExp, PRIMARY_DV2_m_exp)
+  PRIMARY_DV2_metaVecMeanCtrl <- c(PRIMARY_DV2_metaVecMeanCtrl, PRIMARY_DV2_m_ctrl)
+  
+  
   
   
   # Calculate tests/stats for secondary analysis
   # Many of these will be identical to primary analyses,
   # but calculating for the sake of clarity
-  SECONDARY_m_exp <- mean(df$COUNT[df$secondaryAnalysis==1])
-  SECONDARY_sd_exp <- sd(df$COUNT[df$secondaryAnalysis==1])
-  SECONDARY_m_ctrl <- mean(df$COUNT[df$secondaryAnalysis==0])
-  SECONDARY_sd_ctrl <- sd(df$COUNT[df$secondaryAnalysis==0])
-  SECONDARY_n_exp <- length(df$COUNT[df$secondaryAnalysis==1])
-  SECONDARY_n_ctrl <- length(df$COUNT[df$secondaryAnalysis==0])
-  SECONDARY_d <- cohen.d(df$COUNT, as.factor(df$secondaryAnalysis))$estimate
-  SECONDARY_d_CI_UPPER <- cohen.d(df$COUNT, as.factor(df$secondaryAnalysis))$conf.int[2]
-  SECONDARY_d_CI_LOWER <- cohen.d(df$COUNT, as.factor(df$secondaryAnalysis))$conf.int[1]
-  SECONDARY_se <- std.error(df$COUNT)
+  SECONDARY_DV1_m_exp <- mean(df$COUNT_DV1[df$secondaryAnalysis==1])
+  SECONDARY_DV1_sd_exp <- sd(df$COUNT_DV1[df$secondaryAnalysis==1])
+  SECONDARY_DV1_m_ctrl <- mean(df$COUNT_DV1[df$secondaryAnalysis==0])
+  SECONDARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$secondaryAnalysis==0])
+  SECONDARY_DV1_n_exp <- length(df$COUNT_DV1[df$secondaryAnalysis==1])
+  SECONDARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$secondaryAnalysis==0])
+  SECONDARY_DV1_d <- cohen.d(df$COUNT_DV1, as.factor(df$secondaryAnalysis))$estimate
+  SECONDARY_DV1_d_CI_UPPER <- cohen.d(df$COUNT_DV1, as.factor(df$secondaryAnalysis))$conf.int[2]
+  SECONDARY_DV1_d_CI_LOWER <- cohen.d(df$COUNT_DV1, as.factor(df$secondaryAnalysis))$conf.int[1]
+  SECONDARY_DV1_se <- std.error(df$COUNT_DV1)
   
   
   # For descriptive stats table
-  SECONDARY_descriptives$mean_exp[SECONDARY_descriptives$labID == as.factor(lab)] <- format(SECONDARY_m_exp, digits=3)
-  SECONDARY_descriptives$sd_exp[SECONDARY_descriptives$labID == as.factor(lab)] <- format(SECONDARY_sd_exp, digits=3)
-  SECONDARY_descriptives$mean_ctrl[SECONDARY_descriptives$labID == as.factor(lab)] <- format(SECONDARY_m_ctrl, digits=3)
-  SECONDARY_descriptives$sd_ctrl[SECONDARY_descriptives$labID == as.factor(lab)] <- format(SECONDARY_sd_ctrl, digits=3)
+  SECONDARY_DV1_descriptives$mean_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_exp, digits=3)
+  SECONDARY_DV1_descriptives$sd_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_exp, digits=3)
+  SECONDARY_DV1_descriptives$mean_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_ctrl, digits=3)
+  SECONDARY_DV1_descriptives$sd_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_ctrl, digits=3)
 
-  SECONDARY_metaVecES <- c(SECONDARY_metaVecES, (SECONDARY_d))
-  SECONDARY_metaVecSE <- c(SECONDARY_metaVecSE, SECONDARY_se)
+  SECONDARY_DV1_metaVecES <- c(SECONDARY_DV1_metaVecES, (SECONDARY_DV1_d))
+  SECONDARY_DV1_metaVecSE <- c(SECONDARY_DV1_metaVecSE, SECONDARY_DV1_se)
   
-  SECONDARY_metaVecMeanExp <- c(SECONDARY_metaVecMeanExp, SECONDARY_m_exp)
-  SECONDARY_metaVecMeanCtrl <- c(SECONDARY_metaVecMeanCtrl, SECONDARY_m_ctrl)
+  SECONDARY_DV1_metaVecMeanExp <- c(SECONDARY_DV1_metaVecMeanExp, SECONDARY_DV1_m_exp)
+  SECONDARY_DV1_metaVecMeanCtrl <- c(SECONDARY_DV1_metaVecMeanCtrl, SECONDARY_DV1_m_ctrl)
+  
+  
+  SECONDARY_DV2_m_exp <- mean(df$COUNT_DV2[df$secondaryAnalysis==1])
+  SECONDARY_DV2_sd_exp <- sd(df$COUNT_DV2[df$secondaryAnalysis==1])
+  SECONDARY_DV2_m_ctrl <- mean(df$COUNT_DV2[df$secondaryAnalysis==0])
+  SECONDARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$secondaryAnalysis==0])
+  SECONDARY_DV2_n_exp <- length(df$COUNT_DV2[df$secondaryAnalysis==1])
+  SECONDARY_DV2_n_ctrl <- length(df$COUNT_DV2[df$secondaryAnalysis==0])
+  SECONDARY_DV2_d <- cohen.d(df$COUNT_DV2, as.factor(df$secondaryAnalysis))$estimate
+  SECONDARY_DV2_d_CI_UPPER <- cohen.d(df$COUNT_DV2, as.factor(df$secondaryAnalysis))$conf.int[2]
+  SECONDARY_DV2_d_CI_LOWER <- cohen.d(df$COUNT_DV2, as.factor(df$secondaryAnalysis))$conf.int[1]
+  SECONDARY_DV2_se <- std.error(df$COUNT_DV2)
+  
+  
+  # For descriptive stats table
+  SECONDARY_DV2_descriptives$mean_exp[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_m_exp, digits=3)
+  SECONDARY_DV2_descriptives$sd_exp[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_sd_exp, digits=3)
+  SECONDARY_DV2_descriptives$mean_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_m_ctrl, digits=3)
+  SECONDARY_DV2_descriptives$sd_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_sd_ctrl, digits=3)
+  
+  SECONDARY_DV2_metaVecES <- c(SECONDARY_DV2_metaVecES, (SECONDARY_DV2_d))
+  SECONDARY_DV2_metaVecSE <- c(SECONDARY_DV2_metaVecSE, SECONDARY_DV2_se)
+  
+  SECONDARY_DV2_metaVecMeanExp <- c(SECONDARY_DV2_metaVecMeanExp, SECONDARY_DV2_m_exp)
+  SECONDARY_DV2_metaVecMeanCtrl <- c(SECONDARY_DV2_metaVecMeanCtrl, SECONDARY_DV2_m_ctrl)
+  
   
 }
 
 # Clean things up by deleting leftover dataframes
 rm(df_main)
-rm(df_rating)
+rm(df_rating_DV1)
+rm(df_rating_DV2)
 rm(df_exclude)
 
 
@@ -213,21 +280,38 @@ rm(df_exclude)
 #### PRIMARY ANALYSES ####
 
 # Create descriptive statistics tables
-write.csv(PRIMARY_descriptives, paste0(outDir, "\\PRIMARY_descriptives.csv"), row.names = F)
-write.csv(SECONDARY_descriptives, paste0(outDir, "\\SECONDARY_descriptives.csv"), row.names = F)
+write.csv(PRIMARY_DV1_descriptives, paste0(outDir, "\\PRIMARY_DV1_descriptives.csv"), row.names = F)
+write.csv(PRIMARY_DV2_descriptives, paste0(outDir, "\\PRIMARY_DV2_descriptives.csv"), row.names = F)
+write.csv(SECONDARY_DV1_descriptives, paste0(outDir, "\\SECONDARY_DV1_descriptives.csv"), row.names = F)
+write.csv(SECONDARY_DV2_descriptives, paste0(outDir, "\\SECONDARY_DV2_descriptives.csv"), row.names = F)
 write.csv(labInfo, paste0(outDir, "\\labDescriptives.csv"), row.names = F)
 
 # Meta analysis
-sink(paste0(outDir, "\\ma-primary-bg.txt"))
-metaRAW <- rma.uni(yi = PRIMARY_metaVecES, sei = PRIMARY_metaVecSE)
-summary(metaRAW)
+sink(paste0(outDir, "\\ma-primary-DV1-bg.txt"))
+metaRAW_DV1 <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE)
+summary(metaRAW_DV1)
 sink()
 
 # Meta analysis
-es <- escalc(measure="COR", ri=PRIMARY_metaVecR, ni=PRIMARY_metaVecN)
-sink(paste0(outDir, "\\ma-primary-cont.txt"))
-metaR <- rma.uni(es)
-summary(metaR)
+es <- escalc(measure="COR", ri=PRIMARY_DV1_metaVecR, ni=PRIMARY_DV1_metaVecN)
+sink(paste0(outDir, "\\ma-primary-DV1-cont.txt"))
+metaR_DV1 <- rma.uni(es)
+summary(metaR_DV1)
+sink()
+
+
+
+# Meta analysis
+sink(paste0(outDir, "\\ma-primary-DV2-bg.txt"))
+metaRAW_DV2 <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE)
+summary(metaRAW_DV2)
+sink()
+
+# Meta analysis
+es <- escalc(measure="COR", ri=PRIMARY_DV2_metaVecR, ni=PRIMARY_DV2_metaVecN)
+sink(paste0(outDir, "\\ma-primary-DV2-cont.txt"))
+metaR_DV2 <- rma.uni(es)
+summary(metaR_DV2)
 sink()
 
 
@@ -241,7 +325,9 @@ THse <- sqrt(((1.21^2)+(.67^2)+(.73^2)+(.67^2))/4)/sqrt(120)
 
 # Forest plot code snipped from Wagenmakers et al. (2016)
 
-Cairo(file=paste0(outDir, "\\forest_main.png"), 
+# Forest plot with word generation dv
+
+Cairo(file=paste0(outDir, "\\forest_main_WG.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -250,8 +336,8 @@ Cairo(file=paste0(outDir, "\\forest_main.png"),
       dpi=600)
 
 
-forest(x = c(THes, PRIMARY_metaVecES), sei = c(THse, PRIMARY_metaVecSE), xlab="Mean difference", cex.lab=1.4,
-       ilab=cbind(c(".94", format(PRIMARY_metaVecMeanExp, digits=3)), c(".58", format(PRIMARY_metaVecMeanCtrl, digits=3))),
+forest(x = c(THes, PRIMARY_DV1_metaVecES), sei = c(THse, PRIMARY_DV1_metaVecSE), xlab="Mean difference", cex.lab=1.4,
+       ilab=cbind(c(".94", format(PRIMARY_DV1_metaVecMeanExp, digits=3)), c(".58", format(PRIMARY_DV1_metaVecMeanCtrl, digits=3))),
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        rows=c(length(labNames)+7, (length(labNames)+2):3), ylim=c(-2, length(labNames)+11),
@@ -265,43 +351,14 @@ text(grconvertX(.28, from = "ndc", "user"), length(labNames)+10, "Other Cond.", 
 text(grconvertX(.875, from = "ndc", "user"), length(labNames)+10, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=1, lwd=1.4)
-addpoly(metaRAW, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
+addpoly(metaRAW_DV1, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
 
 dev.off()
 
 
-# Between-labs ANOVA
-sink(paste0(outDir, "\\ANOVA.txt"))
-betweenLabsAOV <- aov(COUNT~labID, data=mergedDF)
-betweenLabsAOV
-summary(betweenLabsAOV)
-sink()
+# Forest plot with word completion dv
 
-
-# Line graphs of each lab's findings
-
-all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT, group = labID)) +
-  labs(x = "Delay Time", y = "Word Count") +
-  geom_smooth(method = "loess", se = T, color = "darkgrey") +
-  geom_point(alpha = 0.3, size = 0) +
-  facet_wrap(~labID, scales = "free")
-
-ggsave(paste0(outDir, "\\PRIMARY_line-graphs.png"))
-
-
-#### SECONDARY ANALYSES ####
-
-# Meta analysis
-sink(paste0(outDir, "\\ma-secondary.txt"))
-meta <- rma.uni(yi = SECONDARY_metaVecES, sei = SECONDARY_metaVecSE)
-summary(meta)
-sink()
-
-
-
-# Forest plot code snipped from Wagenmakers et al. (2016)
-
-Cairo(file=paste0(outDir, "\\forest_secondary.png"), 
+Cairo(file=paste0(outDir, "\\forest_secondary_WC.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -310,8 +367,8 @@ Cairo(file=paste0(outDir, "\\forest_secondary.png"),
       dpi=600)
 
 
-forest(x = SECONDARY_metaVecES, sei = SECONDARY_metaVecSE, xlab="Mean difference", cex.lab=1.4,
-       ilab=cbind(format(SECONDARY_metaVecMeanExp, digits=3), format(SECONDARY_metaVecMeanCtrl, digits=3)),
+forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
+       ilab=cbind(format(PRIMARY_DV2_metaVecMeanExp, digits=3), format(PRIMARY_DV2_metaVecMeanCtrl, digits=3)),
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
@@ -323,6 +380,120 @@ text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Dental Pain", c
 text(grconvertX(.875, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
-addpoly(meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
+addpoly(metaRAW_DV2, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
 
 dev.off()
+
+
+# Between-labs ANOVAs
+sink(paste0(outDir, "\\ANOVA_DV1.txt"))
+betweenLabsAOV <- aov(COUNT_DV1~labID, data=mergedDF)
+betweenLabsAOV
+summary(betweenLabsAOV)
+sink()
+
+
+sink(paste0(outDir, "\\ANOVA_DV2.txt"))
+betweenLabsAOV <- aov(COUNT_DV2~labID, data=mergedDF)
+betweenLabsAOV
+summary(betweenLabsAOV)
+sink()
+
+
+
+# Line graphs of each lab's findings
+
+all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV1, group = labID)) +
+  labs(x = "Delay Time", y = "Word Count") +
+  geom_smooth(method = "loess", se = T, color = "darkgrey") +
+  geom_point(alpha = 0.3, size = 0) +
+  facet_wrap(~labID, scales = "free")
+
+ggsave(paste0(outDir, "\\PRIMARY_DV1_line-graphs.png"))
+
+
+# Line graphs of each lab's findings
+
+all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV2, group = labID)) +
+  labs(x = "Delay Time", y = "Word Count") +
+  geom_smooth(method = "loess", se = T, color = "darkgrey") +
+  geom_point(alpha = 0.3, size = 0) +
+  facet_wrap(~labID, scales = "free")
+
+ggsave(paste0(outDir, "\\PRIMARY_DV2_line-graphs.png"))
+
+
+
+#### SECONDARY ANALYSES ####
+
+# Meta analysis
+sink(paste0(outDir, "\\ma-secondary-DV1.txt"))
+secondary_DV1_meta <- rma.uni(yi = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE)
+summary(secondary_DV1_meta)
+sink()
+
+# Meta analysis
+sink(paste0(outDir, "\\ma-secondary-DV2.txt"))
+secondary_DV2_meta <- rma.uni(yi = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE)
+summary(secondary_DV2_meta)
+sink()
+
+
+# Forest plot code snipped from Wagenmakers et al. (2016)
+
+# Word generation dv
+
+Cairo(file=paste0(outDir, "\\forest_secondary_WG.png"), 
+      bg="white",
+      type="png",
+      units="in", 
+      width=11, height=7, 
+      #pointsize=12, 
+      dpi=600)
+
+
+forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
+       ilab=cbind(format(SECONDARY_DV1_metaVecMeanExp, digits=3), format(SECONDARY_DV1_metaVecMeanCtrl, digits=3)),
+       ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
+                   grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ylim=c(-2, length(labNames)+3),
+       slab = paste0("Study ", seq_len(length(labNames))))
+
+text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
+text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Dental Pain", cex=1.2)
+text(grconvertX(.875, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
+
+abline(h=0, lwd=1.4)
+addpoly(secondary_DV1_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
+
+dev.off()
+
+# Word completion dv
+
+Cairo(file=paste0(outDir, "\\forest_secondary_WC.png"), 
+      bg="white",
+      type="png",
+      units="in", 
+      width=11, height=7, 
+      #pointsize=12, 
+      dpi=600)
+
+
+forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
+       ilab=cbind(format(SECONDARY_DV2_metaVecMeanExp, digits=3), format(SECONDARY_DV2_metaVecMeanCtrl, digits=3)),
+       ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
+                   grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ylim=c(-2, length(labNames)+3),
+       slab = paste0("Study ", seq_len(length(labNames))))
+
+text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
+text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Dental Pain", cex=1.2)
+text(grconvertX(.875, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
+
+abline(h=0, lwd=1.4)
+addpoly(secondary_DV2_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
+
+dev.off()
+
