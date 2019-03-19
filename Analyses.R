@@ -385,22 +385,6 @@ addpoly(metaRAW_DV2, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect 
 dev.off()
 
 
-# Between-labs ANOVAs
-sink(paste0(outDir, "\\ANOVA_DV1.txt"))
-betweenLabsAOV <- aov(COUNT_DV1~labID, data=mergedDF)
-betweenLabsAOV
-summary(betweenLabsAOV)
-sink()
-
-
-sink(paste0(outDir, "\\ANOVA_DV2.txt"))
-betweenLabsAOV <- aov(COUNT_DV2~labID, data=mergedDF)
-betweenLabsAOV
-summary(betweenLabsAOV)
-sink()
-
-
-
 # Line graphs of each lab's findings
 
 all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV1, group = labID)) +
