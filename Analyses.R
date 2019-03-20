@@ -358,7 +358,7 @@ dev.off()
 
 # Forest plot with word completion dv
 
-Cairo(file=paste0(outDir, "\\forest_secondary_WC.png"), 
+Cairo(file=paste0(outDir, "\\forest_main_WC.png"), 
       bg="white",
       type="png",
       units="in", 
