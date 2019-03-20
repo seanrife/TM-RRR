@@ -105,20 +105,55 @@ readInFile <- function(filename) {
 }
 
 
+# Function to read in list of death-related words and check for consistency with letters
+letter_search <- function(word) {
+  letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
+  word_split <- strsplit(word, "")
+  match <- TRUE
+  for (letter in word_split) {
+    for (l in letter) {
+      if (l %in% letters) {
+        letters <- letters[letters != l]
+        #print(letters)
+      }
+      else {
+        match <- FALSE
+      }
+    }
+  }
+  return(match)
+}
+
+is_deathword <- function(x, deathwords){
+  word <- tolower(x)
+  word <- gsub(" ", "", word)
+  if (word %in% deathwords){
+    return(TRUE)
+  }
+  else{
+    return(FALSE)
+  }
+}
+
+
+raw_deathwords <- scan("DeathWordList.txt", what="", sep="\n")
+deathwords = c()
+
+# Produce a list of death-related words for DV2
+for (word in raw_deathwords) {
+  if (letter_search(word)) {
+    deathwords <- c(deathwords, word)
+  }
+}
+
+
 for (lab in labNames) {
 
   workingLabPathMain <- paste0(dataDir,"\\",lab,"_main.csv")
-  workingLabPathRating_DV1 <- paste0(dataDir,"\\",lab,"_DV1_rating.csv")
-  workingLabPathRating_DV2 <- paste0(dataDir,"\\",lab,"_DV2_rating.csv")
   workingLabPathExclude <- paste0(dataDir,"\\",lab,"_exclude.csv")
   df_main <- readInFile(workingLabPathMain)
-  df_rating_DV1 <- read.csv(workingLabPathRating_DV1)
-  df_rating_DV2 <- read.csv(workingLabPathRating_DV2)
   df_exclude <- read.csv(workingLabPathExclude)
-  df <- merge(df_main,df_rating_DV1,by=c("id","labID"))
-  df <- merge(df,df_rating_DV2,by=c("id","labID"))
   df <- merge(df,df_exclude,by=c("id","labID"))
-  
   
   # Put N info into labInfo DF
   labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
@@ -129,6 +164,24 @@ for (lab in labNames) {
   df <- df[df$Familiar==0,]
   ## ADD REMOVAL BASED ON TIME HERE ##
   # Exclude if participant took less than 3 minutes to complete the survey
+  
+  df$COUNT_DV1 <- 0
+  
+  if (is_deathword(df$WGTASK_word1_response, deathwords)) {df$COUNT_DV1 <- df$COUNT_DV1 + 1}
+  if (is_deathword(df$WGTASK_word2_response, deathwords)) {df$COUNT_DV1 <- df$COUNT_DV1 + 1}
+  if (is_deathword(df$WGTASK_word3_response, deathwords)) {df$COUNT_DV1 <- df$COUNT_DV1 + 1}
+  if (is_deathword(df$WGTASK_word4_response, deathwords)) {df$COUNT_DV1 <- df$COUNT_DV1 + 1}
+  if (is_deathword(df$WGTASK_word5_response, deathwords)) {df$COUNT_DV1 <- df$COUNT_DV1 + 1}
+  
+  df$COUNT_DV2 <- 0
+  
+  if (gsub(" ", "", tolower(df$WSCTASK_S1_response)) == "buried") {df$COUNT_DV2 <- df$COUNT_DV2 + 1}
+  if (gsub(" ", "", tolower(df$WSCTASK_S5_response)) == "dead") {df$COUNT_DV2 <- df$COUNT_DV2 + 1}
+  if (gsub(" ", "", tolower(df$WSCTASK_S12_response)) == "grave") {df$COUNT_DV2 <- df$COUNT_DV2 + 1}
+  if (gsub(" ", "", tolower(df$WSCTASK_S15_response)) == "killed") {df$COUNT_DV2 <- df$COUNT_DV2 + 1}
+  if (gsub(" ", "", tolower(df$WSCTASK_S19_response)) == "skull") {df$COUNT_DV2 <- df$COUNT_DV2 + 1}
+  if (gsub(" ", "", tolower(df$WSCTASK_S22_response)) == "coffin") {df$COUNT_DV2 <- df$COUNT_DV2 + 1}
+  
   
   # Put N info into labInfo DF (with exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
@@ -141,7 +194,6 @@ for (lab in labNames) {
   labInfo$ageMean[labInfo$labID == as.factor(lab)] <- format(mean(df$Age), digits=3)
   labInfo$ageSD[labInfo$labID == as.factor(lab)] <- format(sd(df$Age), digits=3)
   
-    
   # Create group identifiers for original experiment
   df$originalExperiment <- 0
   df$originalExperiment[df$essayGroup==1 & df$delayGroup==1] <- 1
