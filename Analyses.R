@@ -9,7 +9,7 @@ rm(list = ls())
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-baseDir <- "D:\\Dropbox\\Research\\TM RRR" # DESKTOP
+baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
 #baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
 
 # Set input directory
@@ -209,10 +209,10 @@ for (lab in labNames) {
   ## ANALYSES ##
   
   # Using the following variable naming scheme:
-    # PRIMARY_DV1 - primary analysis (exact replication of T&H)
-    # PRIMARY_DV2 - primary analysis using alternate DV
-    # SECONDARY_ - additional analysis not related directly to T&H
-
+  # PRIMARY_DV1 - primary analysis (exact replication of T&H)
+  # PRIMARY_DV2 - primary analysis using alternate DV
+  # SECONDARY_ - additional analysis not related directly to T&H
+  
   # Calculate tests/stats for primary analysis
   PRIMARY_DV1_m_exp <- mean(df$COUNT_DV1[df$originalExperiment==1])
   PRIMARY_DV1_sd_exp <- sd(df$COUNT_DV1[df$originalExperiment==1])
@@ -226,7 +226,7 @@ for (lab in labNames) {
   PRIMARY_DV1_descriptives$sd_exp[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_sd_exp, digits=3)
   PRIMARY_DV1_descriptives$mean_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_m_ctrl, digits=3)
   PRIMARY_DV1_descriptives$sd_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_sd_ctrl, digits=3)
-
+  
   PRIMARY_DV1_metaVecR <- c(PRIMARY_DV1_metaVecR, PRIMARY_DV1_r$estimate)
   PRIMARY_DV1_metaVecN <- c(PRIMARY_DV1_metaVecN, (PRIMARY_DV1_r$parameter + 2))
   
@@ -236,7 +236,7 @@ for (lab in labNames) {
   PRIMARY_DV1_metaVecMeanExp <- c(PRIMARY_DV1_metaVecMeanExp, PRIMARY_DV1_m_exp)
   PRIMARY_DV1_metaVecMeanCtrl <- c(PRIMARY_DV1_metaVecMeanCtrl, PRIMARY_DV1_m_ctrl)
   
-
+  
   # Calculate tests/stats for primary analysis
   PRIMARY_DV2_m_exp <- mean(df$COUNT_DV2[df$originalExperiment==1])
   PRIMARY_DV2_sd_exp <- sd(df$COUNT_DV2[df$originalExperiment==1])
@@ -283,7 +283,7 @@ for (lab in labNames) {
   SECONDARY_DV1_descriptives$sd_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_exp, digits=3)
   SECONDARY_DV1_descriptives$mean_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_ctrl, digits=3)
   SECONDARY_DV1_descriptives$sd_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_ctrl, digits=3)
-
+  
   SECONDARY_DV1_metaVecES <- c(SECONDARY_DV1_metaVecES, (SECONDARY_DV1_d))
   SECONDARY_DV1_metaVecSE <- c(SECONDARY_DV1_metaVecSE, SECONDARY_DV1_se)
   
@@ -314,6 +314,7 @@ for (lab in labNames) {
   
   SECONDARY_DV2_metaVecMeanExp <- c(SECONDARY_DV2_metaVecMeanExp, SECONDARY_DV2_m_exp)
   SECONDARY_DV2_metaVecMeanCtrl <- c(SECONDARY_DV2_metaVecMeanCtrl, SECONDARY_DV2_m_ctrl)
+  
   
   
 }
