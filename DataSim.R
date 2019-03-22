@@ -6,7 +6,7 @@ rm(list = ls())
 
 # Set base directory
 # Looks here for main datasets, ratings & exclusions
-baseDir <- "D:\\Dropbox\\Research\\TM RRR\\data"
+baseDir <- "I:\\Dropbox\\Research\\TM RRR\\data"
 #baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR\\data"
 
 # Set random number generator
@@ -18,6 +18,14 @@ df <- data.frame()
 # Names of labs
 labNames <- c("Lab1", "Lab2", "Lab3", "Lab4", "Lab5", "Lab6", "Lab7", "Lab8",
               "Lab9", "Lab10", "Lab11", "Lab12", "Lab13", "Lab14", "Lab15")
+
+# Create a collection of words to populate the datasets with
+bagOWords <- c("chilly", "order", "burn", "harm", "rake", "snotty", 
+               "heap", "perfect", "two", "transport", "sound", "bad", 
+               "terrible", "teeth", "cap", "flag", "internal", "yell", 
+               "abaft", "courageous", "embalmed", "coffin", "morgue", 
+               "tomb", "dead", "burial", "buried", "grave", "killed",
+               "skull")
 
 # Create simulated data for primary datasets
 for (name in labNames){
@@ -43,36 +51,36 @@ for (name in labNames){
   ARTICLEEVAL_interesting <- sample(0:1, nCases, replace=T)
   ARTICLEEVAL_recommend <- sample(0:1, nCases, replace=T)
   ARTICLEEVAL_stay <- sample(0:1, nCases, replace=T)
-  WGTASK_word1_response <- vector(mode="character", length=nCases)
-  WGTASK_word2_response <- vector(mode="character", length=nCases)
-  WGTASK_word3_response <- vector(mode="character", length=nCases)
-  WGTASK_word4_response <- vector(mode="character", length=nCases)
-  WGTASK_word5_response <- vector(mode="character", length=nCases)
-  WSCTASK_S1_response <- vector(mode="character", length=nCases)
-  WSCTASK_S2_response <- vector(mode="character", length=nCases)
-  WSCTASK_S3_response <- vector(mode="character", length=nCases)
-  WSCTASK_S4_response <- vector(mode="character", length=nCases)
-  WSCTASK_S5_response <- vector(mode="character", length=nCases)
-  WSCTASK_S6_response <- vector(mode="character", length=nCases)
-  WSCTASK_S7_response <- vector(mode="character", length=nCases)
-  WSCTASK_S8_response <- vector(mode="character", length=nCases)
-  WSCTASK_S9_response <- vector(mode="character", length=nCases)
-  WSCTASK_S10_response <- vector(mode="character", length=nCases)
-  WSCTASK_S11_response <- vector(mode="character", length=nCases)
-  WSCTASK_S12_response <- vector(mode="character", length=nCases)
-  WSCTASK_S13_response <- vector(mode="character", length=nCases)
-  WSCTASK_S14_response <- vector(mode="character", length=nCases)
-  WSCTASK_S15_response <- vector(mode="character", length=nCases)
-  WSCTASK_S16_response <- vector(mode="character", length=nCases)
-  WSCTASK_S17_response <- vector(mode="character", length=nCases)
-  WSCTASK_S18_response <- vector(mode="character", length=nCases)
-  WSCTASK_S19_response <- vector(mode="character", length=nCases)
-  WSCTASK_S20_response <- vector(mode="character", length=nCases)
-  WSCTASK_S21_response <- vector(mode="character", length=nCases)
-  WSCTASK_S22_response <- vector(mode="character", length=nCases)
-  WSCTASK_S23_response <- vector(mode="character", length=nCases)
-  WSCTASK_S24_response <- vector(mode="character", length=nCases)
-  WSCTASK_S25_response <- vector(mode="character", length=nCases)
+  WGTASK_word1_response <- sample(bagOWords, nCases, replace=T)
+  WGTASK_word2_response <- sample(bagOWords, nCases, replace=T)
+  WGTASK_word3_response <- sample(bagOWords, nCases, replace=T)
+  WGTASK_word4_response <- sample(bagOWords, nCases, replace=T)
+  WGTASK_word5_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S1_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S2_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S3_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S4_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S5_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S6_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S7_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S8_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S9_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S10_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S11_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S12_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S13_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S14_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S15_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S16_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S17_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S18_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S19_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S20_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S21_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S22_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S23_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S24_response <- sample(bagOWords, nCases, replace=T)
+  WSCTASK_S25_response <- sample(bagOWords, nCases, replace=T)
   Gender <- sample(1:2, nCases, replace=T)
   Age <- sample(18:36, nCases, replace=T)
   Purpose <- vector(mode="character", length=nCases)
@@ -110,8 +118,9 @@ for (name in labNames){
   FamiliarTime <- vector(mode="character", length=nCases)
   groupTime723 <- vector(mode="character", length=nCases)
   DEBRIEFINGTime <- vector(mode="character", length=nCases)
-  COUNT_DV1 <- as.numeric(sample(c(0,5), size=nCases, replace=TRUE, prob=c(0.3,0.7)))
-  COUNT_DV2 <- as.numeric(sample(c(0,5), size=nCases, replace=TRUE, prob=c(0.3,0.7)))
+  # Disabled now that we're doing automated scoring
+  #COUNT_DV1 <- as.numeric(sample(c(0,5), size=nCases, replace=TRUE, prob=c(0.3,0.7)))
+  #COUNT_DV2 <- as.numeric(sample(c(0,5), size=nCases, replace=TRUE, prob=c(0.3,0.7)))
   FLAG <- sample(c(1,0), size=nCases, replace=TRUE, prob=c(0.1,0.9))
 
   # Assign to a dataframe
@@ -187,38 +196,13 @@ for (name in labNames){
   # Write to an output file
   write.csv(simDFmain, file = paste0(baseDir,"\\", name,"_main.csv"),row.names=FALSE, na="")
   
-  # Moving on to ranking dataset
-  
-  simDF1rating <- data.frame(id,labID,WGTASK_word1_response,WGTASK_word2_response,
-                            WGTASK_word3_response,WGTASK_word4_response,
-                            WGTASK_word5_response,COUNT_DV1)
-  
-  colnames(simDF1rating) <- c("id","labID","WORD1","WORD2","WORD3","WORD4",
-                             "WORD5","COUNT_DV1")
-  
-  # Write to an output file
-  write.csv(simDF1rating, file = paste0(baseDir,"\\",name,"_DV1_rating.csv"),row.names=FALSE, na="")
-  
-  
-  simDF2rating <- data.frame(id,labID,WSCTASK_S1_response,WSCTASK_S5_response,
-                             WSCTASK_S12_response,WSCTASK_S15_response,
-                             WSCTASK_S19_response,WSCTASK_S22_response,COUNT_DV2)
-  
-  colnames(simDF2rating) <- c("id","labID","WORD1","WORD2","WORD3","WORD4",
-                              "WORD5","WORD6","COUNT_DV2")
-  
-  # Write to an output file
-  write.csv(simDF2rating, file = paste0(baseDir,"\\",name,"_DV2_rating.csv"),row.names=FALSE, na="")
-  
   # Move on to exclusions dataset
   simDFexclude <- data.frame(id,labID,Purpose,Understand,Familiar,FLAG)
   
   colnames(simDFexclude) <- c("id","labID","PURPOSE","RESPONSE1","RESPONSE2",
-                             "FLAG")
-  
+                              "FLAG")
   # Write to an output file
   write.csv(simDFexclude, file = paste0(baseDir,"\\", name,"_exclude.csv"),row.names=FALSE, na="")
-  
   
   
 }

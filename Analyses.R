@@ -3,7 +3,7 @@
 
 # Clean house
 rm(list = ls())
-
+setwd("I:/Dropbox/Research/TM RRR")
 
 #### USER-DEFINED VARIABLES ####
 
@@ -114,7 +114,6 @@ letter_search <- function(word) {
     for (l in letter) {
       if (l %in% letters) {
         letters <- letters[letters != l]
-        #print(letters)
       }
       else {
         match <- FALSE
@@ -124,14 +123,26 @@ letter_search <- function(word) {
   return(match)
 }
 
-is_deathword <- function(x, deathwords){
+is_deathword_DV1 <- function(x){
   word <- tolower(x)
   word <- gsub(" ", "", word)
   if (word %in% deathwords){
-    return(TRUE)
+    return(1)
   }
   else{
-    return(FALSE)
+    return(0)
+  }
+}
+
+is_deathword_DV2 <- function(x, index){
+  words <- c("buried", "dead", "grave", "killed", "skull", "coffin")
+  word <- tolower(x)
+  word <- gsub(" ", "", word)
+  if (word == words[index]){
+    return(1)
+  }
+  else{
+    return(0)
   }
 }
 
@@ -151,10 +162,10 @@ for (lab in labNames) {
 
   workingLabPathMain <- paste0(dataDir,"\\",lab,"_main.csv")
   workingLabPathExclude <- paste0(dataDir,"\\",lab,"_exclude.csv")
-  df_main <- readInFile(workingLabPathMain)
+  df_main <- readInFile(workingLabPathMain) 
   df_exclude <- read.csv(workingLabPathExclude)
-  df <- merge(df,df_exclude,by=c("id","labID"))
-  
+  df <- merge(df_main,df_exclude,by=c("id","labID"))
+
   # Put N info into labInfo DF
   labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
   
@@ -164,24 +175,23 @@ for (lab in labNames) {
   df <- df[df$Familiar==0,]
   ## ADD REMOVAL BASED ON TIME HERE ##
   # Exclude if participant took less than 3 minutes to complete the survey
+
+  df$COUNT_DV1_Q1 <- sapply(df$WGTASK_word1_response, is_deathword_DV1)
+  df$COUNT_DV1_Q2 <- sapply(df$WGTASK_word2_response, is_deathword_DV1)
+  df$COUNT_DV1_Q3 <- sapply(df$WGTASK_word3_response, is_deathword_DV1)
+  df$COUNT_DV1_Q4 <- sapply(df$WGTASK_word4_response, is_deathword_DV1)
+  df$COUNT_DV1_Q5 <- sapply(df$WGTASK_word5_response, is_deathword_DV1)
   
-  df$COUNT_DV1 <- 0
-  
-  if (is_deathword(df$WGTASK_word1_response, deathwords)) {df$COUNT_DV1 <- df$COUNT_DV1 + 1}
-  if (is_deathword(df$WGTASK_word2_response, deathwords)) {df$COUNT_DV1 <- df$COUNT_DV1 + 1}
-  if (is_deathword(df$WGTASK_word3_response, deathwords)) {df$COUNT_DV1 <- df$COUNT_DV1 + 1}
-  if (is_deathword(df$WGTASK_word4_response, deathwords)) {df$COUNT_DV1 <- df$COUNT_DV1 + 1}
-  if (is_deathword(df$WGTASK_word5_response, deathwords)) {df$COUNT_DV1 <- df$COUNT_DV1 + 1}
-  
-  df$COUNT_DV2 <- 0
-  
-  if (gsub(" ", "", tolower(df$WSCTASK_S1_response)) == "buried") {df$COUNT_DV2 <- df$COUNT_DV2 + 1}
-  if (gsub(" ", "", tolower(df$WSCTASK_S5_response)) == "dead") {df$COUNT_DV2 <- df$COUNT_DV2 + 1}
-  if (gsub(" ", "", tolower(df$WSCTASK_S12_response)) == "grave") {df$COUNT_DV2 <- df$COUNT_DV2 + 1}
-  if (gsub(" ", "", tolower(df$WSCTASK_S15_response)) == "killed") {df$COUNT_DV2 <- df$COUNT_DV2 + 1}
-  if (gsub(" ", "", tolower(df$WSCTASK_S19_response)) == "skull") {df$COUNT_DV2 <- df$COUNT_DV2 + 1}
-  if (gsub(" ", "", tolower(df$WSCTASK_S22_response)) == "coffin") {df$COUNT_DV2 <- df$COUNT_DV2 + 1}
-  
+  df$COUNT_DV1 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV1_Q1"):which(colnames(df)=="COUNT_DV1_Q5"))], na.rm = FALSE)
+
+  df$COUNT_DV2_Q1 <- sapply(df$WSCTASK_S1_response, is_deathword_DV2, index=1)
+  df$COUNT_DV2_Q2 <- sapply(df$WSCTASK_S5_response, is_deathword_DV2, index=2)
+  df$COUNT_DV2_Q3 <- sapply(df$WSCTASK_S12_response, is_deathword_DV2, index=3)
+  df$COUNT_DV2_Q4 <- sapply(df$WSCTASK_S15_response, is_deathword_DV2, index=4)
+  df$COUNT_DV2_Q5 <- sapply(df$WSCTASK_S19_response, is_deathword_DV2, index=5)
+  df$COUNT_DV2_Q6 <- sapply(df$WSCTASK_S22_response, is_deathword_DV2, index=6)
+
+  df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = FALSE)
   
   # Put N info into labInfo DF (with exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
@@ -321,8 +331,6 @@ for (lab in labNames) {
 
 # Clean things up by deleting leftover dataframes
 rm(df_main)
-rm(df_rating_DV1)
-rm(df_rating_DV2)
 rm(df_exclude)
 
 
