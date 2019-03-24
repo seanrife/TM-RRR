@@ -27,6 +27,9 @@ bagOWords <- c("chilly", "order", "burn", "harm", "rake", "snotty",
                "tomb", "dead", "burial", "buried", "grave", "killed",
                "skull")
 
+reasonWords <- c("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                 "","","")
+
 # Create simulated data for primary datasets
 for (name in labNames){
   nCases <- sample(100:200, 1)
@@ -83,7 +86,7 @@ for (name in labNames){
   WSCTASK_S25_response <- sample(bagOWords, nCases, replace=T)
   Gender <- sample(1:2, nCases, replace=T)
   Age <- sample(18:36, nCases, replace=T)
-  Purpose <- vector(mode="character", length=nCases)
+  Purpose <- sample(reasonWords, size=nCases, replace=TRUE) #vector(mode="character", length=nCases)
   Understand <- sample(c(1,0), size=nCases, replace=TRUE, prob=c(0.9,0.1))
   Familiar <- sample(c(1,0), size=nCases, replace=TRUE, prob=c(0.1,0.9))
   DEBRIEFING <- vector(mode="character", length=nCases)
@@ -195,15 +198,7 @@ for (name in labNames){
 
   # Write to an output file
   write.csv(simDFmain, file = paste0(baseDir,"\\", name,"_main.csv"),row.names=FALSE, na="")
-  
-  # Move on to exclusions dataset
-  simDFexclude <- data.frame(id,labID,Purpose,Understand,Familiar,FLAG)
-  
-  colnames(simDFexclude) <- c("id","labID","PURPOSE","RESPONSE1","RESPONSE2",
-                              "FLAG")
-  # Write to an output file
-  write.csv(simDFexclude, file = paste0(baseDir,"\\", name,"_exclude.csv"),row.names=FALSE, na="")
-  
+
   
 }
 

@@ -161,16 +161,13 @@ for (word in raw_deathwords) {
 for (lab in labNames) {
 
   workingLabPathMain <- paste0(dataDir,"\\",lab,"_main.csv")
-  workingLabPathExclude <- paste0(dataDir,"\\",lab,"_exclude.csv")
-  df_main <- readInFile(workingLabPathMain) 
-  df_exclude <- read.csv(workingLabPathExclude)
-  df <- merge(df_main,df_exclude,by=c("id","labID"))
+  df <- readInFile(workingLabPathMain) 
 
   # Put N info into labInfo DF
   labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
   
   # Exclude flagged cases or those who failed exit interview
-  df <- df[df$FLAG==0,]
+  df <- df[df$Purpose=="",]
   df <- df[df$Understand==1,]
   df <- df[df$Familiar==0,]
   ## ADD REMOVAL BASED ON TIME HERE ##
@@ -328,10 +325,6 @@ for (lab in labNames) {
   
   
 }
-
-# Clean things up by deleting leftover dataframes
-rm(df_main)
-rm(df_exclude)
 
 
 ######################################
