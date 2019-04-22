@@ -193,7 +193,7 @@ for (lab in labNames) {
   # Put N info into labInfo DF (with exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
   
-  # Put % female intoLabInfo DF
+  # Put % female into LabInfo DF
   TotalWithGender <- table(df$Gender)[names(table(df$Gender))==2] + table(df$Gender)[names(table(df$Gender))==1]
   labInfo$percFemale[labInfo$labID == as.factor(lab)] <- format(100*(table(df$Gender)[names(table(df$Gender))==2]/TotalWithGender), digits=3)
 
@@ -204,6 +204,10 @@ for (lab in labNames) {
   # Create group identifiers for original experiment
   df$originalExperiment <- 0
   df$originalExperiment[df$essayGroup==1 & df$delayGroup==1] <- 1
+  
+  # Create group identifiers for modified original experiment (treatment delayed vs. treatment no-delay)
+  df$modifiedOriginalExperiment <- 0
+  df$modifiedOriginalExperiment[df$delayGroup==1] <- 1
 
   # Create group identifiers for secondary analysis
   df$secondaryAnalysis <- 0
