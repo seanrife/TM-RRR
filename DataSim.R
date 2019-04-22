@@ -43,6 +43,7 @@ for (name in labNames){
   CONSENTCHECK_SQ001 <- rep_len("1", nCases)
   essayGroup <- sample(1:2, nCases, replace=T) # 1=MS; 2=DP
   delayGroup <- sample(1:2, nCases, replace=T) # 1=delay; 2=no delay
+  dvGroup <- sample(1:2, nCases, replace=T) # 1=word gen; 2=word completion
   labID <- rep_len(name, nCases)
   WTINTRO <- vector(mode="character", length=nCases)
   WTMS1 <- vector(mode="character", length=nCases)
@@ -129,7 +130,7 @@ for (name in labNames){
   # Assign to a dataframe
   simDFmain <- data.frame(id,submitdate,lastpage,startlanguage,startdate,
                       datestamp,CONSENT,CONSENTCHECK_SQ001,essayGroup,
-                      delayGroup,labID,WTINTRO,WTMS1,WTMS2,WTDP1,WTDP2,
+                      delayGroup,dvGroup,labID,WTINTRO,WTMS1,WTMS2,WTDP1,WTDP2,
                       ARTICLE,ARTICLEEVAL_enjoy,ARTICLEEVAL_interesting,
                       ARTICLEEVAL_recommend,ARTICLEEVAL_stay,
                       WGTASK_word1_response,WGTASK_word2_response,
@@ -161,7 +162,7 @@ for (name in labNames){
   # Assign column names
   colnames(simDFmain) <- c("id","submitdate","lastpage","startlanguage","startdate",
                            "datestamp","CONSENT","CONSENTCHECK_SQ001","essayGroup",
-                           "delayGroup","labID","WTINTRO","WTMS1","WTMS2","WTDP1","WTDP2",
+                           "delayGroup","dvGroup","labID","WTINTRO","WTMS1","WTMS2","WTDP1","WTDP2",
                            "ARTICLE","ARTICLEEVAL_enjoy","ARTICLEEVAL_interesting",
                            "ARTICLEEVAL_recommend","ARTICLEEVAL_stay",
                            "WGTASK_word1_response","WGTASK_word2_response",
