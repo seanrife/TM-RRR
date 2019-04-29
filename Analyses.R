@@ -385,7 +385,7 @@ for (lab in labNames) {
 #### RUN ANALYSES & CREATE GRAPHS ####
 ######################################
 
-#### PRIMARY ANALYSES ####
+#### REPLICATION ANALYSES ####
 
 # Create descriptive statistics tables
 write.csv(ORIGINAL_DV1_descriptives, paste0(outDir, "\\ORIGINAL_DV1_descriptives.csv"), row.names = F)
