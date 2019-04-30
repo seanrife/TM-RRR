@@ -3,14 +3,15 @@
 
 # Clean house
 rm(list = ls())
-setwd("I:/Dropbox/Research/TM RRR")
 
 #### USER-DEFINED VARIABLES ####
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
-#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+#baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
+baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+
+setwd(baseDir)
 
 # Set input directory
 # Should contain a summary file for all labs (LabInfo.csv)
@@ -233,7 +234,8 @@ for (lab in labNames) {
   
   # Using the following variable naming scheme:
   # ORIGINAL_DV1 - primary analysis (exact replication of T&H)
-  # SECONDARY_ - additional analysis not related directly to T&H
+  # PRIMARY_ - primary TM analysis
+  # SECONDARY_ - additional analysis of delay effect
   
   # Calculate tests/stats for primary analysis
   ORIGINAL_DV1_m_exp <- mean(df$COUNT_DV1[df$originalExperiment==1])
@@ -259,9 +261,8 @@ for (lab in labNames) {
   ORIGINAL_DV1_metaVecMeanCtrl <- c(ORIGINAL_DV1_metaVecMeanCtrl, ORIGINAL_DV1_m_ctrl)
   
 
-  # Calculate tests/stats for secondary analysis
-  # Many of these will be identical to primary analyses,
-  # but calculating for the sake of clarity
+  # Calculate tests/stats for primary analysis
+
   PRIMARY_DV1_m_exp <- mean(df$COUNT_DV1)
   PRIMARY_DV1_sd_exp <- sd(df$COUNT_DV1)
   PRIMARY_DV1_m_ctrl <- mean(df$COUNT_DV1)
@@ -310,17 +311,6 @@ for (lab in labNames) {
   
   PRIMARY_DV2_metaVecMeanExp <- c(PRIMARY_DV2_metaVecMeanExp, PRIMARY_DV2_m_exp)
   PRIMARY_DV2_metaVecMeanCtrl <- c(PRIMARY_DV2_metaVecMeanCtrl, PRIMARY_DV2_m_ctrl)
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   
   # Calculate tests/stats for secondary analysis
@@ -389,6 +379,8 @@ for (lab in labNames) {
 
 # Create descriptive statistics tables
 write.csv(ORIGINAL_DV1_descriptives, paste0(outDir, "\\ORIGINAL_DV1_descriptives.csv"), row.names = F)
+write.csv(PRIMARY_DV1_descriptives, paste0(outDir, "\\PRIMARY_DV1_descriptives.csv"), row.names = F)
+write.csv(PRIMARY_DV2_descriptives, paste0(outDir, "\\PRIMARY_DV2_descriptives.csv"), row.names = F)
 write.csv(SECONDARY_DV1_descriptives, paste0(outDir, "\\SECONDARY_DV1_descriptives.csv"), row.names = F)
 write.csv(SECONDARY_DV2_descriptives, paste0(outDir, "\\SECONDARY_DV2_descriptives.csv"), row.names = F)
 write.csv(labInfo, paste0(outDir, "\\labDescriptives.csv"), row.names = F)
@@ -457,6 +449,85 @@ all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV1, group = labID))
   facet_wrap(~labID, scales = "free")
 
 ggsave(paste0(outDir, "\\ORIGINAL_DV1_line-graphs.png"))
+
+
+
+
+#### PRIMARY ANALYSES ####
+
+# Meta analysis
+sink(paste0(outDir, "\\ma-primary-DV1.txt"))
+primary_DV1_meta <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE)
+summary(primary_DV1_meta)
+sink()
+
+# Meta analysis
+sink(paste0(outDir, "\\ma-primary-DV2.txt"))
+primary_DV2_meta <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE)
+summary(primary_DV2_meta)
+sink()
+
+
+# Forest plot code snipped from Wagenmakers et al. (2016)
+
+# Word generation dv
+
+Cairo(file=paste0(outDir, "\\forest_primary_WG.png"), 
+      bg="white",
+      type="png",
+      units="in", 
+      width=11, height=7, 
+      #pointsize=12, 
+      dpi=600)
+
+
+forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
+       ilab=cbind(format(PRIMARY_DV1_metaVecMeanExp, digits=3), format(PRIMARY_DV1_metaVecMeanCtrl, digits=3)),
+       ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
+                   grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ylim=c(-2, length(labNames)+3),
+       slab = paste0("Study ", seq_len(length(labNames))))
+
+text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
+text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Dental Pain", cex=1.2)
+text(grconvertX(.875, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
+
+abline(h=0, lwd=1.4)
+addpoly(primary_DV1_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
+
+dev.off()
+
+# Word completion dv
+
+Cairo(file=paste0(outDir, "\\forest_primary_WC.png"), 
+      bg="white",
+      type="png",
+      units="in", 
+      width=11, height=7, 
+      #pointsize=12, 
+      dpi=600)
+
+
+forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
+       ilab=cbind(format(PRIMARY_DV2_metaVecMeanExp, digits=3), format(PRIMARY_DV2_metaVecMeanCtrl, digits=3)),
+       ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
+                   grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ylim=c(-2, length(labNames)+3),
+       slab = paste0("Study ", seq_len(length(labNames))))
+
+text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
+text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Dental Pain", cex=1.2)
+text(grconvertX(.875, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
+
+abline(h=0, lwd=1.4)
+addpoly(primary_DV2_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
+
+dev.off()
+
+
+
 
 
 
