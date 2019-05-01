@@ -71,6 +71,8 @@ labNames <- as.vector(labInfo$labID)
 # PRIMARY = treatment vs. control across delay conditions (collapsing delay condition)
 # SECONDARY = treatment delayed vs. treatment no-delay
 
+# delayGroup == 1: delay present
+# essayGroup == 1: death group
 
 # Initialize containers for output data
 ORIGINAL_DV1_metaVecES <- vector()
@@ -222,6 +224,9 @@ for (lab in labNames) {
   df$originalExperiment <- 0
   df$originalExperiment[df$essayGroup==1 & df$delayGroup==1] <- 1
   
+  df$primaryAnalysis[df$delayGroup==1 & df$essayGroup==1] <- 0
+  df$primaryAnalysis[df$delayGroup==2 & df$essayGroup==1] <- 1
+  
   # Create group identifiers for secondary analysis
   df$secondaryAnalysis <- 0
   df$secondaryAnalysis[df$essayGroup==1] <- 1
@@ -245,7 +250,7 @@ for (lab in labNames) {
   ORIGINAL_DV1_r <- cor.test(df$COUNT_DV1, df$DelayTime)
   ORIGINAL_DV1_se <- std.error(df$COUNT_DV1)
   
-  # For descriptive stats table
+  # For descriptive stats tables
   ORIGINAL_DV1_descriptives$mean_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_m_exp, digits=3)
   ORIGINAL_DV1_descriptives$sd_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_sd_exp, digits=3)
   ORIGINAL_DV1_descriptives$mean_ctrl[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_m_ctrl, digits=3)
@@ -263,15 +268,15 @@ for (lab in labNames) {
 
   # Calculate tests/stats for primary analysis
 
-  PRIMARY_DV1_m_exp <- mean(df$COUNT_DV1)
-  PRIMARY_DV1_sd_exp <- sd(df$COUNT_DV1)
-  PRIMARY_DV1_m_ctrl <- mean(df$COUNT_DV1)
-  PRIMARY_DV1_sd_ctrl <- sd(df$COUNT_DV1)
-  PRIMARY_DV1_n_exp <- length(df$COUNT_DV1)
-  PRIMARY_DV1_n_ctrl <- length(df$COUNT_DV1)
-  PRIMARY_DV1_d <- cohen.d(df$COUNT_DV1, as.factor(df$secondaryAnalysis))$estimate
-  PRIMARY_DV1_d_CI_UPPER <- cohen.d(df$COUNT_DV1, as.factor(df$secondaryAnalysis))$conf.int[2]
-  PRIMARY_DV1_d_CI_LOWER <- cohen.d(df$COUNT_DV1, as.factor(df$secondaryAnalysis))$conf.int[1]
+  PRIMARY_DV1_m_exp <- mean(df$COUNT_DV1[df$primaryAnalysis==1])
+  PRIMARY_DV1_sd_exp <- sd(df$COUNT_DV1[df$primaryAnalysis==1])
+  PRIMARY_DV1_m_ctrl <- mean(df$COUNT_DV1[df$primaryAnalysis==0])
+  PRIMARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$primaryAnalysis==0])
+  PRIMARY_DV1_n_exp <- length(df$COUNT_DV1[df$primaryAnalysis==1])
+  PRIMARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$primaryAnalysis==0])
+  PRIMARY_DV1_d <- cohen.d(df$COUNT_DV1, as.factor(df$primaryAnalysis))$estimate
+  PRIMARY_DV1_d_CI_UPPER <- cohen.d(df$COUNT_DV1, as.factor(df$primaryAnalysis))$conf.int[2]
+  PRIMARY_DV1_d_CI_LOWER <- cohen.d(df$COUNT_DV1, as.factor(df$primaryAnalysis))$conf.int[1]
   PRIMARY_DV1_se <- std.error(df$COUNT_DV1)
   
   
@@ -288,15 +293,15 @@ for (lab in labNames) {
   PRIMARY_DV1_metaVecMeanCtrl <- c(PRIMARY_DV1_metaVecMeanCtrl, PRIMARY_DV1_m_ctrl)
   
   
-  PRIMARY_DV2_m_exp <- mean(df$COUNT_DV2)
-  PRIMARY_DV2_sd_exp <- sd(df$COUNT_DV2)
-  PRIMARY_DV2_m_ctrl <- mean(df$COUNT_DV2)
-  PRIMARY_DV2_sd_ctrl <- sd(df$COUNT_DV2)
-  PRIMARY_DV2_n_exp <- length(df$COUNT_DV2)
-  PRIMARY_DV2_n_ctrl <- length(df$COUNT_DV2)
-  PRIMARY_DV2_d <- cohen.d(df$COUNT_DV2, as.factor(df$secondaryAnalysis))$estimate
-  PRIMARY_DV2_d_CI_UPPER <- cohen.d(df$COUNT_DV2, as.factor(df$secondaryAnalysis))$conf.int[2]
-  PRIMARY_DV2_d_CI_LOWER <- cohen.d(df$COUNT_DV2, as.factor(df$secondaryAnalysis))$conf.int[1]
+  PRIMARY_DV2_m_exp <- mean(df$COUNT_DV2[df$primaryAnalysis==1])
+  PRIMARY_DV2_sd_exp <- sd(df$COUNT_DV2[df$primaryAnalysis==1])
+  PRIMARY_DV2_m_ctrl <- mean(df$COUNT_DV2[df$primaryAnalysis==0])
+  PRIMARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$primaryAnalysis==0])
+  PRIMARY_DV2_n_exp <- length(df$COUNT_DV2[df$primaryAnalysis==1])
+  PRIMARY_DV2_n_ctrl <- length(df$COUNT_DV2[df$primaryAnalysis==0])
+  PRIMARY_DV2_d <- cohen.d(df$COUNT_DV2, as.factor(df$primaryAnalysis))$estimate
+  PRIMARY_DV2_d_CI_UPPER <- cohen.d(df$COUNT_DV2, as.factor(df$primaryAnalysis))$conf.int[2]
+  PRIMARY_DV2_d_CI_LOWER <- cohen.d(df$COUNT_DV2, as.factor(df$primaryAnalysis))$conf.int[1]
   PRIMARY_DV2_se <- std.error(df$COUNT_DV2)
   
   
@@ -323,9 +328,9 @@ for (lab in labNames) {
   SECONDARY_DV1_n_exp <- length(df$COUNT_DV1[df$secondaryAnalysis==1])
   SECONDARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$secondaryAnalysis==0])
   SECONDARY_DV1_d <- cohen.d(df$COUNT_DV1, as.factor(df$secondaryAnalysis))$estimate
-  SECONDARY_DV1_d_CI_UPPER <- cohen.d(df$COUNT_DV1, as.factor(df$secondaryAnalysis))$conf.int[2]
-  SECONDARY_DV1_d_CI_LOWER <- cohen.d(df$COUNT_DV1, as.factor(df$secondaryAnalysis))$conf.int[1]
-  SECONDARY_DV1_se <- std.error(df$COUNT_DV1)
+  SECONDARY_DV1_d_CI_UPPER <- cohen.d(df$COUNT_DV1[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis))$conf.int[2]
+  SECONDARY_DV1_d_CI_LOWER <- cohen.d(df$COUNT_DV1[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis))$conf.int[1]
+  SECONDARY_DV1_se <- std.error(df$COUNT_DV1[df$secondaryAnalysis==1 | df$secondaryAnalysis==0])
   
   
   # For descriptive stats table
@@ -347,10 +352,10 @@ for (lab in labNames) {
   SECONDARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$secondaryAnalysis==0])
   SECONDARY_DV2_n_exp <- length(df$COUNT_DV2[df$secondaryAnalysis==1])
   SECONDARY_DV2_n_ctrl <- length(df$COUNT_DV2[df$secondaryAnalysis==0])
-  SECONDARY_DV2_d <- cohen.d(df$COUNT_DV2, as.factor(df$secondaryAnalysis))$estimate
-  SECONDARY_DV2_d_CI_UPPER <- cohen.d(df$COUNT_DV2, as.factor(df$secondaryAnalysis))$conf.int[2]
-  SECONDARY_DV2_d_CI_LOWER <- cohen.d(df$COUNT_DV2, as.factor(df$secondaryAnalysis))$conf.int[1]
-  SECONDARY_DV2_se <- std.error(df$COUNT_DV2)
+  SECONDARY_DV2_d <- cohen.d(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis))$estimate
+  SECONDARY_DV2_d_CI_UPPER <- cohen.d(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis))$conf.int[2]
+  SECONDARY_DV2_d_CI_LOWER <- cohen.d(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis))$conf.int[1]
+  SECONDARY_DV2_se <- std.error(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0])
   
   
   # For descriptive stats table
