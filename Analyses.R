@@ -391,14 +391,14 @@ write.csv(SECONDARY_DV2_descriptives, paste0(outDir, "\\SECONDARY_DV2_descriptiv
 write.csv(labInfo, paste0(outDir, "\\labDescriptives.csv"), row.names = F)
 
 # Meta analysis
-sink(paste0(outDir, "\\ma-original-DV1-bg.txt"))
+sink(paste0(outDir, "\\ma-original-WG-bg.txt"))
 metaRAW_DV1 <- rma.uni(yi = ORIGINAL_DV1_metaVecES, sei = ORIGINAL_DV1_metaVecSE)
 summary(metaRAW_DV1)
 sink()
 
 # Meta analysis
 es <- escalc(measure="COR", ri=ORIGINAL_DV1_metaVecR, ni=ORIGINAL_DV1_metaVecN)
-sink(paste0(outDir, "\\ma-original-DV1-cont.txt"))
+sink(paste0(outDir, "\\ma-original-WG-cont.txt"))
 metaR_DV1 <- rma.uni(es)
 summary(metaR_DV1)
 sink()
@@ -453,7 +453,7 @@ all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV1, group = labID))
   geom_point(alpha = 0.3, size = 0) +
   facet_wrap(~labID, scales = "free")
 
-ggsave(paste0(outDir, "\\ORIGINAL_DV1_line-graphs.png"))
+ggsave(paste0(outDir, "\\ORIGINAL_WG_line-graphs.png"))
 
 
 
@@ -461,13 +461,13 @@ ggsave(paste0(outDir, "\\ORIGINAL_DV1_line-graphs.png"))
 #### PRIMARY ANALYSES ####
 
 # Meta analysis
-sink(paste0(outDir, "\\ma-primary-DV1.txt"))
+sink(paste0(outDir, "\\ma-primary-WG.txt"))
 primary_DV1_meta <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE)
 summary(primary_DV1_meta)
 sink()
 
 # Meta analysis
-sink(paste0(outDir, "\\ma-primary-DV2.txt"))
+sink(paste0(outDir, "\\ma-primary-WC.txt"))
 primary_DV2_meta <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE)
 summary(primary_DV2_meta)
 sink()
@@ -539,13 +539,13 @@ dev.off()
 #### SECONDARY ANALYSES ####
 
 # Meta analysis
-sink(paste0(outDir, "\\ma-secondary-DV1.txt"))
+sink(paste0(outDir, "\\ma-secondary-WG.txt"))
 secondary_DV1_meta <- rma.uni(yi = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE)
 summary(secondary_DV1_meta)
 sink()
 
 # Meta analysis
-sink(paste0(outDir, "\\ma-secondary-DV2.txt"))
+sink(paste0(outDir, "\\ma-secondary-WC.txt"))
 secondary_DV2_meta <- rma.uni(yi = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE)
 summary(secondary_DV2_meta)
 sink()
