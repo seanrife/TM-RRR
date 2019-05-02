@@ -8,8 +8,8 @@ rm(list = ls())
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-#baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
-baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
+#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
 
 setwd(baseDir)
 
@@ -268,15 +268,15 @@ for (lab in labNames) {
 
   # Calculate tests/stats for primary analysis
 
-  PRIMARY_DV1_m_exp <- mean(df$COUNT_DV1[df$primaryAnalysis==1])
-  PRIMARY_DV1_sd_exp <- sd(df$COUNT_DV1[df$primaryAnalysis==1])
-  PRIMARY_DV1_m_ctrl <- mean(df$COUNT_DV1[df$primaryAnalysis==0])
-  PRIMARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$primaryAnalysis==0])
+  PRIMARY_DV1_m_exp <- mean(df$COUNT_DV1[df$primaryAnalysis==1], na.rm=T)
+  PRIMARY_DV1_sd_exp <- sd(df$COUNT_DV1[df$primaryAnalysis==1], na.rm=T)
+  PRIMARY_DV1_m_ctrl <- mean(df$COUNT_DV1[df$primaryAnalysis==0], na.rm=T)
+  PRIMARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$primaryAnalysis==0], na.rm=T)
   PRIMARY_DV1_n_exp <- length(df$COUNT_DV1[df$primaryAnalysis==1])
   PRIMARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$primaryAnalysis==0])
-  PRIMARY_DV1_d <- cohen.d(df$COUNT_DV1, as.factor(df$primaryAnalysis))$estimate
-  PRIMARY_DV1_d_CI_UPPER <- cohen.d(df$COUNT_DV1, as.factor(df$primaryAnalysis))$conf.int[2]
-  PRIMARY_DV1_d_CI_LOWER <- cohen.d(df$COUNT_DV1, as.factor(df$primaryAnalysis))$conf.int[1]
+  PRIMARY_DV1_d <- cohen.d(df$COUNT_DV1, as.factor(df$primaryAnalysis), na.rm=T)$estimate
+  PRIMARY_DV1_d_CI_UPPER <- cohen.d(df$COUNT_DV1, as.factor(df$primaryAnalysis), na.rm=T)$conf.int[2]
+  PRIMARY_DV1_d_CI_LOWER <- cohen.d(df$COUNT_DV1, as.factor(df$primaryAnalysis), na.rm=T)$conf.int[1]
   PRIMARY_DV1_se <- std.error(df$COUNT_DV1)
   
   
@@ -293,15 +293,15 @@ for (lab in labNames) {
   PRIMARY_DV1_metaVecMeanCtrl <- c(PRIMARY_DV1_metaVecMeanCtrl, PRIMARY_DV1_m_ctrl)
   
   
-  PRIMARY_DV2_m_exp <- mean(df$COUNT_DV2[df$primaryAnalysis==1])
-  PRIMARY_DV2_sd_exp <- sd(df$COUNT_DV2[df$primaryAnalysis==1])
-  PRIMARY_DV2_m_ctrl <- mean(df$COUNT_DV2[df$primaryAnalysis==0])
-  PRIMARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$primaryAnalysis==0])
+  PRIMARY_DV2_m_exp <- mean(df$COUNT_DV2[df$primaryAnalysis==1], na.rm=T)
+  PRIMARY_DV2_sd_exp <- sd(df$COUNT_DV2[df$primaryAnalysis==1], na.rm=T)
+  PRIMARY_DV2_m_ctrl <- mean(df$COUNT_DV2[df$primaryAnalysis==0], na.rm=T)
+  PRIMARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$primaryAnalysis==0], na.rm=T)
   PRIMARY_DV2_n_exp <- length(df$COUNT_DV2[df$primaryAnalysis==1])
   PRIMARY_DV2_n_ctrl <- length(df$COUNT_DV2[df$primaryAnalysis==0])
-  PRIMARY_DV2_d <- cohen.d(df$COUNT_DV2, as.factor(df$primaryAnalysis))$estimate
-  PRIMARY_DV2_d_CI_UPPER <- cohen.d(df$COUNT_DV2, as.factor(df$primaryAnalysis))$conf.int[2]
-  PRIMARY_DV2_d_CI_LOWER <- cohen.d(df$COUNT_DV2, as.factor(df$primaryAnalysis))$conf.int[1]
+  PRIMARY_DV2_d <- cohen.d(df$COUNT_DV2, as.factor(df$primaryAnalysis), na.rm=T)$estimate
+  PRIMARY_DV2_d_CI_UPPER <- cohen.d(df$COUNT_DV2, as.factor(df$primaryAnalysis), na.rm=T)$conf.int[2]
+  PRIMARY_DV2_d_CI_LOWER <- cohen.d(df$COUNT_DV2, as.factor(df$primaryAnalysis), na.rm=T)$conf.int[1]
   PRIMARY_DV2_se <- std.error(df$COUNT_DV2)
   
   
@@ -321,15 +321,15 @@ for (lab in labNames) {
   # Calculate tests/stats for secondary analysis
   # Many of these will be identical to primary analyses,
   # but calculating for the sake of clarity
-  SECONDARY_DV1_m_exp <- mean(df$COUNT_DV1[df$secondaryAnalysis==1])
-  SECONDARY_DV1_sd_exp <- sd(df$COUNT_DV1[df$secondaryAnalysis==1])
-  SECONDARY_DV1_m_ctrl <- mean(df$COUNT_DV1[df$secondaryAnalysis==0])
-  SECONDARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$secondaryAnalysis==0])
+  SECONDARY_DV1_m_exp <- mean(df$COUNT_DV1[df$secondaryAnalysis==1], na.rm=T)
+  SECONDARY_DV1_sd_exp <- sd(df$COUNT_DV1[df$secondaryAnalysis==1], na.rm=T)
+  SECONDARY_DV1_m_ctrl <- mean(df$COUNT_DV1[df$secondaryAnalysis==0], na.rm=T)
+  SECONDARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$secondaryAnalysis==0], na.rm=T)
   SECONDARY_DV1_n_exp <- length(df$COUNT_DV1[df$secondaryAnalysis==1])
   SECONDARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$secondaryAnalysis==0])
-  SECONDARY_DV1_d <- cohen.d(df$COUNT_DV1, as.factor(df$secondaryAnalysis))$estimate
-  SECONDARY_DV1_d_CI_UPPER <- cohen.d(df$COUNT_DV1[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis))$conf.int[2]
-  SECONDARY_DV1_d_CI_LOWER <- cohen.d(df$COUNT_DV1[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis))$conf.int[1]
+  SECONDARY_DV1_d <- cohen.d(df$COUNT_DV1, as.factor(df$secondaryAnalysis), na.rm=T)$estimate
+  SECONDARY_DV1_d_CI_UPPER <- cohen.d(df$COUNT_DV1[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis), na.rm=T)$conf.int[2]
+  SECONDARY_DV1_d_CI_LOWER <- cohen.d(df$COUNT_DV1[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis), na.rm=T)$conf.int[1]
   SECONDARY_DV1_se <- std.error(df$COUNT_DV1[df$secondaryAnalysis==1 | df$secondaryAnalysis==0])
   
   
@@ -346,15 +346,15 @@ for (lab in labNames) {
   SECONDARY_DV1_metaVecMeanCtrl <- c(SECONDARY_DV1_metaVecMeanCtrl, SECONDARY_DV1_m_ctrl)
   
   
-  SECONDARY_DV2_m_exp <- mean(df$COUNT_DV2[df$secondaryAnalysis==1])
-  SECONDARY_DV2_sd_exp <- sd(df$COUNT_DV2[df$secondaryAnalysis==1])
-  SECONDARY_DV2_m_ctrl <- mean(df$COUNT_DV2[df$secondaryAnalysis==0])
-  SECONDARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$secondaryAnalysis==0])
+  SECONDARY_DV2_m_exp <- mean(df$COUNT_DV2[df$secondaryAnalysis==1], na.rm=T)
+  SECONDARY_DV2_sd_exp <- sd(df$COUNT_DV2[df$secondaryAnalysis==1], na.rm=T)
+  SECONDARY_DV2_m_ctrl <- mean(df$COUNT_DV2[df$secondaryAnalysis==0], na.rm=T)
+  SECONDARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$secondaryAnalysis==0], na.rm=T)
   SECONDARY_DV2_n_exp <- length(df$COUNT_DV2[df$secondaryAnalysis==1])
   SECONDARY_DV2_n_ctrl <- length(df$COUNT_DV2[df$secondaryAnalysis==0])
-  SECONDARY_DV2_d <- cohen.d(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis))$estimate
-  SECONDARY_DV2_d_CI_UPPER <- cohen.d(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis))$conf.int[2]
-  SECONDARY_DV2_d_CI_LOWER <- cohen.d(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis))$conf.int[1]
+  SECONDARY_DV2_d <- cohen.d(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis), na.rm=T)$estimate
+  SECONDARY_DV2_d_CI_UPPER <- cohen.d(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis), na.rm=T)$conf.int[2]
+  SECONDARY_DV2_d_CI_LOWER <- cohen.d(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis), na.rm=T)$conf.int[1]
   SECONDARY_DV2_se <- std.error(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0])
   
   
@@ -415,7 +415,7 @@ THse <- sqrt(((1.21^2)+(.67^2)+(.73^2)+(.67^2))/4)/sqrt(120)
 
 # Forest plot with word generation dv
 
-Cairo(file=paste0(outDir, "\\forest_main_WG.png"), 
+Cairo(file=paste0(outDir, "\\forest_original_WG.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -572,8 +572,8 @@ forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean di
        slab = paste0("Study ", seq_len(length(labNames))))
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
-text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Dental Pain", cex=1.2)
+text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "No Delay", cex=1.2)
 text(grconvertX(.875, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
@@ -600,8 +600,8 @@ forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean di
        slab = paste0("Study ", seq_len(length(labNames))))
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
-text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Dental Pain", cex=1.2)
+text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "No Delay", cex=1.2)
 text(grconvertX(.875, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
