@@ -8,8 +8,8 @@ rm(list = ls())
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
-#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+#baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
+baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
 
 setwd(baseDir)
 
@@ -383,11 +383,11 @@ for (lab in labNames) {
 #### REPLICATION ANALYSES ####
 
 # Create descriptive statistics tables
-write.csv(ORIGINAL_DV1_descriptives, paste0(outDir, "\\ORIGINAL_DV1_descriptives.csv"), row.names = F)
-write.csv(PRIMARY_DV1_descriptives, paste0(outDir, "\\PRIMARY_DV1_descriptives.csv"), row.names = F)
-write.csv(PRIMARY_DV2_descriptives, paste0(outDir, "\\PRIMARY_DV2_descriptives.csv"), row.names = F)
-write.csv(SECONDARY_DV1_descriptives, paste0(outDir, "\\SECONDARY_DV1_descriptives.csv"), row.names = F)
-write.csv(SECONDARY_DV2_descriptives, paste0(outDir, "\\SECONDARY_DV2_descriptives.csv"), row.names = F)
+write.csv(ORIGINAL_DV1_descriptives, paste0(outDir, "\\ORIGINAL_WG_descriptives.csv"), row.names = F)
+write.csv(PRIMARY_DV1_descriptives, paste0(outDir, "\\PRIMARY_WG_descriptives.csv"), row.names = F)
+write.csv(PRIMARY_DV2_descriptives, paste0(outDir, "\\PRIMARY_WC_descriptives.csv"), row.names = F)
+write.csv(SECONDARY_DV1_descriptives, paste0(outDir, "\\SECONDARY_WG_descriptives.csv"), row.names = F)
+write.csv(SECONDARY_DV2_descriptives, paste0(outDir, "\\SECONDARY_WC_descriptives.csv"), row.names = F)
 write.csv(labInfo, paste0(outDir, "\\labDescriptives.csv"), row.names = F)
 
 # Meta analysis
