@@ -455,6 +455,13 @@ all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV1, group = labID))
 
 ggsave(paste0(outDir, "\\ORIGINAL_WG_line-graphs.png"))
 
+all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV2, group = labID)) +
+  labs(x = "Delay Time", y = "Word Count") +
+  geom_smooth(method = "loess", se = T, color = "darkgrey") +
+  geom_point(alpha = 0.3, size = 0) +
+  facet_wrap(~labID, scales = "free")
+
+ggsave(paste0(outDir, "\\ORIGINAL_WC_line-graphs.png"))
 
 
 
