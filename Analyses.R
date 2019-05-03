@@ -8,8 +8,8 @@ rm(list = ls())
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-#baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
-baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
+#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
 
 setwd(baseDir)
 
@@ -214,11 +214,11 @@ for (lab in labNames) {
   
   # Put % female into LabInfo DF
   TotalWithGender <- table(df$Gender)[names(table(df$Gender))==2] + table(df$Gender)[names(table(df$Gender))==1]
-  labInfo$percFemale[labInfo$labID == as.factor(lab)] <- format(100*(table(df$Gender)[names(table(df$Gender))==2]/TotalWithGender), digits=3)
+  labInfo$percFemale[labInfo$labID == as.factor(lab)] <- format(round(100*(table(df$Gender)[names(table(df$Gender))==2]/TotalWithGender), digits=2))
 
   # Get mean and SD of age
-  labInfo$ageMean[labInfo$labID == as.factor(lab)] <- format(mean(df$Age), digits=3)
-  labInfo$ageSD[labInfo$labID == as.factor(lab)] <- format(sd(df$Age), digits=3)
+  labInfo$ageMean[labInfo$labID == as.factor(lab)] <- format(round(mean(df$Age), digits=2))
+  labInfo$ageSD[labInfo$labID == as.factor(lab)] <- format(round(sd(df$Age), digits=2))
   
   # Create group identifiers for original experiment
   df$originalExperiment <- 0
@@ -251,10 +251,10 @@ for (lab in labNames) {
   ORIGINAL_DV1_se <- std.error(df$COUNT_DV1)
   
   # For descriptive stats tables
-  ORIGINAL_DV1_descriptives$mean_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_m_exp, digits=3)
-  ORIGINAL_DV1_descriptives$sd_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_sd_exp, digits=3)
-  ORIGINAL_DV1_descriptives$mean_ctrl[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_m_ctrl, digits=3)
-  ORIGINAL_DV1_descriptives$sd_ctrl[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_sd_ctrl, digits=3)
+  ORIGINAL_DV1_descriptives$mean_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(round(ORIGINAL_DV1_m_exp, digits=2))
+  ORIGINAL_DV1_descriptives$sd_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(round(ORIGINAL_DV1_sd_exp, digits=2))
+  ORIGINAL_DV1_descriptives$mean_ctrl[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(round(ORIGINAL_DV1_m_ctrl, digits=2))
+  ORIGINAL_DV1_descriptives$sd_ctrl[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(round(ORIGINAL_DV1_sd_ctrl, digits=2))
   
   ORIGINAL_DV1_metaVecR <- c(ORIGINAL_DV1_metaVecR, ORIGINAL_DV1_r$estimate)
   ORIGINAL_DV1_metaVecN <- c(ORIGINAL_DV1_metaVecN, (ORIGINAL_DV1_r$parameter + 2))
@@ -281,10 +281,10 @@ for (lab in labNames) {
   
   
   # For descriptive stats table
-  PRIMARY_DV1_descriptives$mean_exp[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_m_exp, digits=3)
-  PRIMARY_DV1_descriptives$sd_exp[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_sd_exp, digits=3)
-  PRIMARY_DV1_descriptives$mean_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_m_ctrl, digits=3)
-  PRIMARY_DV1_descriptives$sd_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_sd_ctrl, digits=3)
+  PRIMARY_DV1_descriptives$mean_exp[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV1_m_exp, digits=2))
+  PRIMARY_DV1_descriptives$sd_exp[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV1_sd_exp, digits=2))
+  PRIMARY_DV1_descriptives$mean_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV1_m_ctrl, digits=2))
+  PRIMARY_DV1_descriptives$sd_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV1_sd_ctrl, digits=2))
   
   PRIMARY_DV1_metaVecES <- c(PRIMARY_DV1_metaVecES, (PRIMARY_DV1_d))
   PRIMARY_DV1_metaVecSE <- c(PRIMARY_DV1_metaVecSE, PRIMARY_DV1_se)
@@ -306,10 +306,10 @@ for (lab in labNames) {
   
   
   # For descriptive stats table
-  PRIMARY_DV2_descriptives$mean_exp[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_m_exp, digits=3)
-  PRIMARY_DV2_descriptives$sd_exp[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_sd_exp, digits=3)
-  PRIMARY_DV2_descriptives$mean_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_m_ctrl, digits=3)
-  PRIMARY_DV2_descriptives$sd_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_sd_ctrl, digits=3)
+  PRIMARY_DV2_descriptives$mean_exp[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV2_m_exp, digits=2))
+  PRIMARY_DV2_descriptives$sd_exp[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV2_sd_exp, digits=2))
+  PRIMARY_DV2_descriptives$mean_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV2_m_ctrl, digits=2))
+  PRIMARY_DV2_descriptives$sd_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV2_sd_ctrl, digits=2))
   
   PRIMARY_DV2_metaVecES <- c(PRIMARY_DV2_metaVecES, (PRIMARY_DV2_d))
   PRIMARY_DV2_metaVecSE <- c(PRIMARY_DV2_metaVecSE, PRIMARY_DV2_se)
@@ -334,10 +334,10 @@ for (lab in labNames) {
   
   
   # For descriptive stats table
-  SECONDARY_DV1_descriptives$mean_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_exp, digits=3)
-  SECONDARY_DV1_descriptives$sd_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_exp, digits=3)
-  SECONDARY_DV1_descriptives$mean_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_ctrl, digits=3)
-  SECONDARY_DV1_descriptives$sd_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_ctrl, digits=3)
+  SECONDARY_DV1_descriptives$mean_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV1_m_exp, digits=2))
+  SECONDARY_DV1_descriptives$sd_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV1_sd_exp, digits=2))
+  SECONDARY_DV1_descriptives$mean_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV1_m_ctrl, digits=2))
+  SECONDARY_DV1_descriptives$sd_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV1_sd_ctrl, digits=2))
   
   SECONDARY_DV1_metaVecES <- c(SECONDARY_DV1_metaVecES, (SECONDARY_DV1_d))
   SECONDARY_DV1_metaVecSE <- c(SECONDARY_DV1_metaVecSE, SECONDARY_DV1_se)
@@ -359,10 +359,10 @@ for (lab in labNames) {
   
   
   # For descriptive stats table
-  SECONDARY_DV2_descriptives$mean_exp[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_m_exp, digits=3)
-  SECONDARY_DV2_descriptives$sd_exp[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_sd_exp, digits=3)
-  SECONDARY_DV2_descriptives$mean_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_m_ctrl, digits=3)
-  SECONDARY_DV2_descriptives$sd_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_sd_ctrl, digits=3)
+  SECONDARY_DV2_descriptives$mean_exp[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV2_m_exp, digits=2))
+  SECONDARY_DV2_descriptives$sd_exp[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV2_sd_exp, digits=2))
+  SECONDARY_DV2_descriptives$mean_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV2_m_ctrl, digits=2))
+  SECONDARY_DV2_descriptives$sd_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV2_sd_ctrl, digits=2))
   
   SECONDARY_DV2_metaVecES <- c(SECONDARY_DV2_metaVecES, (SECONDARY_DV2_d))
   SECONDARY_DV2_metaVecSE <- c(SECONDARY_DV2_metaVecSE, SECONDARY_DV2_se)
@@ -425,7 +425,7 @@ Cairo(file=paste0(outDir, "\\forest_original_WG.png"),
 
 
 forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaVecSE), xlab="Mean difference", cex.lab=1.4,
-       ilab=cbind(c(".94", format(ORIGINAL_DV1_metaVecMeanExp, digits=3)), c(".58", format(ORIGINAL_DV1_metaVecMeanCtrl, digits=3))),
+       ilab=cbind(c(".94", format(round(ORIGINAL_DV1_metaVecMeanExp, digits=2))), c(".58", format(round(ORIGINAL_DV1_metaVecMeanCtrl, digits=2)))),
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        rows=c(length(labNames)+7, (length(labNames)+2):3), ylim=c(-2, length(labNames)+11),
@@ -487,7 +487,7 @@ Cairo(file=paste0(outDir, "\\forest_primary_WG.png"),
 
 
 forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
-       ilab=cbind(format(PRIMARY_DV1_metaVecMeanExp, digits=3), format(PRIMARY_DV1_metaVecMeanCtrl, digits=3)),
+       ilab=cbind(format(round(PRIMARY_DV1_metaVecMeanExp, digits=2)), format(round(PRIMARY_DV1_metaVecMeanCtrl, digits=2))),
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
@@ -515,7 +515,7 @@ Cairo(file=paste0(outDir, "\\forest_primary_WC.png"),
 
 
 forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
-       ilab=cbind(format(PRIMARY_DV2_metaVecMeanExp, digits=3), format(PRIMARY_DV2_metaVecMeanCtrl, digits=3)),
+       ilab=cbind(format(round(PRIMARY_DV2_metaVecMeanExp, digits=2)), format(round(PRIMARY_DV2_metaVecMeanCtrl, digits=2))),
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
@@ -565,7 +565,7 @@ Cairo(file=paste0(outDir, "\\forest_secondary_WG.png"),
 
 
 forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
-       ilab=cbind(format(SECONDARY_DV1_metaVecMeanExp, digits=3), format(SECONDARY_DV1_metaVecMeanCtrl, digits=3)),
+       ilab=cbind(format(round(SECONDARY_DV1_metaVecMeanExp, digits=2)), format(round(SECONDARY_DV1_metaVecMeanCtrl, digits=2))),
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
@@ -593,7 +593,7 @@ Cairo(file=paste0(outDir, "\\forest_secondary_WC.png"),
 
 
 forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
-       ilab=cbind(format(SECONDARY_DV2_metaVecMeanExp, digits=3), format(SECONDARY_DV2_metaVecMeanCtrl, digits=3)),
+       ilab=cbind(format(round(SECONDARY_DV2_metaVecMeanExp, digits=2)), format(round(SECONDARY_DV2_metaVecMeanCtrl, digits=2))),
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
