@@ -8,8 +8,8 @@ rm(list = ls())
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
-#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+#baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
+baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
 
 setwd(baseDir)
 
@@ -429,7 +429,7 @@ forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaVecSE
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        rows=c(length(labNames)+7, (length(labNames)+2):3), ylim=c(-2, length(labNames)+11),
-       slab = c("Original Study", paste0("Study ", seq_len(length(labNames)))))
+       slab = c("Original Study", labNames))
 
 abline(h=length(labNames)+5, lwd=1.4)
 text(grconvertX(.019, from = "ndc", "user"), length(labNames)+3.75, "RRR Studies", cex=1.2, pos = 4)
@@ -491,7 +491,7 @@ forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean differ
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       slab = paste0("Study ", seq_len(length(labNames))))
+       slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
 text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
@@ -519,7 +519,7 @@ forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean differ
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       slab = paste0("Study ", seq_len(length(labNames))))
+       slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
 text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
@@ -569,7 +569,7 @@ forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean di
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       slab = paste0("Study ", seq_len(length(labNames))))
+       slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
 text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
@@ -597,7 +597,7 @@ forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean di
        ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
                    grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       slab = paste0("Study ", seq_len(length(labNames))))
+       slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
 text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
