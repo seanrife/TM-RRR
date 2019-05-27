@@ -8,8 +8,8 @@ rm(list = ls())
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-#baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
-baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
+#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
 
 setwd(baseDir)
 
@@ -189,8 +189,8 @@ for (lab in labNames) {
   df <- df[df$Purpose=="",]
   df <- df[df$Understand==1,]
   df <- df[df$Familiar==0,]
-  ## ADD REMOVAL BASED ON TIME HERE ##
-  # Exclude if participant took less than 3 minutes to complete the survey
+  # Exclude if participant took less than 5 minutes to complete the survey
+  df <- df[df$interviewtime < 300]
 
   df$COUNT_DV1_Q1 <- sapply(df$WGTASK_word1_response, is_deathword_DV1)
   df$COUNT_DV1_Q2 <- sapply(df$WGTASK_word2_response, is_deathword_DV1)
