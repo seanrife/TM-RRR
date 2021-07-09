@@ -115,11 +115,7 @@ readInFile <- function(filename) {
   names(df) <- gsub(x = names(df),
                     pattern = "\\_SQ001",
                     replacement = "")
-  # Delete variables we don't need
-  #df <- df[, -c(which(colnames(df)=="DEBRIEFING"):which(colnames(df)=="WTDP2Time"))]
-  #df <- df[, -c(which(colnames(df)=="ARTICLETime"):which(colnames(df)=="DEBRIEFINGTime"))]
-  # Change the only time variable we care about to something meaningful
-  #colnames(df)[ncol(df)] <- "DelayTime"
+  df$DelayTime <- df[, which(colnames(df)=="ARTICLETime")-1]
   return(df)
 }
 
