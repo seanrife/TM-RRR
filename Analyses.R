@@ -8,7 +8,7 @@ rm(list = ls())
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-baseDir <- "I:\\Dropbox\\Research\\TM RRR" # DESKTOP
+baseDir <- "F:\\Dropbox\\Research\\TM RRR" # DESKTOP
 #baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
 
 setwd(baseDir)
@@ -181,9 +181,6 @@ for (lab in labNames) {
 
   workingLabPathMain <- paste0(dataDir,"\\",lab,"_main.csv")
   df <- readInFile(workingLabPathMain) 
-
-  # Put N info into labInfo DF
-  labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
   
   # Exclude flagged cases or those who failed exit interview
   df <- df[df$Purpose=="",]
@@ -191,6 +188,9 @@ for (lab in labNames) {
   df <- df[df$Familiar==0,]
   # Exclude if participant took less than 5 minutes to complete the survey
   df <- df[df$interviewtime < 300]
+  
+  # Put N info into labInfo DF
+  labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
 
   df$COUNT_DV1_Q1 <- sapply(df$WGTASK_word1_response, is_deathword_DV1)
   df$COUNT_DV1_Q2 <- sapply(df$WGTASK_word2_response, is_deathword_DV1)
