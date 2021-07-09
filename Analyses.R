@@ -185,7 +185,7 @@ for (lab in labNames) {
   df <- readInFile(workingLabPathMain) 
   
   # Exclude flagged cases or those who failed exit interview
-  df <- df[df$Purpose=="",]
+  # df <- df[df$Purpose=="",]
   df <- df[df$Understand==0,]
   df <- df[df$Familiar==0,]
   # Exclude if participant took less than 5 minutes to complete the survey
