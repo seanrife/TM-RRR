@@ -187,9 +187,13 @@ for (lab in labNames) {
   # Exclude flagged cases or those who failed exit interview
   # df <- df[df$Purpose=="",]
   df <- df[df$Understand==0,]
-  df <- df[df$Familiar==0,]
+  # df <- df[df$Familiar==0,]
   # Exclude if participant took less than 5 minutes to complete the survey
   df <- df[df$interviewtime > 300,]
+  
+  if (nrow(df) == 0) {
+    next
+  }
   
   # Put N info into labInfo DF
   labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
