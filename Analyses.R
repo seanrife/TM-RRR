@@ -116,10 +116,10 @@ readInFile <- function(filename) {
                     pattern = "\\_SQ001",
                     replacement = "")
   # Delete variables we don't need
-  df <- df[, -c(which(colnames(df)=="DEBRIEFING"):which(colnames(df)=="WTDP2Time"))]
-  df <- df[, -c(which(colnames(df)=="ARTICLETime"):which(colnames(df)=="DEBRIEFINGTime"))]
+  #df <- df[, -c(which(colnames(df)=="DEBRIEFING"):which(colnames(df)=="WTDP2Time"))]
+  #df <- df[, -c(which(colnames(df)=="ARTICLETime"):which(colnames(df)=="DEBRIEFINGTime"))]
   # Change the only time variable we care about to something meaningful
-  colnames(df)[ncol(df)] <- "DelayTime"
+  #colnames(df)[ncol(df)] <- "DelayTime"
   return(df)
 }
 
@@ -184,10 +184,10 @@ for (lab in labNames) {
   
   # Exclude flagged cases or those who failed exit interview
   df <- df[df$Purpose=="",]
-  df <- df[df$Understand==1,]
+  df <- df[df$Understand==0,]
   df <- df[df$Familiar==0,]
   # Exclude if participant took less than 5 minutes to complete the survey
-  df <- df[df$interviewtime < 300]
+  df <- df[df$interviewtime > 300,]
   
   # Put N info into labInfo DF
   labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
