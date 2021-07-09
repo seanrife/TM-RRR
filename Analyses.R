@@ -104,7 +104,10 @@ SECONDARY_DV2_metaVecMeanCtrl <- vector()
 
 # Function to read in and clean datafiles from each lab
 readInFile <- function(filename) {
+  varNamesToRetain <- c("essayGroup", "delayGroup", "dvGroup", "labID", "WTINTRO", "WTMS1", "WTMS2", "WTDP1", "WTDP2", "ARTICLE", "ARTICLEEVAL[enjoy]", "ARTICLEEVAL[interesting]", "ARTICLEEVAL[recommend]", "ARTICLEEVAL[stay]", "WGTASK[word1_response]", "WGTASK[word2_response]", "WGTASK[word3_response]", "WGTASK[word4_response]", "WGTASK[word5_response]", "WSCTASK[S1_response]", "WSCTASK[S2_response]", "WSCTASK[S3_response]", "WSCTASK[S4_response]", "WSCTASK[S5_response]", "WSCTASK[S6_response]", "WSCTASK[S7_response]", "WSCTASK[S8_response]", "WSCTASK[S9_response]", "WSCTASK[S10_response]", "WSCTASK[S11_response]", "WSCTASK[S12_response]", "WSCTASK[S13_response]", "WSCTASK[S14_response]", "WSCTASK[S15_response]", "WSCTASK[S16_response]", "WSCTASK[S17_response]", "WSCTASK[S18_response]", "WSCTASK[S19_response]", "WSCTASK[S20_response]", "WSCTASK[S21_response]", "WSCTASK[S22_response]", "WSCTASK[S23_response]", "WSCTASK[S24_response]", "WSCTASK[S25_response]", "Gender", "Age", "Purpose", "Understand", "Familiar", "interviewtime", "DelayTime")
   df <- read.csv(filename, header = T, stringsAsFactors = F, check.names=F)
+  df$DelayTime <- df[, which(colnames(df)=="ARTICLETime")-1]
+  df <- df[varNamesToRetain]
   # LS places problematic characters in variable names. Remove them.
   names(df) <- gsub(x = names(df),
                     pattern = "\\]",
@@ -115,7 +118,7 @@ readInFile <- function(filename) {
   names(df) <- gsub(x = names(df),
                     pattern = "\\_SQ001",
                     replacement = "")
-  df$DelayTime <- df[, which(colnames(df)=="ARTICLETime")-1]
+  
   return(df)
 }
 
@@ -246,7 +249,7 @@ for (lab in labNames) {
   ORIGINAL_DV1_sd_exp <- sd(df$COUNT_DV1[df$originalExperiment==1])
   ORIGINAL_DV1_m_ctrl <- mean(df$COUNT_DV1[df$originalExperiment==0])
   ORIGINAL_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$originalExperiment==0])
-  ORIGINAL_DV1_r <- cor.test(df$COUNT_DV1, df$DelayTime)
+  ORIGINAL_DV1_r <- cor.test(df$COUNT_DV1, df$DelayTime, na.rm=T)
   ORIGINAL_DV1_se <- std.error(df$COUNT_DV1)
   
   # For descriptive stats tables
