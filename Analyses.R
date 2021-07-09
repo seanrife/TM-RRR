@@ -154,6 +154,9 @@ is_deathword_DV1 <- function(x){
 }
 
 is_deathword_DV2 <- function(x, index){
+  if (is.na(x)){
+    return(0)
+  }
   words <- c("buried", "dead", "grave", "killed", "skull", "coffin")
   word <- tolower(x)
   word <- gsub(" ", "", word)
