@@ -178,6 +178,7 @@ for (word in raw_deathwords) {
   }
 }
 
+excludedLabs <- vector()
 
 for (lab in labNames) {
 
@@ -192,6 +193,7 @@ for (lab in labNames) {
   df <- df[df$interviewtime > 300,]
   
   if (nrow(df) == 0) {
+    excludedLabs <- c(excludedLabs, lab)
     next
   }
   
