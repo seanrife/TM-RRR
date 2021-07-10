@@ -118,7 +118,6 @@ readInFile <- function(filename) {
   names(df) <- gsub(x = names(df),
                     pattern = "\\_SQ001",
                     replacement = "")
-  
   return(df)
 }
 
@@ -183,7 +182,19 @@ excludedLabs <- vector()
 for (lab in labNames) {
 
   workingLabPathMain <- paste0(dataDir,"\\",lab,"_main.csv")
-  df <- readInFile(workingLabPathMain) 
+  df <- readInFile(workingLabPathMain)
+
+
+  # Put N info into labInfo DF
+  labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
+  
+  
+  # Running once should be sufficient, but seems to leave a few all-NA rows?
+  # So we do this. I rage quit.
+  while (any(rowSums(is.na(df)) > 10)) {
+    df <- df[rowSums(is.na(df)) < 10, ]
+  }
+  
   
   # Exclude flagged cases or those who failed exit interview
   # df <- df[df$Purpose=="",]
@@ -192,13 +203,8 @@ for (lab in labNames) {
   # Exclude if participant took less than 5 minutes to complete the survey
   df <- df[df$interviewtime > 300,]
   
-  # if (nrow(df) == 0) {
-  #   excludedLabs <- c(excludedLabs, lab)
-  #   next
-  # }
-  
-  # Put N info into labInfo DF
-  labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
+  # Put N info into labInfo DF (with exclusions)
+  labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
 
   df$COUNT_DV1_Q1 <- sapply(df$WGTASK_word1_response, is_deathword_DV1)
   df$COUNT_DV1_Q2 <- sapply(df$WGTASK_word2_response, is_deathword_DV1)
@@ -217,16 +223,14 @@ for (lab in labNames) {
 
   df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = FALSE)
   
-  # Put N info into labInfo DF (with exclusions)
-  labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
   
   # Put % female into LabInfo DF
   TotalWithGender <- table(df$Gender)[names(table(df$Gender))==2] + table(df$Gender)[names(table(df$Gender))==1]
   labInfo$percFemale[labInfo$labID == as.factor(lab)] <- format(round(100*(table(df$Gender)[names(table(df$Gender))==2]/TotalWithGender), digits=2))
 
   # Get mean and SD of age
-  labInfo$ageMean[labInfo$labID == as.factor(lab)] <- format(round(mean(df$Age), digits=2))
-  labInfo$ageSD[labInfo$labID == as.factor(lab)] <- format(round(sd(df$Age), digits=2))
+  labInfo$ageMean[labInfo$labID == as.factor(lab)] <- format(mean(df$Age, na.rm=T))
+  labInfo$ageSD[labInfo$labID == as.factor(lab)] <- format(sd(df$Age, na.rm=T))
   
   # Create group identifiers for original experiment
   df$originalExperiment <- 0
@@ -242,6 +246,11 @@ for (lab in labNames) {
   
   # Add to merged dataframe
   mergedDF <- rbind(mergedDF, df)
+  
+  # This makes me angry but I am over it
+  while (any(rowSums(is.na(mergedDF)) > 10)) {
+    mergedDF <- mergedDF[rowSums(is.na(mergedDF)) < 10, ]
+  }
   
   ## ANALYSES ##
   
@@ -259,10 +268,10 @@ for (lab in labNames) {
   ORIGINAL_DV1_se <- std.error(df$COUNT_DV1)
   
   # For descriptive stats tables
-  ORIGINAL_DV1_descriptives$mean_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(round(ORIGINAL_DV1_m_exp, digits=2))
-  ORIGINAL_DV1_descriptives$sd_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(round(ORIGINAL_DV1_sd_exp, digits=2))
-  ORIGINAL_DV1_descriptives$mean_ctrl[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(round(ORIGINAL_DV1_m_ctrl, digits=2))
-  ORIGINAL_DV1_descriptives$sd_ctrl[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(round(ORIGINAL_DV1_sd_ctrl, digits=2))
+  ORIGINAL_DV1_descriptives$mean_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_m_exp)
+  ORIGINAL_DV1_descriptives$sd_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_sd_exp)
+  ORIGINAL_DV1_descriptives$mean_ctrl[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_m_ctrl)
+  ORIGINAL_DV1_descriptives$sd_ctrl[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_sd_ctrl)
   
   ORIGINAL_DV1_metaVecR <- c(ORIGINAL_DV1_metaVecR, ORIGINAL_DV1_r$estimate)
   ORIGINAL_DV1_metaVecN <- c(ORIGINAL_DV1_metaVecN, (ORIGINAL_DV1_r$parameter + 2))
@@ -289,10 +298,10 @@ for (lab in labNames) {
   
   
   # For descriptive stats table
-  PRIMARY_DV1_descriptives$mean_exp[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV1_m_exp, digits=2))
-  PRIMARY_DV1_descriptives$sd_exp[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV1_sd_exp, digits=2))
-  PRIMARY_DV1_descriptives$mean_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV1_m_ctrl, digits=2))
-  PRIMARY_DV1_descriptives$sd_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV1_sd_ctrl, digits=2))
+  PRIMARY_DV1_descriptives$mean_exp[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_m_exp)
+  PRIMARY_DV1_descriptives$sd_exp[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_sd_exp)
+  PRIMARY_DV1_descriptives$mean_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_m_ctrl)
+  PRIMARY_DV1_descriptives$sd_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_sd_ctrl)
   
   PRIMARY_DV1_metaVecES <- c(PRIMARY_DV1_metaVecES, (PRIMARY_DV1_d))
   PRIMARY_DV1_metaVecSE <- c(PRIMARY_DV1_metaVecSE, PRIMARY_DV1_se)
@@ -314,10 +323,10 @@ for (lab in labNames) {
   
   
   # For descriptive stats table
-  PRIMARY_DV2_descriptives$mean_exp[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV2_m_exp, digits=2))
-  PRIMARY_DV2_descriptives$sd_exp[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV2_sd_exp, digits=2))
-  PRIMARY_DV2_descriptives$mean_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV2_m_ctrl, digits=2))
-  PRIMARY_DV2_descriptives$sd_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(PRIMARY_DV2_sd_ctrl, digits=2))
+  PRIMARY_DV2_descriptives$mean_exp[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_m_exp)
+  PRIMARY_DV2_descriptives$sd_exp[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_sd_exp)
+  PRIMARY_DV2_descriptives$mean_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_m_ctrl)
+  PRIMARY_DV2_descriptives$sd_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_sd_ctrl)
   
   PRIMARY_DV2_metaVecES <- c(PRIMARY_DV2_metaVecES, (PRIMARY_DV2_d))
   PRIMARY_DV2_metaVecSE <- c(PRIMARY_DV2_metaVecSE, PRIMARY_DV2_se)
@@ -342,10 +351,10 @@ for (lab in labNames) {
   
   
   # For descriptive stats table
-  SECONDARY_DV1_descriptives$mean_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV1_m_exp, digits=2))
-  SECONDARY_DV1_descriptives$sd_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV1_sd_exp, digits=2))
-  SECONDARY_DV1_descriptives$mean_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV1_m_ctrl, digits=2))
-  SECONDARY_DV1_descriptives$sd_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV1_sd_ctrl, digits=2))
+  SECONDARY_DV1_descriptives$mean_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_exp)
+  SECONDARY_DV1_descriptives$sd_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_exp)
+  SECONDARY_DV1_descriptives$mean_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_ctrl)
+  SECONDARY_DV1_descriptives$sd_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_ctrl)
   
   SECONDARY_DV1_metaVecES <- c(SECONDARY_DV1_metaVecES, (SECONDARY_DV1_d))
   SECONDARY_DV1_metaVecSE <- c(SECONDARY_DV1_metaVecSE, SECONDARY_DV1_se)
@@ -367,10 +376,10 @@ for (lab in labNames) {
   
   
   # For descriptive stats table
-  SECONDARY_DV2_descriptives$mean_exp[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV2_m_exp, digits=2))
-  SECONDARY_DV2_descriptives$sd_exp[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV2_sd_exp, digits=2))
-  SECONDARY_DV2_descriptives$mean_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV2_m_ctrl, digits=2))
-  SECONDARY_DV2_descriptives$sd_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(round(SECONDARY_DV2_sd_ctrl, digits=2))
+  SECONDARY_DV2_descriptives$mean_exp[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_m_exp)
+  SECONDARY_DV2_descriptives$sd_exp[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_sd_exp)
+  SECONDARY_DV2_descriptives$mean_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_m_ctrl)
+  SECONDARY_DV2_descriptives$sd_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_sd_ctrl)
   
   SECONDARY_DV2_metaVecES <- c(SECONDARY_DV2_metaVecES, (SECONDARY_DV2_d))
   SECONDARY_DV2_metaVecSE <- c(SECONDARY_DV2_metaVecSE, SECONDARY_DV2_se)
@@ -542,10 +551,6 @@ abline(h=0, lwd=1.4)
 addpoly(primary_DV2_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
 
 dev.off()
-
-
-
-
 
 
 #### SECONDARY ANALYSES ####
