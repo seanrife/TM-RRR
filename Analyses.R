@@ -192,10 +192,10 @@ for (lab in labNames) {
   # Exclude if participant took less than 5 minutes to complete the survey
   df <- df[df$interviewtime > 300,]
   
-  if (nrow(df) == 0) {
-    excludedLabs <- c(excludedLabs, lab)
-    next
-  }
+  # if (nrow(df) == 0) {
+  #   excludedLabs <- c(excludedLabs, lab)
+  #   next
+  # }
   
   # Put N info into labInfo DF
   labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
