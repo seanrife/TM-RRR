@@ -131,9 +131,9 @@ letter_search <- function(word) {
   for (letter in word_split) {
     for (l in letter) {
       if (l %in% letters) {
-        letters <- letters[letters != l]
-      }
-      else {
+        letters <- letters[-match(l, letters)]
+        #letters <- letters[letters != l]
+      } else {
         match <- FALSE
       }
     }
