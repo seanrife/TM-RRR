@@ -44,6 +44,8 @@ if(!require(ggplot2)){install.packages('ggplot2')}
 library(ggplot2)
 if(!require(Cairo)){install.packages('Cairo')}
 library(Cairo)
+if(!require(tidyverse)){install.packages('tidyverse')}
+library(tidyverse)
 
 mergedDF <- data.frame()
 
@@ -104,7 +106,7 @@ SECONDARY_DV2_metaVecMeanCtrl <- vector()
 
 # Function to read in and clean datafiles from each lab
 readInFile <- function(filename) {
-  varNamesToRetain <- c("essayGroup", "delayGroup", "dvGroup", "labID", "WTINTRO", "WTMS1", "WTMS2", "WTDP1", "WTDP2", "ARTICLE", "ARTICLEEVAL[enjoy]", "ARTICLEEVAL[interesting]", "ARTICLEEVAL[recommend]", "ARTICLEEVAL[stay]", "WGTASK[word1_response]", "WGTASK[word2_response]", "WGTASK[word3_response]", "WGTASK[word4_response]", "WGTASK[word5_response]", "WSCTASK[S1_response]", "WSCTASK[S2_response]", "WSCTASK[S3_response]", "WSCTASK[S4_response]", "WSCTASK[S5_response]", "WSCTASK[S6_response]", "WSCTASK[S7_response]", "WSCTASK[S8_response]", "WSCTASK[S9_response]", "WSCTASK[S10_response]", "WSCTASK[S11_response]", "WSCTASK[S12_response]", "WSCTASK[S13_response]", "WSCTASK[S14_response]", "WSCTASK[S15_response]", "WSCTASK[S16_response]", "WSCTASK[S17_response]", "WSCTASK[S18_response]", "WSCTASK[S19_response]", "WSCTASK[S20_response]", "WSCTASK[S21_response]", "WSCTASK[S22_response]", "WSCTASK[S23_response]", "WSCTASK[S24_response]", "WSCTASK[S25_response]", "Gender", "Age", "Purpose", "Understand", "Familiar", "interviewtime", "DelayTime")
+  varNamesToRetain <- c("essayGroup", "delayGroup", "dvGroup", "labID", "WTMS1", "WTMS2", "WTDP1", "WTDP2", "ARTICLEEVAL[enjoy]", "ARTICLEEVAL[interesting]", "ARTICLEEVAL[recommend]", "ARTICLEEVAL[stay]", "WGTASK[word1_response]", "WGTASK[word2_response]", "WGTASK[word3_response]", "WGTASK[word4_response]", "WGTASK[word5_response]", "WSCTASK[S1_response]", "WSCTASK[S2_response]", "WSCTASK[S3_response]", "WSCTASK[S4_response]", "WSCTASK[S5_response]", "WSCTASK[S6_response]", "WSCTASK[S7_response]", "WSCTASK[S8_response]", "WSCTASK[S9_response]", "WSCTASK[S10_response]", "WSCTASK[S11_response]", "WSCTASK[S12_response]", "WSCTASK[S13_response]", "WSCTASK[S14_response]", "WSCTASK[S15_response]", "WSCTASK[S16_response]", "WSCTASK[S17_response]", "WSCTASK[S18_response]", "WSCTASK[S19_response]", "WSCTASK[S20_response]", "WSCTASK[S21_response]", "WSCTASK[S22_response]", "WSCTASK[S23_response]", "WSCTASK[S24_response]", "WSCTASK[S25_response]", "Gender", "Age", "Purpose", "Understand", "Familiar", "interviewtime", "DelayTime")
   df <- read.csv(filename, header = T, stringsAsFactors = F, check.names=F)
   df$DelayTime <- df[, which(colnames(df)=="ARTICLETime")-1]
   df <- df[varNamesToRetain]
@@ -166,7 +168,6 @@ is_deathword_DV2 <- function(x, index){
   }
 }
 
-
 raw_deathwords <- scan("DeathWordList.txt", what="", sep="\n")
 deathwords = c()
 
@@ -188,20 +189,19 @@ for (lab in labNames) {
   # Put N info into labInfo DF
   labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
   
+  # Get rid of all-na rows
+  # df[df == ""] <- NA
   
-  # Running once should be sufficient, but seems to leave a few all-NA rows?
-  # So we do this. I rage quit.
-  while (any(rowSums(is.na(df)) > 10)) {
-    df <- df[rowSums(is.na(df)) < 10, ]
-  }
+  # df[!is.na(df$Gender) & , ]
   
-  
+  df <- df[(!is.na(df$Gender) & !is.na(df$Age)),]
+
   # Exclude flagged cases or those who failed exit interview
   # df <- df[df$Purpose=="",]
-  df <- df[df$Understand==0,]
+  df <- df[!is.na(df$Understand) & df$Understand==0,]
   # df <- df[df$Familiar==0,]
   # Exclude if participant took less than 5 minutes to complete the survey
-  df <- df[df$interviewtime > 300,]
+  df <- df[!is.na(df$interviewtime) & df$interviewtime > 300,]
   
   # Put N info into labInfo DF (with exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
@@ -246,11 +246,6 @@ for (lab in labNames) {
   
   # Add to merged dataframe
   mergedDF <- rbind(mergedDF, df)
-  
-  # This makes me angry but I am over it
-  while (any(rowSums(is.na(mergedDF)) > 10)) {
-    mergedDF <- mergedDF[rowSums(is.na(mergedDF)) < 10, ]
-  }
   
   ## ANALYSES ##
   
@@ -388,6 +383,12 @@ for (lab in labNames) {
   SECONDARY_DV2_metaVecMeanCtrl <- c(SECONDARY_DV2_metaVecMeanCtrl, SECONDARY_DV2_m_ctrl)
 
 }
+
+
+
+# This makes me angry but I am over it
+# Remove empty rows (which shouldn't exist, but whatevs) from merged DF
+# mergedDF <- mergedDF[rowSums(is.na(mergedDF)) < 10, ]
 
 
 ######################################
