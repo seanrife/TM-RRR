@@ -298,7 +298,9 @@ for (lab in labNames) {
 
   workingLabPathMain <- paste0(dataDir,"\\",lab,"_main.csv")
   df <- readInFile(workingLabPathMain)
-
+  
+  # Make labID the actual lab ID (not part of raw data files)
+  df$labID <- lab
 
   # Put N info into labInfo DF
   labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
