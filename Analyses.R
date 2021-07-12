@@ -106,7 +106,7 @@ SECONDARY_DV2_metaVecMeanCtrl <- vector()
 
 # Function to read in and clean datafiles from each lab
 readInFile <- function(filename) {
-  varNamesToRetain <- c("essayGroup", "delayGroup", "dvGroup", "labID", "WTMS1", "WTMS2", "WTDP1", "WTDP2", "ARTICLEEVAL[enjoy]", "ARTICLEEVAL[interesting]", "ARTICLEEVAL[recommend]", "ARTICLEEVAL[stay]", "WGTASK[word1_response]", "WGTASK[word2_response]", "WGTASK[word3_response]", "WGTASK[word4_response]", "WGTASK[word5_response]", "WSCTASK[S1_response]", "WSCTASK[S2_response]", "WSCTASK[S3_response]", "WSCTASK[S4_response]", "WSCTASK[S5_response]", "WSCTASK[S6_response]", "WSCTASK[S7_response]", "WSCTASK[S8_response]", "WSCTASK[S9_response]", "WSCTASK[S10_response]", "WSCTASK[S11_response]", "WSCTASK[S12_response]", "WSCTASK[S13_response]", "WSCTASK[S14_response]", "WSCTASK[S15_response]", "WSCTASK[S16_response]", "WSCTASK[S17_response]", "WSCTASK[S18_response]", "WSCTASK[S19_response]", "WSCTASK[S20_response]", "WSCTASK[S21_response]", "WSCTASK[S22_response]", "WSCTASK[S23_response]", "WSCTASK[S24_response]", "WSCTASK[S25_response]", "Gender", "Age", "Purpose", "Understand", "Familiar", "interviewtime", "DelayTime")
+  varNamesToRetain <- c("startlanguage", "essayGroup", "delayGroup", "dvGroup", "labID", "WTMS1", "WTMS2", "WTDP1", "WTDP2", "ARTICLEEVAL[enjoy]", "ARTICLEEVAL[interesting]", "ARTICLEEVAL[recommend]", "ARTICLEEVAL[stay]", "WGTASK[word1_response]", "WGTASK[word2_response]", "WGTASK[word3_response]", "WGTASK[word4_response]", "WGTASK[word5_response]", "WSCTASK[S1_response]", "WSCTASK[S2_response]", "WSCTASK[S3_response]", "WSCTASK[S4_response]", "WSCTASK[S5_response]", "WSCTASK[S6_response]", "WSCTASK[S7_response]", "WSCTASK[S8_response]", "WSCTASK[S9_response]", "WSCTASK[S10_response]", "WSCTASK[S11_response]", "WSCTASK[S12_response]", "WSCTASK[S13_response]", "WSCTASK[S14_response]", "WSCTASK[S15_response]", "WSCTASK[S16_response]", "WSCTASK[S17_response]", "WSCTASK[S18_response]", "WSCTASK[S19_response]", "WSCTASK[S20_response]", "WSCTASK[S21_response]", "WSCTASK[S22_response]", "WSCTASK[S23_response]", "WSCTASK[S24_response]", "WSCTASK[S25_response]", "Gender", "Age", "Purpose", "Understand", "Familiar", "interviewtime", "DelayTime")
   df <- read.csv(filename, header = T, stringsAsFactors = F, check.names=F)
   df$DelayTime <- df[, which(colnames(df)=="ARTICLETime")-1]
   df <- df[varNamesToRetain]
@@ -125,15 +125,28 @@ readInFile <- function(filename) {
 
 
 # Function to read in list of death-related words and check for consistency with letters
-letter_search <- function(word) {
-  letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
+letter_search <- function(word, language) {
+  if (language=="English"){
+    letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
+  }
+  else if (language=="Dutch"){
+    letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
+  }
+  else if (language=="German"){
+    letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
+  }
+  else if (language=="Turkish"){
+    letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
+  }
+  else if (language=="Spanish"){
+    letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
+  }
   word_split <- strsplit(word, "")
   match <- TRUE
   for (letter in word_split) {
     for (l in letter) {
       if (l %in% letters) {
         letters <- letters[-match(l, letters)]
-        #letters <- letters[letters != l]
       } else {
         match <- FALSE
       }
@@ -142,9 +155,26 @@ letter_search <- function(word) {
   return(match)
 }
 
-is_deathword_DV1 <- function(x){
+is_deathword_DV1 <- function(x, language){
   word <- tolower(x)
   word <- gsub(" ", "", word)
+  
+  if (language=="en") {
+    deathwords <- deathwords_English
+  }
+  if (language=="nl") {
+    deathwords <- deathwords_Dutch
+  }
+  if (language=="de") {
+    deathwords <- deathwords_German
+  }
+  if (language=="tr") {
+    deathwords <- deathwords_Turkish
+  }
+  if (language=="es") {
+    deathwords <- deathwords_Spanish
+  }
+  
   if (word %in% deathwords){
     return(1)
   }
@@ -153,32 +183,116 @@ is_deathword_DV1 <- function(x){
   }
 }
 
-is_deathword_DV2 <- function(x, index){
+is_deathword_DV2 <- function(x, language, index){
   if (is.na(x)){
     return(0)
   }
-  words <- c("buried", "dead", "grave", "killed", "skull", "coffin")
-  word <- tolower(x)
-  word <- gsub(" ", "", word)
-  if (word == words[index]){
-    return(1)
+  if (language=='en') {
+    words <- c("buried", "dead", "grave", "killed", "skull", "coffin")
+    word <- tolower(x)
+    word <- gsub(" ", "", word)
+    if (word == words[index]){
+      return(1)
+    }
+    else {
+      return(0)
+    }
   }
-  else{
-    return(0)
+  if (language=='nl'){
+    words <- c("begraven", "dood", "graf", "gedood", "schedel", "kist")
+    word <- tolower(x)
+    word <- gsub(" ", "", word)
+    if (word == words[index]){
+      return(1)
+    }
+    else {
+      return(0)
+    }
+  }
+  if (language=='de'){
+    words <- c("begraben", "tot", "Grab", "getötet", "Schädel", "Sarg")
+    word <- tolower(x)
+    word <- gsub(" ", "", word)
+    if (word == words[index]){
+      return(1)
+    }
+    else {
+      return(0)
+    }
+  }
+  if (language=='tr'){
+    words <- c("gömülü", "ölü", "mezar", "öldürüldü", "kafatasi", "tabut")
+    word <- tolower(x)
+    word <- gsub(" ", "", word)
+    if (word == words[index]){
+      return(1)
+    }
+    else {
+      return(0)
+    }
+  }
+  if (language=='es'){
+    words <- c("enterrado", "muerto", "tumba", "asesinado", "cráneo", "ataúd")
+    word <- tolower(x)
+    word <- gsub(" ", "", word)
+    if (word == words[index]){
+      return(1)
+    }
+    else {
+      return(0)
+    }
   }
 }
 
-raw_deathwords <- scan("DeathWordList.txt", what="", sep="\n")
-deathwords = c()
 
-# Produce a list of death-related words for DV2
-for (word in raw_deathwords) {
-  if (letter_search(word)) {
-    deathwords <- c(deathwords, word)
+# Produce lists (by language) of death-related words for DV2
+
+raw_deathwords_English <- scan("DeathWordList_English.txt", what="", sep="\n")
+deathwords_English = c()
+
+for (word in raw_deathwords_English) {
+  if (letter_search(word, "English")) {
+    deathwords_English <- c(deathwords_English, word)
   }
 }
 
-excludedLabs <- vector()
+raw_deathwords_Dutch <- scan("DeathWordList_Dutch.txt", what="", sep="\n")
+deathwords_Dutch = c()
+
+for (word in raw_deathwords_Dutch) {
+  if (letter_search(word, "Dutch")) {
+    deathwords_Dutch <- c(deathwords_Dutch, word)
+  }
+}
+
+raw_deathwords_German <- scan("DeathWordList_German.txt", what="", sep="\n")
+deathwords_German = c()
+
+for (word in raw_deathwords_German) {
+  if (letter_search(word, "German")) {
+    deathwords_German <- c(deathwords_German, word)
+  }
+}
+
+raw_deathwords_Turkish <- scan("DeathWordList_Turkish.txt", what="", sep="\n")
+deathwords_Turkish = c()
+
+for (word in raw_deathwords_Turkish) {
+  if (letter_search(word, "Turkish")) {
+    deathwords_Turkish <- c(deathwords_Turkish, word)
+  }
+}
+
+raw_deathwords_Spanish <- scan("DeathWordList_Spanish.txt", what="", sep="\n")
+deathwords_Spanish = c()
+
+for (word in raw_deathwords_Spanish) {
+  if (letter_search(word, "Spanish")) {
+    deathwords_Spanish <- c(deathwords_Spanish, word)
+  }
+}
+
+
 
 for (lab in labNames) {
 
@@ -189,11 +303,7 @@ for (lab in labNames) {
   # Put N info into labInfo DF
   labInfo$N[labInfo$labID == as.factor(lab)] <- nrow(df)
   
-  # Get rid of all-na rows
-  # df[df == ""] <- NA
-  
-  # df[!is.na(df$Gender) & , ]
-  
+  # Get rid of rows with critical missing data
   df <- df[(!is.na(df$Gender) & !is.na(df$Age)),]
 
   # Exclude flagged cases or those who failed exit interview
@@ -206,20 +316,20 @@ for (lab in labNames) {
   # Put N info into labInfo DF (with exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
 
-  df$COUNT_DV1_Q1 <- sapply(df$WGTASK_word1_response, is_deathword_DV1)
-  df$COUNT_DV1_Q2 <- sapply(df$WGTASK_word2_response, is_deathword_DV1)
-  df$COUNT_DV1_Q3 <- sapply(df$WGTASK_word3_response, is_deathword_DV1)
-  df$COUNT_DV1_Q4 <- sapply(df$WGTASK_word4_response, is_deathword_DV1)
-  df$COUNT_DV1_Q5 <- sapply(df$WGTASK_word5_response, is_deathword_DV1)
+  df$COUNT_DV1_Q1 <- mapply(is_deathword_DV1, df$WGTASK_word1_response, language=df$startlanguage, USE.NAMES=F)
+  df$COUNT_DV1_Q2 <- mapply(is_deathword_DV1, df$WGTASK_word2_response, language=df$startlanguage, USE.NAMES=F)
+  df$COUNT_DV1_Q3 <- mapply(is_deathword_DV1, df$WGTASK_word3_response, language=df$startlanguage, USE.NAMES=F)
+  df$COUNT_DV1_Q4 <- mapply(is_deathword_DV1, df$WGTASK_word4_response, language=df$startlanguage, USE.NAMES=F)
+  df$COUNT_DV1_Q5 <- mapply(is_deathword_DV1, df$WGTASK_word5_response, language=df$startlanguage, USE.NAMES=F)
   
   df$COUNT_DV1 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV1_Q1"):which(colnames(df)=="COUNT_DV1_Q5"))], na.rm = FALSE)
 
-  df$COUNT_DV2_Q1 <- sapply(df$WSCTASK_S1_response, is_deathword_DV2, index=1)
-  df$COUNT_DV2_Q2 <- sapply(df$WSCTASK_S5_response, is_deathword_DV2, index=2)
-  df$COUNT_DV2_Q3 <- sapply(df$WSCTASK_S12_response, is_deathword_DV2, index=3)
-  df$COUNT_DV2_Q4 <- sapply(df$WSCTASK_S15_response, is_deathword_DV2, index=4)
-  df$COUNT_DV2_Q5 <- sapply(df$WSCTASK_S19_response, is_deathword_DV2, index=5)
-  df$COUNT_DV2_Q6 <- sapply(df$WSCTASK_S22_response, is_deathword_DV2, index=6)
+  df$COUNT_DV2_Q1 <- mapply(is_deathword_DV2, df$WSCTASK_S1_response, index=1, language=df$startlanguage, USE.NAMES=F)
+  df$COUNT_DV2_Q2 <- mapply(is_deathword_DV2, df$WSCTASK_S5_response, index=2, language=df$startlanguage, USE.NAMES=F)
+  df$COUNT_DV2_Q3 <- mapply(is_deathword_DV2, df$WSCTASK_S12_response, index=3, language=df$startlanguage, USE.NAMES=F)
+  df$COUNT_DV2_Q4 <- mapply(is_deathword_DV2, df$WSCTASK_S15_response, index=4, language=df$startlanguage, USE.NAMES=F)
+  df$COUNT_DV2_Q5 <- mapply(is_deathword_DV2, df$WSCTASK_S19_response, index=5, language=df$startlanguage, USE.NAMES=F)
+  df$COUNT_DV2_Q6 <- mapply(is_deathword_DV2, df$WSCTASK_S22_response, index=6, language=df$startlanguage, USE.NAMES=F)
 
   df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = FALSE)
   
@@ -383,12 +493,6 @@ for (lab in labNames) {
   SECONDARY_DV2_metaVecMeanCtrl <- c(SECONDARY_DV2_metaVecMeanCtrl, SECONDARY_DV2_m_ctrl)
 
 }
-
-
-
-# This makes me angry but I am over it
-# Remove empty rows (which shouldn't exist, but whatevs) from merged DF
-# mergedDF <- mergedDF[rowSums(is.na(mergedDF)) < 10, ]
 
 
 ######################################
