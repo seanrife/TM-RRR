@@ -8,7 +8,7 @@ rm(list = ls())
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-baseDir <- "F:\\Dropbox\\Research\\TM RRR" # DESKTOP
+baseDir <- "H:\\Dropbox\\Research\\TM RRR" # DESKTOP
 #baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
 
 setwd(baseDir)
@@ -141,6 +141,9 @@ letter_search <- function(word, language) {
   else if (language=="Spanish"){
     letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
   }
+  else if (language=="Slovak"){
+    letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
+  }
   word_split <- strsplit(word, "")
   match <- TRUE
   for (letter in word_split) {
@@ -173,6 +176,9 @@ is_deathword_DV1 <- function(x, language){
   }
   if (language=="es") {
     deathwords <- deathwords_Spanish
+  }
+  if (language=="sk") {
+    deathwords <- deathwords_Slovak
   }
   
   if (word %in% deathwords){
@@ -242,6 +248,17 @@ is_deathword_DV2 <- function(x, language, index){
       return(0)
     }
   }
+  if (language=='sk'){
+    words <- c("pochovaný", "mrtvy", "hrob", "zabitý", "lebka", "rakva")
+    word <- tolower(x)
+    word <- gsub(" ", "", word)
+    if (word == words[index]){
+      return(1)
+    }
+    else {
+      return(0)
+    }
+  }
 }
 
 
@@ -289,6 +306,15 @@ deathwords_Spanish = c()
 for (word in raw_deathwords_Spanish) {
   if (letter_search(word, "Spanish")) {
     deathwords_Spanish <- c(deathwords_Spanish, word)
+  }
+}
+
+raw_deathwords_Slovak <- scan("DeathWordList_Slovak.txt", what="", sep="\n")
+deathwords_Slovak = c()
+
+for (word in raw_deathwords_Slovak) {
+  if (letter_search(word, "Slovak")) {
+    deathwords_Slovak <- c(deathwords_Slovak, word)
   }
 }
 
