@@ -1,8 +1,12 @@
 # Analysis for RRR of Trafimow and Hughes (2012), Study 3
 # Sean C. Rife / @seanrife / seanrife.com / srife1@murraystate.edu
 
+
 # Clean house
-rm(list = ls())
+switch(menu(c("Yes", "No"), title="This script creates a bunch of new objects. To make things simpler, we clear the current environment of any existing objects. Is that cool or nah?"),
+rm(list = ls()), cat("Okey-dokey\n"))
+
+
 
 #### USER-DEFINED VARIABLES ####
 
@@ -17,8 +21,7 @@ setwd(baseDir)
 # Should contain a summary file for all labs (LabInfo.csv)
 # Should also contain 3 files for each lab (with lab name appended to the beginning):
 #   1. _main.csv - main dataset
-#   2. _rating.csv - ratings of the words from each lab
-#   3. _exclude - manually-identified exclusions
+#   2. _coding_completed_normalized.csv - manually-identified exclusions
 dataDir <- paste0(baseDir, "\\data")
 
 # Location for output (text and graphs)
@@ -106,7 +109,7 @@ SECONDARY_DV2_metaVecMeanCtrl <- vector()
 
 # Function to read in and clean datafiles from each lab
 readInFile <- function(filename) {
-  varNamesToRetain <- c("startlanguage", "essayGroup", "delayGroup", "dvGroup", "labID", "WTMS1", "WTMS2", "WTDP1", "WTDP2", "ARTICLEEVAL[enjoy]", "ARTICLEEVAL[interesting]", "ARTICLEEVAL[recommend]", "ARTICLEEVAL[stay]", "WGTASK[word1_response]", "WGTASK[word2_response]", "WGTASK[word3_response]", "WGTASK[word4_response]", "WGTASK[word5_response]", "WSCTASK[S1_response]", "WSCTASK[S2_response]", "WSCTASK[S3_response]", "WSCTASK[S4_response]", "WSCTASK[S5_response]", "WSCTASK[S6_response]", "WSCTASK[S7_response]", "WSCTASK[S8_response]", "WSCTASK[S9_response]", "WSCTASK[S10_response]", "WSCTASK[S11_response]", "WSCTASK[S12_response]", "WSCTASK[S13_response]", "WSCTASK[S14_response]", "WSCTASK[S15_response]", "WSCTASK[S16_response]", "WSCTASK[S17_response]", "WSCTASK[S18_response]", "WSCTASK[S19_response]", "WSCTASK[S20_response]", "WSCTASK[S21_response]", "WSCTASK[S22_response]", "WSCTASK[S23_response]", "WSCTASK[S24_response]", "WSCTASK[S25_response]", "Gender", "Age", "Purpose", "Understand", "Familiar", "interviewtime", "DelayTime")
+  varNamesToRetain <- c("startlanguage", "essayGroup", "delayGroup", "dvGroup", "labID", "WTMS1", "WTMS2", "WTDP1", "WTDP2", "ARTICLEEVAL[enjoy]", "ARTICLEEVAL[interesting]", "ARTICLEEVAL[recommend]", "ARTICLEEVAL[stay]", "WGTASK[word1_response]", "WGTASK[word2_response]", "WGTASK[word3_response]", "WGTASK[word4_response]", "WGTASK[word5_response]", "WSCTASK[S1_response]", "WSCTASK[S2_response]", "WSCTASK[S3_response]", "WSCTASK[S4_response]", "WSCTASK[S5_response]", "WSCTASK[S6_response]", "WSCTASK[S7_response]", "WSCTASK[S8_response]", "WSCTASK[S9_response]", "WSCTASK[S10_response]", "WSCTASK[S11_response]", "WSCTASK[S12_response]", "WSCTASK[S13_response]", "WSCTASK[S14_response]", "WSCTASK[S15_response]", "WSCTASK[S16_response]", "WSCTASK[S17_response]", "WSCTASK[S18_response]", "WSCTASK[S19_response]", "WSCTASK[S20_response]", "WSCTASK[S21_response]", "WSCTASK[S22_response]", "WSCTASK[S23_response]", "WSCTASK[S24_response]", "WSCTASK[S25_response]", "Gender", "Age", "Purpose", "Understand", "Familiar", "interviewtime", "DelayTime", "Exclude")
   df <- read.csv(filename, header = T, stringsAsFactors = F, check.names=F)
   df$DelayTime <- df[, which(colnames(df)=="ARTICLETime")-1]
   df <- df[varNamesToRetain]
@@ -321,9 +324,20 @@ for (word in raw_deathwords_Slovak) {
 
 
 for (lab in labNames) {
+  workingLabPathExclusions <- paste0(dataDir,"\\",lab,"_coding_completed_normalized.csv")
+  df_exclusions <- readInFile(workingLabPathExclusions)
+  colnames(df_exclusions)[1] <- "id"
 
   workingLabPathMain <- paste0(dataDir,"\\",lab,"_main.csv")
   df <- readInFile(workingLabPathMain)
+  colnames(df)[1] <- "id"
+  
+  merged_df <- merge(df, df_exclusions, by = c("id"), all=T)
+  merged_df$Exclude[is.na(merged_df$Exclude)] <- 0
+  
+  df <- merged_df[merged_df$Exclude==0,]
+  
+  rm(merged_df)
   
   # Make labID the actual lab ID (not part of raw data files)
   df$labID <- lab
