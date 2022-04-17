@@ -3,8 +3,8 @@
 
 
 # Clean house
-switch(menu(c("Yes", "No"), title="This script creates a bunch of new objects. To make things simpler, we clear the current environment of any existing objects. Is that cool or nah?"),
-rm(list = ls()), cat("Okey-dokey\n"))
+#switch(menu(c("Yes", "No"), title="This script creates a bunch of new objects. To make things simpler, we clear the current environment of any existing objects. Is that cool or nah?"),
+#rm(list = ls()), cat("Okey-dokey\n"))
 
 
 
@@ -12,8 +12,9 @@ rm(list = ls()), cat("Okey-dokey\n"))
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-baseDir <- "H:\\Dropbox\\Research\\TM RRR" # DESKTOP
-#baseDir <- "C:\\Users\\srife1\\Dropbox\\Research\\TM RRR" # LAPTOP
+#baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
+#baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
+baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XP13
 
 setwd(baseDir)
 
@@ -22,10 +23,10 @@ setwd(baseDir)
 # Should also contain 3 files for each lab (with lab name appended to the beginning):
 #   1. _main.csv - main dataset
 #   2. _coding_completed_normalized.csv - manually-identified exclusions
-dataDir <- paste0(baseDir, "\\data")
+dataDir <- paste0(baseDir, "/data")
 
 # Location for output (text and graphs)
-outDir <- paste0(baseDir, "\\output")
+outDir <- paste0(baseDir, "/output")
 
 
 # CODE BELOW NEED NOT BE MODIFIED
@@ -53,7 +54,7 @@ library(tidyverse)
 mergedDF <- data.frame()
 
 # Read in lab info
-labInfo <- read.csv(paste0(dataDir,"\\LabInfo.csv"), stringsAsFactors=FALSE)
+labInfo <- read.csv(paste0(dataDir,"/LabInfo.csv"), stringsAsFactors=FALSE)
 
 # Create dataframes for descriptive tables
 ORIGINAL_DV1_descriptives <- labInfo
@@ -108,7 +109,7 @@ SECONDARY_DV2_metaVecMeanExp <- vector()
 SECONDARY_DV2_metaVecMeanCtrl <- vector()
 
 # Function to read in and clean datafiles from each lab
-readInFile <- function(filename) {
+readInMainFile <- function(filename) {
   varNamesToRetain <- c("startlanguage", "essayGroup", "delayGroup", "dvGroup", "labID", "WTMS1", "WTMS2", "WTDP1", "WTDP2", "ARTICLEEVAL[enjoy]", "ARTICLEEVAL[interesting]", "ARTICLEEVAL[recommend]", "ARTICLEEVAL[stay]", "WGTASK[word1_response]", "WGTASK[word2_response]", "WGTASK[word3_response]", "WGTASK[word4_response]", "WGTASK[word5_response]", "WSCTASK[S1_response]", "WSCTASK[S2_response]", "WSCTASK[S3_response]", "WSCTASK[S4_response]", "WSCTASK[S5_response]", "WSCTASK[S6_response]", "WSCTASK[S7_response]", "WSCTASK[S8_response]", "WSCTASK[S9_response]", "WSCTASK[S10_response]", "WSCTASK[S11_response]", "WSCTASK[S12_response]", "WSCTASK[S13_response]", "WSCTASK[S14_response]", "WSCTASK[S15_response]", "WSCTASK[S16_response]", "WSCTASK[S17_response]", "WSCTASK[S18_response]", "WSCTASK[S19_response]", "WSCTASK[S20_response]", "WSCTASK[S21_response]", "WSCTASK[S22_response]", "WSCTASK[S23_response]", "WSCTASK[S24_response]", "WSCTASK[S25_response]", "Gender", "Age", "Purpose", "Understand", "Familiar", "interviewtime", "DelayTime", "Exclude")
   df <- read.csv(filename, header = T, stringsAsFactors = F, check.names=F)
   df$DelayTime <- df[, which(colnames(df)=="ARTICLETime")-1]
@@ -123,6 +124,11 @@ readInFile <- function(filename) {
   names(df) <- gsub(x = names(df),
                     pattern = "\\_SQ001",
                     replacement = "")
+  return(df)
+}
+
+readInExclusionsFile <- function(filename) {
+  df <- read.csv(filename, header = T, stringsAsFactors = F, check.names=F)
   return(df)
 }
 
@@ -219,7 +225,7 @@ is_deathword_DV2 <- function(x, language, index){
     }
   }
   if (language=='de'){
-    words <- c("begraben", "tot", "Grab", "getötet", "Schädel", "Sarg")
+    words <- c("begraben", "tot", "Grab", "get?tet", "Sch?del", "Sarg")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     if (word == words[index]){
@@ -230,7 +236,7 @@ is_deathword_DV2 <- function(x, language, index){
     }
   }
   if (language=='tr'){
-    words <- c("gömülü", "ölü", "mezar", "öldürüldü", "kafatasi", "tabut")
+    words <- c("g?m?l?", "?l?", "mezar", "?ld?r?ld?", "kafatasi", "tabut")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     if (word == words[index]){
@@ -241,7 +247,7 @@ is_deathword_DV2 <- function(x, language, index){
     }
   }
   if (language=='es'){
-    words <- c("enterrado", "muerto", "tumba", "asesinado", "cráneo", "ataúd")
+    words <- c("enterrado", "muerto", "tumba", "asesinado", "cr?neo", "ata?d")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     if (word == words[index]){
@@ -252,7 +258,7 @@ is_deathword_DV2 <- function(x, language, index){
     }
   }
   if (language=='sk'){
-    words <- c("pochovaný", "mrtvy", "hrob", "zabitý", "lebka", "rakva")
+    words <- c("pochovan?", "mrtvy", "hrob", "zabit?", "lebka", "rakva")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     if (word == words[index]){
@@ -322,14 +328,13 @@ for (word in raw_deathwords_Slovak) {
 }
 
 
-
 for (lab in labNames) {
-  workingLabPathExclusions <- paste0(dataDir,"\\",lab,"_coding_completed_normalized.csv")
-  df_exclusions <- readInFile(workingLabPathExclusions)
+  workingLabPathExclusions <- paste0(dataDir,"/",lab,"_coding_completed_normalized.csv")
+  df_exclusions <- readInExclusionsFile(workingLabPathExclusions)
   colnames(df_exclusions)[1] <- "id"
 
-  workingLabPathMain <- paste0(dataDir,"\\",lab,"_main.csv")
-  df <- readInFile(workingLabPathMain)
+  workingLabPathMain <- paste0(dataDir,"/",lab,"_main.csv")
+  df <- readInMainFile(workingLabPathMain)
   colnames(df)[1] <- "id"
   
   merged_df <- merge(df, df_exclusions, by = c("id"), all=T)
@@ -544,22 +549,22 @@ for (lab in labNames) {
 #### REPLICATION ANALYSES ####
 
 # Create descriptive statistics tables
-write.csv(ORIGINAL_DV1_descriptives, paste0(outDir, "\\ORIGINAL_WG_descriptives.csv"), row.names = F)
-write.csv(PRIMARY_DV1_descriptives, paste0(outDir, "\\PRIMARY_WG_descriptives.csv"), row.names = F)
-write.csv(PRIMARY_DV2_descriptives, paste0(outDir, "\\PRIMARY_WC_descriptives.csv"), row.names = F)
-write.csv(SECONDARY_DV1_descriptives, paste0(outDir, "\\SECONDARY_WG_descriptives.csv"), row.names = F)
-write.csv(SECONDARY_DV2_descriptives, paste0(outDir, "\\SECONDARY_WC_descriptives.csv"), row.names = F)
-write.csv(labInfo, paste0(outDir, "\\labDescriptives.csv"), row.names = F)
+write.csv(ORIGINAL_DV1_descriptives, paste0(outDir, "/ORIGINAL_WG_descriptives.csv"), row.names = F)
+write.csv(PRIMARY_DV1_descriptives, paste0(outDir, "/PRIMARY_WG_descriptives.csv"), row.names = F)
+write.csv(PRIMARY_DV2_descriptives, paste0(outDir, "/PRIMARY_WC_descriptives.csv"), row.names = F)
+write.csv(SECONDARY_DV1_descriptives, paste0(outDir, "/SECONDARY_WG_descriptives.csv"), row.names = F)
+write.csv(SECONDARY_DV2_descriptives, paste0(outDir, "/SECONDARY_WC_descriptives.csv"), row.names = F)
+write.csv(labInfo, paste0(outDir, "/labDescriptives.csv"), row.names = F)
 
 # Meta analysis
-sink(paste0(outDir, "\\ma-original-WG-bg.txt"))
+sink(paste0(outDir, "/ma-original-WG-bg.txt"))
 metaRAW_DV1 <- rma.uni(yi = ORIGINAL_DV1_metaVecES, sei = ORIGINAL_DV1_metaVecSE)
 summary(metaRAW_DV1)
 sink()
 
 # Meta analysis
 es <- escalc(measure="COR", ri=ORIGINAL_DV1_metaVecR, ni=ORIGINAL_DV1_metaVecN)
-sink(paste0(outDir, "\\ma-original-WG-cont.txt"))
+sink(paste0(outDir, "/ma-original-WG-cont.txt"))
 metaR_DV1 <- rma.uni(es)
 summary(metaR_DV1)
 sink()
@@ -576,7 +581,7 @@ THse <- sqrt(((1.21^2)+(.67^2)+(.73^2)+(.67^2))/4)/sqrt(120)
 
 # Forest plot with word generation dv
 
-Cairo(file=paste0(outDir, "\\forest_original_WG.png"), 
+Cairo(file=paste0(outDir, "/forest_original_WG.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -614,7 +619,7 @@ all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV1, group = labID))
   geom_point(alpha = 0.3, size = 0) +
   facet_wrap(~labID, scales = "free")
 
-ggsave(paste0(outDir, "\\ORIGINAL_WG_line-graphs.png"))
+ggsave(paste0(outDir, "/ORIGINAL_WG_line-graphs.png"))
 
 all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV2, group = labID)) +
   labs(x = "Delay Time", y = "Word Count") +
@@ -622,20 +627,20 @@ all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV2, group = labID))
   geom_point(alpha = 0.3, size = 0) +
   facet_wrap(~labID, scales = "free")
 
-ggsave(paste0(outDir, "\\ORIGINAL_WC_line-graphs.png"))
+ggsave(paste0(outDir, "/ORIGINAL_WC_line-graphs.png"))
 
 
 
 #### PRIMARY ANALYSES ####
 
 # Meta analysis
-sink(paste0(outDir, "\\ma-primary-WG.txt"))
+sink(paste0(outDir, "/ma-primary-WG.txt"))
 primary_DV1_meta <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE)
 summary(primary_DV1_meta)
 sink()
 
 # Meta analysis
-sink(paste0(outDir, "\\ma-primary-WC.txt"))
+sink(paste0(outDir, "/ma-primary-WC.txt"))
 primary_DV2_meta <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE)
 summary(primary_DV2_meta)
 sink()
@@ -645,7 +650,7 @@ sink()
 
 # Word generation dv
 
-Cairo(file=paste0(outDir, "\\forest_primary_WG.png"), 
+Cairo(file=paste0(outDir, "/forest_primary_WG.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -673,7 +678,7 @@ dev.off()
 
 # Word completion dv
 
-Cairo(file=paste0(outDir, "\\forest_primary_WC.png"), 
+Cairo(file=paste0(outDir, "/forest_primary_WC.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -703,13 +708,13 @@ dev.off()
 #### SECONDARY ANALYSES ####
 
 # Meta analysis
-sink(paste0(outDir, "\\ma-secondary-WG.txt"))
+sink(paste0(outDir, "/ma-secondary-WG.txt"))
 secondary_DV1_meta <- rma.uni(yi = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE)
 summary(secondary_DV1_meta)
 sink()
 
 # Meta analysis
-sink(paste0(outDir, "\\ma-secondary-WC.txt"))
+sink(paste0(outDir, "/ma-secondary-WC.txt"))
 secondary_DV2_meta <- rma.uni(yi = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE)
 summary(secondary_DV2_meta)
 sink()
@@ -719,7 +724,7 @@ sink()
 
 # Word generation dv
 
-Cairo(file=paste0(outDir, "\\forest_secondary_WG.png"), 
+Cairo(file=paste0(outDir, "/forest_secondary_WG.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -747,7 +752,7 @@ dev.off()
 
 # Word completion dv
 
-Cairo(file=paste0(outDir, "\\forest_secondary_WC.png"), 
+Cairo(file=paste0(outDir, "/forest_secondary_WC.png"), 
       bg="white",
       type="png",
       units="in", 
