@@ -12,9 +12,9 @@
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-#baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
+baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
 #baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
-baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XP13
+#baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XP13
 
 setwd(baseDir)
 
@@ -110,9 +110,10 @@ SECONDARY_DV2_metaVecMeanCtrl <- vector()
 
 # Function to read in and clean datafiles from each lab
 readInMainFile <- function(filename) {
-  varNamesToRetain <- c("startlanguage", "essayGroup", "delayGroup", "dvGroup", "labID", "WTMS1", "WTMS2", "WTDP1", "WTDP2", "ARTICLEEVAL[enjoy]", "ARTICLEEVAL[interesting]", "ARTICLEEVAL[recommend]", "ARTICLEEVAL[stay]", "WGTASK[word1_response]", "WGTASK[word2_response]", "WGTASK[word3_response]", "WGTASK[word4_response]", "WGTASK[word5_response]", "WSCTASK[S1_response]", "WSCTASK[S2_response]", "WSCTASK[S3_response]", "WSCTASK[S4_response]", "WSCTASK[S5_response]", "WSCTASK[S6_response]", "WSCTASK[S7_response]", "WSCTASK[S8_response]", "WSCTASK[S9_response]", "WSCTASK[S10_response]", "WSCTASK[S11_response]", "WSCTASK[S12_response]", "WSCTASK[S13_response]", "WSCTASK[S14_response]", "WSCTASK[S15_response]", "WSCTASK[S16_response]", "WSCTASK[S17_response]", "WSCTASK[S18_response]", "WSCTASK[S19_response]", "WSCTASK[S20_response]", "WSCTASK[S21_response]", "WSCTASK[S22_response]", "WSCTASK[S23_response]", "WSCTASK[S24_response]", "WSCTASK[S25_response]", "Gender", "Age", "Purpose", "Understand", "Familiar", "interviewtime", "DelayTime", "Exclude")
+  varNamesToRetain <- c("id", "startlanguage", "essayGroup", "delayGroup", "dvGroup", "labID", "WTMS1", "WTMS2", "WTDP1", "WTDP2", "ARTICLEEVAL[enjoy]", "ARTICLEEVAL[interesting]", "ARTICLEEVAL[recommend]", "ARTICLEEVAL[stay]", "WGTASK[word1_response]", "WGTASK[word2_response]", "WGTASK[word3_response]", "WGTASK[word4_response]", "WGTASK[word5_response]", "WSCTASK[S1_response]", "WSCTASK[S2_response]", "WSCTASK[S3_response]", "WSCTASK[S4_response]", "WSCTASK[S5_response]", "WSCTASK[S6_response]", "WSCTASK[S7_response]", "WSCTASK[S8_response]", "WSCTASK[S9_response]", "WSCTASK[S10_response]", "WSCTASK[S11_response]", "WSCTASK[S12_response]", "WSCTASK[S13_response]", "WSCTASK[S14_response]", "WSCTASK[S15_response]", "WSCTASK[S16_response]", "WSCTASK[S17_response]", "WSCTASK[S18_response]", "WSCTASK[S19_response]", "WSCTASK[S20_response]", "WSCTASK[S21_response]", "WSCTASK[S22_response]", "WSCTASK[S23_response]", "WSCTASK[S24_response]", "WSCTASK[S25_response]", "Gender", "Age", "Purpose", "Understand", "Familiar", "interviewtime", "DelayTime")
   df <- read.csv(filename, header = T, stringsAsFactors = F, check.names=F)
   df$DelayTime <- df[, which(colnames(df)=="ARTICLETime")-1]
+  colnames(df)[1] <- "id"
   df <- df[varNamesToRetain]
   # LS places problematic characters in variable names. Remove them.
   names(df) <- gsub(x = names(df),
@@ -129,6 +130,7 @@ readInMainFile <- function(filename) {
 
 readInExclusionsFile <- function(filename) {
   df <- read.csv(filename, header = T, stringsAsFactors = F, check.names=F)
+  colnames(df)[1] <- "id"
   return(df)
 }
 
@@ -139,19 +141,19 @@ letter_search <- function(word, language) {
     letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
   }
   else if (language=="Dutch"){
-    letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
+    letters <- c("m", "r", "o", "d", "l", "j", "i", "k", "s", "t", "e", "g", "r", "f", "a", "v", "o", "d")
   }
   else if (language=="German"){
-    letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
+    letters <- c("c", "t", "r", "f", "l", "i", "d", "e", "g", "h", "t", "b", "o", "l", "e", "s", "a", "f", "n")
   }
   else if (language=="Turkish"){
-    letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
+    letters <- c("m", "e", "g", "ö", "a", "z", "m", "c", "e", "s", "ü", "t", "r", "k", "l", "i̇", "d", "h", "ş")
   }
   else if (language=="Spanish"){
-    letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
+    letters <- c("i", "a", "c", "u", "o", "e", "r", "n", "m", "c", "r", "a", "e", "v", "b", "l", "a", "t", "d")
   }
   else if (language=="Slovak"){
-    letters <- c("c", "o", "b", "u", "r", "e", "s", "a", "t", "k", "i", "l", "d", "h", "p", "l", "m", "g", "v")
+    letters <- c("v", "o", "ť", "s", "p", "k", "b", "d", "z", "i", "o", "l", "ch", "a", "m", "v", "r", "h", "e")
   }
   word_split <- strsplit(word, "")
   match <- TRUE
@@ -225,7 +227,7 @@ is_deathword_DV2 <- function(x, language, index){
     }
   }
   if (language=='de'){
-    words <- c("begraben", "tot", "Grab", "get?tet", "Sch?del", "Sarg")
+    words <- c("begraben", "tot", "Grab", "getötet", "schädel", "sarg")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     if (word == words[index]){
@@ -236,7 +238,7 @@ is_deathword_DV2 <- function(x, language, index){
     }
   }
   if (language=='tr'){
-    words <- c("g?m?l?", "?l?", "mezar", "?ld?r?ld?", "kafatasi", "tabut")
+    words <- c("gömülü", "ölü", "mezar", "öldürüldü", "kafatası", "tabut")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     if (word == words[index]){
@@ -247,7 +249,7 @@ is_deathword_DV2 <- function(x, language, index){
     }
   }
   if (language=='es'){
-    words <- c("enterrado", "muerto", "tumba", "asesinado", "cr?neo", "ata?d")
+    words <- c("enterrado", "muerto", "tumba", "asesinado", "cráneo", "ataúd")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     if (word == words[index]){
@@ -258,7 +260,7 @@ is_deathword_DV2 <- function(x, language, index){
     }
   }
   if (language=='sk'){
-    words <- c("pochovan?", "mrtvy", "hrob", "zabit?", "lebka", "rakva")
+    words <- c("pochovaný", "mŕtvy", "hrob", "zabitý", "lebka", "rakva")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     if (word == words[index]){
@@ -331,13 +333,11 @@ for (word in raw_deathwords_Slovak) {
 for (lab in labNames) {
   workingLabPathExclusions <- paste0(dataDir,"/",lab,"_coding_completed_normalized.csv")
   df_exclusions <- readInExclusionsFile(workingLabPathExclusions)
-  colnames(df_exclusions)[1] <- "id"
 
   workingLabPathMain <- paste0(dataDir,"/",lab,"_main.csv")
-  df <- readInMainFile(workingLabPathMain)
-  colnames(df)[1] <- "id"
+  df_main <- readInMainFile(workingLabPathMain)
   
-  merged_df <- merge(df, df_exclusions, by = c("id"), all=T)
+  merged_df <- merge(df_main, df_exclusions, by = c("id"), all=T)
   merged_df$Exclude[is.na(merged_df$Exclude)] <- 0
   
   df <- merged_df[merged_df$Exclude==0,]
@@ -610,7 +610,7 @@ addpoly(metaRAW_DV1, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect 
 dev.off()
 
 
-
+  
 # Line graphs of each lab's findings
 
 all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV1, group = labID)) +
