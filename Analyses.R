@@ -14,7 +14,7 @@
 # Uses this to look for main datasets, ratings & exclusions
 baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
 #baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
-#baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XP13
+#baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
 
 setwd(baseDir)
 
@@ -585,23 +585,25 @@ Cairo(file=paste0(outDir, "/forest_original_WG.png"),
       bg="white",
       type="png",
       units="in", 
-      width=11, height=7, 
+      width=11, height=9, 
       #pointsize=12, 
       dpi=600)
 
 
-forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaVecSE), xlab="Mean difference", cex.lab=1.4,
+f = forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaVecSE), xlab="Mean difference", cex.lab=1.2,
        ilab=cbind(c(".94", format(round(ORIGINAL_DV1_metaVecMeanExp, digits=2))), c(".58", format(round(ORIGINAL_DV1_metaVecMeanCtrl, digits=2)))),
-       ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
-                   grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
-       rows=c(length(labNames)+7, (length(labNames)+2):3), ylim=c(-2, length(labNames)+11),
-       slab = c("Original Study", labNames))
+       ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
+                   grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       rows=c(length(labNames)+7, (length(labNames)+2):3),
+       slab = c("Original Study", labNames),
+       ylim=c(-2, length(labNames)+11),
+       xlim = c(-1.15, 1.15))
 
 abline(h=length(labNames)+5, lwd=1.4)
 text(grconvertX(.019, from = "ndc", "user"), length(labNames)+3.75, "RRR Studies", cex=1.2, pos = 4)
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+10, "Study", cex=1.2)
-text(grconvertX(.18, from = "ndc", "user"), length(labNames)+10, "Delay", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labNames)+10, "Other Cond.", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labNames)+10, "Delay", cex=1.2)
+text(grconvertX(.34, from = "ndc", "user"), length(labNames)+10, "Other", cex=1.2)
 text(grconvertX(.875, from = "ndc", "user"), length(labNames)+10, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=1, lwd=1.4)
@@ -654,21 +656,22 @@ Cairo(file=paste0(outDir, "/forest_primary_WG.png"),
       bg="white",
       type="png",
       units="in", 
-      width=11, height=7, 
+      width=11, height=9, 
       #pointsize=12, 
       dpi=600)
 
 
 forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(PRIMARY_DV1_metaVecMeanExp, digits=2)), format(round(PRIMARY_DV1_metaVecMeanCtrl, digits=2))),
-       ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
-                   grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
+                   grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
+       xlim = c(1.15, -3.15),
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
-text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Dental Pain", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
+text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "Dental\nPain", cex=1.2)
 text(grconvertX(.875, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
@@ -682,15 +685,15 @@ Cairo(file=paste0(outDir, "/forest_primary_WC.png"),
       bg="white",
       type="png",
       units="in", 
-      width=11, height=7, 
+      width=11, height=9, 
       #pointsize=12, 
       dpi=600)
 
 
 forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(PRIMARY_DV2_metaVecMeanExp, digits=2)), format(round(PRIMARY_DV2_metaVecMeanCtrl, digits=2))),
-       ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
-                   grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
+                   grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
        slab = labNames)
 
@@ -728,15 +731,15 @@ Cairo(file=paste0(outDir, "/forest_secondary_WG.png"),
       bg="white",
       type="png",
       units="in", 
-      width=11, height=7, 
+      width=11, height=9, 
       #pointsize=12, 
       dpi=600)
 
 
 forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(SECONDARY_DV1_metaVecMeanExp, digits=2)), format(round(SECONDARY_DV1_metaVecMeanCtrl, digits=2))),
-       ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
-                   grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
+                   grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
        slab = labNames)
 
@@ -756,15 +759,15 @@ Cairo(file=paste0(outDir, "/forest_secondary_WC.png"),
       bg="white",
       type="png",
       units="in", 
-      width=11, height=7, 
+      width=11, height=9, 
       #pointsize=12, 
       dpi=600)
 
 
 forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(SECONDARY_DV2_metaVecMeanExp, digits=2)), format(round(SECONDARY_DV2_metaVecMeanCtrl, digits=2))),
-       ilab.xpos=c(grconvertX(.18, from = "ndc", "user"),
-                   grconvertX(.28, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
+                   grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
        slab = labNames)
 
