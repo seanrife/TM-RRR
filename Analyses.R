@@ -12,9 +12,9 @@
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-#baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
+baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
 #baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
-baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
+#baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
 
 setwd(baseDir)
 
@@ -455,9 +455,7 @@ for (lab in labNames) {
   PRIMARY_DV1_descriptives$mean_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_m_ctrl)
   PRIMARY_DV1_descriptives$sd_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_sd_ctrl)
   
-  print(lab)
-  print(PRIMARY_DV1_d)
-  
+  if (is.nan(PRIMARY_DV1_d)) {PRIMARY_DV1_d <- 0}
   PRIMARY_DV1_metaVecES <- c(PRIMARY_DV1_metaVecES, PRIMARY_DV1_d)
   PRIMARY_DV1_metaVecSE <- c(PRIMARY_DV1_metaVecSE, PRIMARY_DV1_se)
   
@@ -483,6 +481,7 @@ for (lab in labNames) {
   PRIMARY_DV2_descriptives$mean_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_m_ctrl)
   PRIMARY_DV2_descriptives$sd_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_sd_ctrl)
   
+  if (is.nan(PRIMARY_DV2_d)) {PRIMARY_DV2_d <- 0}
   PRIMARY_DV2_metaVecES <- c(PRIMARY_DV2_metaVecES, PRIMARY_DV2_d)
   PRIMARY_DV2_metaVecSE <- c(PRIMARY_DV2_metaVecSE, PRIMARY_DV2_se)
   
@@ -511,6 +510,7 @@ for (lab in labNames) {
   SECONDARY_DV1_descriptives$mean_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_ctrl)
   SECONDARY_DV1_descriptives$sd_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_ctrl)
   
+  if (is.nan(SECONDARY_DV1_d)) {SECONDARY_DV1_d <- 0}
   SECONDARY_DV1_metaVecES <- c(SECONDARY_DV1_metaVecES, SECONDARY_DV1_d)
   SECONDARY_DV1_metaVecSE <- c(SECONDARY_DV1_metaVecSE, SECONDARY_DV1_se)
   
@@ -536,6 +536,7 @@ for (lab in labNames) {
   SECONDARY_DV2_descriptives$mean_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_m_ctrl)
   SECONDARY_DV2_descriptives$sd_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_sd_ctrl)
   
+  if (is.nan(SECONDARY_DV2_d)) {SECONDARY_DV2_d <- 0}
   SECONDARY_DV2_metaVecES <- c(SECONDARY_DV2_metaVecES, SECONDARY_DV2_d)
   SECONDARY_DV2_metaVecSE <- c(SECONDARY_DV2_metaVecSE, SECONDARY_DV2_se)
   
@@ -747,8 +748,8 @@ forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean di
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
-text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "No Delay", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
+text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "No Delay", cex=1.2)
 text(grconvertX(.875, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
@@ -775,8 +776,8 @@ forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean di
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
-text(grconvertX(.18, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "No Delay", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
+text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "No Delay", cex=1.2)
 text(grconvertX(.875, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
