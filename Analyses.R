@@ -664,13 +664,14 @@ Cairo(file=paste0(outDir, "/forest_primary_WG.png"),
       #pointsize=12, 
       dpi=600)
 
-
 forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(PRIMARY_DV1_metaVecMeanExp, digits=2)), format(round(PRIMARY_DV1_metaVecMeanCtrl, digits=2))),
        ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
-                   grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+                   grconvertX(.34, from = "ndc", "user")),
+                   cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       xlim = c(1.15, -1.15),
+       xlim=c(-2.6, 1.9),
+       #alim=c(-.8, .8),
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
@@ -693,12 +694,12 @@ Cairo(file=paste0(outDir, "/forest_primary_WC.png"),
       #pointsize=12, 
       dpi=600)
 
-
 forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(PRIMARY_DV2_metaVecMeanExp, digits=2)), format(round(PRIMARY_DV2_metaVecMeanCtrl, digits=2))),
        ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
                    grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
+       xlim=c(-4, 2.2),
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
@@ -745,11 +746,12 @@ forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean di
        ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
                    grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
+       xlim=c(-2.1, 1.5),
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
 text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
-text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "No Delay", cex=1.2)
+text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "No\nDelay", cex=1.2)
 text(grconvertX(.875, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
@@ -767,17 +769,17 @@ Cairo(file=paste0(outDir, "/forest_secondary_WC.png"),
       #pointsize=12, 
       dpi=600)
 
-
 forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(SECONDARY_DV2_metaVecMeanExp, digits=2)), format(round(SECONDARY_DV2_metaVecMeanCtrl, digits=2))),
        ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
                    grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
+       xlim=c(-4.5, 2.9),
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
 text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
-text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "No Delay", cex=1.2)
+text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "No\nDelay", cex=1.2)
 text(grconvertX(.875, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
