@@ -5,14 +5,12 @@ sterfgeval
 nabestaanden
 begrafenis
 begraven
-begraven
 kist
 kisten
 slachtoffer
 slachtoffers
 begraafplaats
 begraafplaatsen
-kist
 doodskisten
 lijkschouwer
 lijkschouwers
@@ -20,14 +18,11 @@ lijk
 lijken
 cremeren
 gecremeerd
-cremeren
 crypt
 crypten
 dood
-dood
 overlijden
 overleden
-overlijden
 dood gaan
 ging dood
 overlijdt
@@ -38,7 +33,6 @@ verdrinking
 stervende
 balsemen
 gebalsemd
-balsemen
 epidemie
 epidemieën
 uitvoeren
@@ -50,7 +44,6 @@ uitroeiing
 fataal
 dodelijke slachtoffers
 fataliteit
-begrafenis
 begrafenissen
 volkerenmoord
 genocidaal
@@ -64,10 +57,8 @@ rouwen
 lijkwagen
 lijkwagens
 holocaust
-holocaust
 homocide
 homociden
-homocide
 onsterfelijk
 onsterfelijkheid
 doden
@@ -76,8 +67,6 @@ doodt
 dodelijk
 dodelijkheid
 lynchen
-lynchen
-doodslag
 doodslag
 bloedbad
 bloedbaden
@@ -89,12 +78,8 @@ sterveling
 sterfte
 begrafenisondernemer
 begrafenisondernemers
-rouwen
 treurt
-rouw
 moord
-moorden
-moorden
 overlijdensberichten
 overlijdensbericht
 od
@@ -105,16 +90,12 @@ draagkrachtig
 dragers
 pest
 plagen
-plagen
 maaimachine
 maaiers
-slachten
 slachten
 slachtingen
 zelfmoord
 zelfmoorden
-graf
-graven
 urn
 urnen
 oorlog

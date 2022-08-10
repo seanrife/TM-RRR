@@ -12,8 +12,6 @@ zayiat
 kayıplar
 mezarlık
 mezarlıklar
-tabut
-tabutlar
 adli tabip
 adli tabipler
 ceset
@@ -27,15 +25,12 @@ kriptolar
 ölüm
 ölmek
 merhum
-ölmek
-ölmek
 öldü
 ölür
 DOA
 bastırmak
 boğuldu
 boğulma
-ölmek
 mumya
 mumyalanmış
 mumyalama
@@ -49,10 +44,7 @@ yok edilmiş
 imha
 ölümcül
 ölümler
-ölüm
-cenaze
 cenazeler
-soykırım
 soykırım
 hayalet
 hayaletler
@@ -62,8 +54,6 @@ keder
 üzülmek
 yas tutmak
 cenaze arabası
-cenaze arabası
-soykırım
 soykırımlar
 cinayet
 homositler
@@ -76,8 +66,6 @@ homosidal
 öldürücü
 Ölümcüllik
 linç
-linç
-adam öldürme
 adam öldürme
 katliam
 katliamlar
@@ -92,8 +80,6 @@ cenazeciler
 Yas tutmak
 yas tutar
 yas
-cinayet
-öldürme
 cinayetler
 ölüm ilanları
 ölüm yazısı
@@ -101,7 +87,6 @@ od
 kastedilen
 aşırı doz
 tabutu taşıyan kimse
-tabut
 tabut taşıyanlar
 veba
 vebalar
@@ -110,11 +95,8 @@ orakçı
 orakçılar
 Katliam
 kesim
-katliamlar
 intihar
 intiharlar
-mezar
-mezarlar
 kavanoz
 çömleği
 savaş

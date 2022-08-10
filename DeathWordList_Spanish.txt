@@ -12,24 +12,19 @@ víctima
 damnificados
 cementerio
 cementerios
-ataúd
-ataúdes
 juez de instrucción
 forenses
 cadáver
 cuerpos
 incinerar
 incinerado
-incinerar
 cripta
 criptas
 muerto
 muerte
 fallecimiento
 fallecido
-fallecimiento
 morir
-fallecido
 muere
 DOA
 ahogar
@@ -60,7 +55,6 @@ tumba
 tumbas
 dolor
 afligirse
-afligido
 coche fúnebre
 coches fúnebres
 holocausto
@@ -92,14 +86,12 @@ funerarios
 llorar
 llora
 luto
-asesinato
 asesinar
 asesinatos
 obituarios
 obituario
 sobredosis
 oded
-sobredosis
 portador del féretro
 féretro
 portadores del féretro
@@ -113,8 +105,6 @@ matanza
 matanzas
 suicidio
 suicidios
-tumba
-tumbas
 urna
 urnas
 guerra

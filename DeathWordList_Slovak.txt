@@ -12,8 +12,6 @@ obeť
 obete
 cintorín
 cintoríny
-rakva
-rakvy
 koroner
 koroneri
 mŕtvola
@@ -50,7 +48,6 @@ vyhladzovanie
 smrteľné
 smrteľné prípady
 smrteľnosť
-pohreb
 pohreby
 genocída
 genocídny
@@ -74,7 +71,6 @@ zabiť
 zabíjanie
 zabíja
 smrtiace
-smrteľnosť
 lynčovať
 lynčovanie
 zabitie
@@ -86,15 +82,12 @@ mauzólea
 márnica
 márnice
 smrteľný
-smrteľnosť
 zádušník
 zádušníci
 trúchliť
 smúti
-smútok
 vražda
 vraždiť
-vraždy
 nekrológy
 nekrológ
 od
@@ -109,7 +102,6 @@ sužovanie
 kosačka
 kosačky
 porážka
-zabíjanie
 porážky
 samovražda
 samovraždy
