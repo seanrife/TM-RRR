@@ -200,7 +200,7 @@ is_deathword_DV1 <- function(x, language){
   }
 }
 
-is_deathword_DV2 <- function(x, language, index){
+is_deathword_DV2 <- function(x, language, index) {
   if (is.na(x)){
     return(0)
   }
@@ -208,7 +208,15 @@ is_deathword_DV2 <- function(x, language, index){
     words <- c("buried", "dead", "grave", "killed", "skull", "coffin")
     word <- tolower(x)
     word <- gsub(" ", "", word)
-    if (word == words[index]){
+    if (nchar(word) == 2) {
+      if (index == 1 & word == "ie") return(1)
+      else if (index == 2 & word == "ad") return(1)
+      else if (index == 3 & word == "ve") return(1)
+      else if (index == 4 & word == "ll") return(1)
+      else if (index == 5 & word == "ul") return(1)
+      else if (index == 6 & word == "in") return(1)
+      }
+    else if (word == words[index]) {
       return(1)
     }
     else {
@@ -219,6 +227,15 @@ is_deathword_DV2 <- function(x, language, index){
     words <- c("begraven", "dood", "graf", "gedood", "schedel", "kist")
     word <- tolower(x)
     word <- gsub(" ", "", word)
+    # TODO: fill in two-character responses for this language
+    if (nchar(word) == 2) {
+      if (index == 1 & word == "") return(1)
+      else if (index == 2 & word == "") return(1)
+      else if (index == 3 & word == "") return(1)
+      else if (index == 4 & word == "") return(1)
+      else if (index == 5 & word == "") return(1)
+      else if (index == 6 & word == "") return(1)
+    }
     if (word == words[index]){
       return(1)
     }
@@ -230,6 +247,15 @@ is_deathword_DV2 <- function(x, language, index){
     words <- c("begraben", "tot", "Grab", "getötet", "schädel", "sarg")
     word <- tolower(x)
     word <- gsub(" ", "", word)
+    # TODO: fill in two-character responses for this language
+    if (nchar(word) == 2) {
+      if (index == 1 & word == "") return(1)
+      else if (index == 2 & word == "") return(1)
+      else if (index == 3 & word == "") return(1)
+      else if (index == 4 & word == "") return(1)
+      else if (index == 5 & word == "") return(1)
+      else if (index == 6 & word == "") return(1)
+    }
     if (word == words[index]){
       return(1)
     }
@@ -241,6 +267,15 @@ is_deathword_DV2 <- function(x, language, index){
     words <- c("gömülü", "ölü", "mezar", "öldürüldü", "kafatası", "tabut")
     word <- tolower(x)
     word <- gsub(" ", "", word)
+    # TODO: fill in two-character responses for this language
+    if (nchar(word) == 2) {
+      if (index == 1 & word == "") return(1)
+      else if (index == 2 & word == "") return(1)
+      else if (index == 3 & word == "") return(1)
+      else if (index == 4 & word == "") return(1)
+      else if (index == 5 & word == "") return(1)
+      else if (index == 6 & word == "") return(1)
+    }
     if (word == words[index]){
       return(1)
     }
@@ -252,6 +287,15 @@ is_deathword_DV2 <- function(x, language, index){
     words <- c("enterrado", "muerto", "tumba", "asesinado", "cráneo", "ataúd")
     word <- tolower(x)
     word <- gsub(" ", "", word)
+    # TODO: fill in two-character responses for this language
+    if (nchar(word) == 2) {
+      if (index == 1 & word == "") return(1)
+      else if (index == 2 & word == "") return(1)
+      else if (index == 3 & word == "") return(1)
+      else if (index == 4 & word == "") return(1)
+      else if (index == 5 & word == "") return(1)
+      else if (index == 6 & word == "") return(1)
+    }
     if (word == words[index]){
       return(1)
     }
@@ -263,6 +307,15 @@ is_deathword_DV2 <- function(x, language, index){
     words <- c("pochovaný", "mŕtvy", "hrob", "zabitý", "lebka", "rakva")
     word <- tolower(x)
     word <- gsub(" ", "", word)
+    # TODO: fill in two-character responses for this language
+    if (nchar(word) == 2) {
+      if (index == 1 & word == "") return(1)
+      else if (index == 2 & word == "") return(1)
+      else if (index == 3 & word == "") return(1)
+      else if (index == 4 & word == "") return(1)
+      else if (index == 5 & word == "") return(1)
+      else if (index == 6 & word == "") return(1)
+    }
     if (word == words[index]){
       return(1)
     }
