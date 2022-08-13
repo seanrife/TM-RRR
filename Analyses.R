@@ -215,6 +215,7 @@ is_deathword_DV2 <- function(x, language, index) {
       else if (index == 4 & word == "ll") return(1)
       else if (index == 5 & word == "ul") return(1)
       else if (index == 6 & word == "in") return(1)
+      else return(0)
       }
     else if (word == words[index]) {
       return(1)
@@ -235,6 +236,7 @@ is_deathword_DV2 <- function(x, language, index) {
       else if (index == 4 & word == "") return(1)
       else if (index == 5 & word == "") return(1)
       else if (index == 6 & word == "") return(1)
+      else return(0)
     }
     if (word == words[index]){
       return(1)
@@ -255,6 +257,7 @@ is_deathword_DV2 <- function(x, language, index) {
       else if (index == 4 & word == "") return(1)
       else if (index == 5 & word == "") return(1)
       else if (index == 6 & word == "") return(1)
+      else return(0)
     }
     if (word == words[index]){
       return(1)
@@ -275,6 +278,7 @@ is_deathword_DV2 <- function(x, language, index) {
       else if (index == 4 & word == "") return(1)
       else if (index == 5 & word == "") return(1)
       else if (index == 6 & word == "") return(1)
+      else return(0)
     }
     if (word == words[index]){
       return(1)
@@ -295,6 +299,7 @@ is_deathword_DV2 <- function(x, language, index) {
       else if (index == 4 & word == "") return(1)
       else if (index == 5 & word == "") return(1)
       else if (index == 6 & word == "") return(1)
+      else return(0)
     }
     if (word == words[index]){
       return(1)
@@ -315,6 +320,7 @@ is_deathword_DV2 <- function(x, language, index) {
       else if (index == 4 & word == "") return(1)
       else if (index == 5 & word == "") return(1)
       else if (index == 6 & word == "") return(1)
+      else return(0)
     }
     if (word == words[index]){
       return(1)
@@ -422,7 +428,7 @@ for (lab in labNames) {
   df$COUNT_DV1_Q4 <- mapply(is_deathword_DV1, df$WGTASK_word4_response, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV1_Q5 <- mapply(is_deathword_DV1, df$WGTASK_word5_response, language=df$startlanguage, USE.NAMES=F)
   
-  df$COUNT_DV1 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV1_Q1"):which(colnames(df)=="COUNT_DV1_Q5"))], na.rm = FALSE)
+  df$COUNT_DV1 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV1_Q1"):which(colnames(df)=="COUNT_DV1_Q5"))], na.rm = TRUE)
 
   df$COUNT_DV2_Q1 <- mapply(is_deathword_DV2, df$WSCTASK_S1_response, index=1, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV2_Q2 <- mapply(is_deathword_DV2, df$WSCTASK_S5_response, index=2, language=df$startlanguage, USE.NAMES=F)
@@ -431,7 +437,7 @@ for (lab in labNames) {
   df$COUNT_DV2_Q5 <- mapply(is_deathword_DV2, df$WSCTASK_S19_response, index=5, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV2_Q6 <- mapply(is_deathword_DV2, df$WSCTASK_S22_response, index=6, language=df$startlanguage, USE.NAMES=F)
 
-  df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = FALSE)
+  df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = TRUE)
   
   
   # Put % female into LabInfo DF
