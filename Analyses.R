@@ -267,7 +267,7 @@ is_deathword_DV2 <- function(x, language, index) {
     }
   }
   if (language=='tr'){
-    words <- c("gömülü", "ölü", "mezar", "öldürüldü", "kafatası", "tabut")
+    words <- c("g�mmek", "�l�m", "mezar", "ceset", "Iskelet", "tabut")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     # TODO: fill in two-character responses for this language
