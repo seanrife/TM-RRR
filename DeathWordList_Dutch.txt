@@ -23,10 +23,9 @@ crypten
 dood
 overlijden
 overleden
-dood gaan
+doodgaan
 ging dood
 overlijdt
-DOA
 verdrinken
 verdronken
 verdrinking
@@ -34,9 +33,7 @@ stervende
 balsemen
 gebalsemd
 epidemie
-epidemieÃ«n
-uitvoeren
-uitgevoerd
+epidemieën
 executie
 uitroeien
 uitgeroeid
@@ -46,7 +43,7 @@ dodelijke slachtoffers
 fataliteit
 begrafenissen
 volkerenmoord
-genocidaal
+genocide
 geest
 geesten
 graf
@@ -57,8 +54,6 @@ rouwen
 lijkwagen
 lijkwagens
 holocaust
-homocide
-homociden
 onsterfelijk
 onsterfelijkheid
 doden
@@ -82,16 +77,11 @@ treurt
 moord
 overlijdensberichten
 overlijdensbericht
-od
-ode aan
 overdosis
 drager
-draagkrachtig
 dragers
 pest
-plagen
-maaimachine
-maaiers
+plaag
 slachten
 slachtingen
 zelfmoord
@@ -99,3 +89,9 @@ zelfmoorden
 urn
 urnen
 oorlog
+triest
+lijkkist
+tombe
+graftombe
+gedood
+suïcide

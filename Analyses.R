@@ -225,7 +225,7 @@ is_deathword_DV2 <- function(x, language, index) {
     }
   }
   if (language=='nl'){
-    words <- c("begraven", "dood", "graf", "gedood", "schedel", "kist")
+    words <- c("graf", "lijk", "kist", "doden", "dood", "moord")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     # TODO: fill in two-character responses for this language
