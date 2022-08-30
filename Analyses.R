@@ -246,7 +246,7 @@ is_deathword_DV2 <- function(x, language, index) {
     }
   }
   if (language=='de'){
-    words <- c("begraben", "tot", "Grab", "getÃ¶tet", "schÃ¤del", "sarg")
+    words <- c("sterben", "tot", "tod", "grab", "mord", "leiche", "sarg")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     # TODO: fill in two-character responses for this language
@@ -267,7 +267,7 @@ is_deathword_DV2 <- function(x, language, index) {
     }
   }
   if (language=='tr'){
-    words <- c("gömmek", "ölüm", "mezar", "ceset", "Iskelet", "tabut")
+    words <- c("g?mmek", "?l?m", "mezar", "ceset", "Iskelet", "tabut")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     # TODO: fill in two-character responses for this language
