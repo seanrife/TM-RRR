@@ -12,8 +12,8 @@
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
-#baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
+#baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
+baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
 #baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
 
 setwd(baseDir)
@@ -250,13 +250,13 @@ is_deathword_DV2 <- function(x, language, index) {
     word <- tolower(x)
     word <- gsub(" ", "", word)
     # TODO: fill in two-character responses for this language
-    if (nchar(word) == 2) {
-      if (index == 1 & word == "") return(1)
-      else if (index == 2 & word == "") return(1)
-      else if (index == 3 & word == "") return(1)
-      else if (index == 4 & word == "") return(1)
-      else if (index == 5 & word == "") return(1)
-      else if (index == 6 & word == "") return(1)
+    if (nchar(word) <= 2) {
+      if (index == 1 & word == "rb") return(1)
+      else if (index == 2 & (word == "t" | word == "d")) return(1)
+      else if (index == 3 & word == "b") return(1)
+      else if (index == 4 & word == "rd") return(1)
+      else if (index == 5 & word == "ch") return(1)
+      else if (index == 6 & word == "rg") return(1)
       else return(0)
     }
     if (word == words[index]){
