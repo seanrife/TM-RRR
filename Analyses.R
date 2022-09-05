@@ -288,17 +288,17 @@ is_deathword_DV2 <- function(x, language, index) {
     }
   }
   if (language=='es'){
-    words <- c("enterrado", "muerto", "tumba", "asesinado", "cráneo", "ataúd")
+    words <- c("entierro", "muerte", "tumba", "matar", "calavera", "ataúd", "ataud")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     # TODO: fill in two-character responses for this language
     if (nchar(word) == 2) {
-      if (index == 1 & word == "") return(1)
-      else if (index == 2 & word == "") return(1)
-      else if (index == 3 & word == "") return(1)
-      else if (index == 4 & word == "") return(1)
-      else if (index == 5 & word == "") return(1)
-      else if (index == 6 & word == "") return(1)
+      if (index == 1 & word == "rr") return(1)
+      else if (index == 2 & word == "rt") return(1)
+      else if (index == 3 & word == "mb") return(1)
+      else if (index == 4 & word == "ma") return(1)
+      else if (index == 5 & word == "ve") return(1)
+      else if (index == 6 & (word == "úd" | word == "ud")) return(1)
       else return(0)
     }
     if (word == words[index]){
