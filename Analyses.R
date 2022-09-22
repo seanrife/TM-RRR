@@ -309,17 +309,17 @@ is_deathword_DV2 <- function(x, language, index) {
     }
   }
   if (language=='sk'){
-    words <- c("pochovaný", "mŕtvy", "hrob", "zabitý", "lebka", "rakva")
+    words <- c("pochovať", "smrť", "zabiť", "hrob", "vdova", "lebka", "rakva")
     word <- tolower(x)
     word <- gsub(" ", "", word)
-    # TODO: fill in two-character responses for this language
     if (nchar(word) == 2) {
-      if (index == 1 & word == "") return(1)
-      else if (index == 2 & word == "") return(1)
-      else if (index == 3 & word == "") return(1)
-      else if (index == 4 & word == "") return(1)
-      else if (index == 5 & word == "") return(1)
-      else if (index == 6 & word == "") return(1)
+      if (index == 1 & word == "ov") return(1)
+      else if (index == 2 & word == "mr") return(1)
+      else if (index == 3 & word == "zi") return(1)
+      else if (index == 4 & word == "ob") return(1)
+      else if (index == 5 & word == "vd") return(1)
+      else if (index == 6 & word == "eb") return(1)
+      else if (index == 7 & word == "rk") return(1)
       else return(0)
     }
     if (word == words[index]){
@@ -436,6 +436,12 @@ for (lab in labNames) {
   df$COUNT_DV2_Q4 <- mapply(is_deathword_DV2, df$WSCTASK_S15_response, index=4, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV2_Q5 <- mapply(is_deathword_DV2, df$WSCTASK_S19_response, index=5, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV2_Q6 <- mapply(is_deathword_DV2, df$WSCTASK_S22_response, index=6, language=df$startlanguage, USE.NAMES=F)
+  
+  # Deal with extra death-related word in Slovak-language labs
+  if (df$startlanguage == 'sk') {
+    df$COUNT_DV2_Q7 <- mapply(is_deathword_DV2, df$WSCTASK_S22_response, index=7, language=df$startlanguage, USE.NAMES=F)
+  }
+  
 
   df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = TRUE)
   
