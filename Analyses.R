@@ -12,9 +12,9 @@
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
+#baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
 #baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
-#baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
+baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
 
 setwd(baseDir)
 
@@ -438,13 +438,14 @@ for (lab in labNames) {
   df$COUNT_DV2_Q6 <- mapply(is_deathword_DV2, df$WSCTASK_S22_response, index=6, language=df$startlanguage, USE.NAMES=F)
   
   # Deal with extra death-related word in Slovak-language labs
-  if (df$startlanguage == 'sk') {
+  if (df$startlanguage[1] == 'sk') {
     df$COUNT_DV2_Q7 <- mapply(is_deathword_DV2, df$WSCTASK_S22_response, index=7, language=df$startlanguage, USE.NAMES=F)
+    df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q7"))], na.rm = TRUE)
+    print(df$COUNT_DV2)
   }
-  
-
-  df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = TRUE)
-  
+  else {
+    df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = TRUE)
+  }
   
   # Put % female into LabInfo DF
   TotalWithGender <- table(df$Gender)[names(table(df$Gender))==2] + table(df$Gender)[names(table(df$Gender))==1]
