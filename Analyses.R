@@ -13,8 +13,8 @@
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
 #baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
-#baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
-baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
+baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
+#baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
 
 setwd(baseDir)
 
@@ -309,14 +309,14 @@ is_deathword_DV2 <- function(x, language, index) {
     }
   }
   if (language=='sk'){
-    words <- c("pochovať", "smrť", "zabiť", "hrob", "vdova", "lebka", "rakva")
+    words <- c("pochovať", "smrť", "hrob", "zabiť", "vdova", "lebka", "rakva")
     word <- tolower(x)
     word <- gsub(" ", "", word)
     if (nchar(word) == 2) {
       if (index == 1 & word == "ov") return(1)
       else if (index == 2 & word == "mr") return(1)
-      else if (index == 3 & word == "zi") return(1)
-      else if (index == 4 & word == "ob") return(1)
+      else if (index == 3 & word == "ob") return(1)
+      else if (index == 4 & word == "zi") return(1)
       else if (index == 5 & word == "vd") return(1)
       else if (index == 6 & word == "eb") return(1)
       else if (index == 7 & word == "rk") return(1)
@@ -439,11 +439,11 @@ for (lab in labNames) {
   
   # Deal with extra death-related word in Slovak-language labs
   if (df$startlanguage[1] == 'sk') {
-    df$COUNT_DV2_Q7 <- mapply(is_deathword_DV2, df$WSCTASK_S22_response, index=7, language=df$startlanguage, USE.NAMES=F)
+    df$COUNT_DV2_Q7 <- mapply(is_deathword_DV2, df$WSCTASK_S18_response, index=7, language=df$startlanguage, USE.NAMES=F)
     df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q7"))], na.rm = TRUE)
-    print(df$COUNT_DV2)
   }
   else {
+    df$COUNT_DV2_Q7 <- 0
     df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = TRUE)
   }
   
