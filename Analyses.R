@@ -291,7 +291,6 @@ is_deathword_DV2 <- function(x, language, index) {
     words <- c("entierro", "muerte", "tumba", "matar", "calavera", "ataúd", "ataud")
     word <- tolower(x)
     word <- gsub(" ", "", word)
-    # TODO: fill in two-character responses for this language
     if (nchar(word) == 2) {
       if (index == 1 & word == "rr") return(1)
       else if (index == 2 & word == "rt") return(1)
@@ -442,8 +441,13 @@ for (lab in labNames) {
     df$COUNT_DV2_Q7 <- mapply(is_deathword_DV2, df$WSCTASK_S22_response, index=7, language=df$startlanguage, USE.NAMES=F)
   }
   
+  if (df$startlanguage == 'sk') {
+    df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q7"))], na.rm = TRUE)
+  }
+  else{
+    df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = TRUE)
+  }
 
-  df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = TRUE)
   
   
   # Put % female into LabInfo DF
