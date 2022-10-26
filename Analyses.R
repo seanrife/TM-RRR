@@ -267,17 +267,16 @@ is_deathword_DV2 <- function(x, language, index) {
     }
   }
   if (language=='tr'){
-    words <- c("g?mmek", "?l?m", "mezar", "ceset", "Iskelet", "tabut")
+    words <- c("gömmek", "ceset", "mezar", "ölüm", "İskelet", "tabut")
     word <- tolower(x)
     word <- gsub(" ", "", word)
-    # TODO: fill in two-character responses for this language
-    if (nchar(word) == 2) {
-      if (index == 1 & word == "") return(1)
-      else if (index == 2 & word == "") return(1)
-      else if (index == 3 & word == "") return(1)
-      else if (index == 4 & word == "") return(1)
-      else if (index == 5 & word == "") return(1)
-      else if (index == 6 & word == "") return(1)
+    if (nchar(word) <= 3) {
+      if (index == 1 & word == "öm") return(1)
+      else if (index == 2 & word == "se") return(1)
+      else if (index == 3 & word == "ma") return(1)
+      else if (index == 4 & word == "lm") return(1)
+      else if (index == 5 & word == "klt") return(1)
+      else if (index == 6 & word == "at") return(1)
       else return(0)
     }
     if (word == words[index]){
