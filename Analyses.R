@@ -12,8 +12,8 @@
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-#baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
-baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
+baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
+#baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
 #baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
 
 setwd(baseDir)
@@ -461,7 +461,7 @@ for (lab in labNames) {
   df$primaryAnalysis[df$delayGroup==2 & df$essayGroup==1] <- 1
   
   # Create group identifiers for secondary analysis
-  df$secondaryAnalysis <- 0
+  df$secondaryAnalysis[df$essayGroup==2] <- 0
   df$secondaryAnalysis[df$essayGroup==1] <- 1
   
   
@@ -556,6 +556,10 @@ for (lab in labNames) {
   # Calculate tests/stats for secondary analysis
   # Many of these will be identical to primary analyses,
   # but calculating for the sake of clarity
+  
+  # essayGroup == 1: death; essayGroup == 2: dental pain
+  # delayGroup == 1: delay cond; delayGroup == 2: no delay cond
+  
   SECONDARY_DV1_m_exp <- mean(df$COUNT_DV1[df$secondaryAnalysis==1], na.rm=T)
   SECONDARY_DV1_sd_exp <- sd(df$COUNT_DV1[df$secondaryAnalysis==1], na.rm=T)
   SECONDARY_DV1_m_ctrl <- mean(df$COUNT_DV1[df$secondaryAnalysis==0], na.rm=T)
