@@ -12,16 +12,11 @@
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
+#baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
 #baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
-#baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
+baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
 
 setwd(baseDir)
-
-
-# Set random seed (used for determination of which word set is selected in Slovak-language labs)
-set.seed(5491) # from random.org - range from 1 to 10000
-
 
 # Set input directory
 # Should contain a summary file for all labs (LabInfo.csv)
@@ -444,8 +439,7 @@ for (lab in labNames) {
   if (df$startlanguage[1] == 'sk') {
     df$COUNT_DV2_Q7 <- mapply(is_deathword_DV2, df$WSCTASK_S18_response, index=7, language=df$startlanguage, USE.NAMES=F)
     df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q7"))], na.rm = TRUE)
-  }
-  else {
+  }  else {
     df$COUNT_DV2_Q7 <- 0
     df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = TRUE)
   }
@@ -512,9 +506,6 @@ for (lab in labNames) {
   PRIMARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$primaryAnalysis==0], na.rm=T)
   PRIMARY_DV1_n_exp <- length(df$COUNT_DV1[df$primaryAnalysis==1])
   PRIMARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$primaryAnalysis==0])
-  PRIMARY_DV1_d <- cohen.d(df$COUNT_DV1, as.factor(df$primaryAnalysis), na.rm=T)$estimate
-  PRIMARY_DV1_d_CI_UPPER <- cohen.d(df$COUNT_DV1, as.factor(df$primaryAnalysis), na.rm=T)$conf.int[2]
-  PRIMARY_DV1_d_CI_LOWER <- cohen.d(df$COUNT_DV1, as.factor(df$primaryAnalysis), na.rm=T)$conf.int[1]
   PRIMARY_DV1_se <- std.error(df$COUNT_DV1)
   
   
@@ -523,9 +514,8 @@ for (lab in labNames) {
   PRIMARY_DV1_descriptives$sd_exp[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_sd_exp)
   PRIMARY_DV1_descriptives$mean_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_m_ctrl)
   PRIMARY_DV1_descriptives$sd_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_sd_ctrl)
-  
-  if (is.nan(PRIMARY_DV1_d)) {PRIMARY_DV1_d <- 0}
-  PRIMARY_DV1_metaVecES <- c(PRIMARY_DV1_metaVecES, PRIMARY_DV1_d)
+
+  PRIMARY_DV1_metaVecES <- c(PRIMARY_DV1_metaVecES, PRIMARY_DV1_m_exp - PRIMARY_DV1_m_ctrl)
   PRIMARY_DV1_metaVecSE <- c(PRIMARY_DV1_metaVecSE, PRIMARY_DV1_se)
   
   PRIMARY_DV1_metaVecMeanExp <- c(PRIMARY_DV1_metaVecMeanExp, PRIMARY_DV1_m_exp)
@@ -538,9 +528,6 @@ for (lab in labNames) {
   PRIMARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$primaryAnalysis==0], na.rm=T)
   PRIMARY_DV2_n_exp <- length(df$COUNT_DV2[df$primaryAnalysis==1])
   PRIMARY_DV2_n_ctrl <- length(df$COUNT_DV2[df$primaryAnalysis==0])
-  PRIMARY_DV2_d <- cohen.d(df$COUNT_DV2, as.factor(df$primaryAnalysis), na.rm=T)$estimate
-  PRIMARY_DV2_d_CI_UPPER <- cohen.d(df$COUNT_DV2, as.factor(df$primaryAnalysis), na.rm=T)$conf.int[2]
-  PRIMARY_DV2_d_CI_LOWER <- cohen.d(df$COUNT_DV2, as.factor(df$primaryAnalysis), na.rm=T)$conf.int[1]
   PRIMARY_DV2_se <- std.error(df$COUNT_DV2)
   
   
@@ -550,8 +537,7 @@ for (lab in labNames) {
   PRIMARY_DV2_descriptives$mean_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_m_ctrl)
   PRIMARY_DV2_descriptives$sd_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_sd_ctrl)
   
-  if (is.nan(PRIMARY_DV2_d)) {PRIMARY_DV2_d <- 0}
-  PRIMARY_DV2_metaVecES <- c(PRIMARY_DV2_metaVecES, PRIMARY_DV2_d)
+  PRIMARY_DV2_metaVecES <- c(PRIMARY_DV2_metaVecES, PRIMARY_DV2_m_exp - PRIMARY_DV2_m_ctrl)
   PRIMARY_DV2_metaVecSE <- c(PRIMARY_DV2_metaVecSE, PRIMARY_DV2_se)
   
   PRIMARY_DV2_metaVecMeanExp <- c(PRIMARY_DV2_metaVecMeanExp, PRIMARY_DV2_m_exp)
@@ -571,9 +557,6 @@ for (lab in labNames) {
   SECONDARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$secondaryAnalysis==0], na.rm=T)
   SECONDARY_DV1_n_exp <- length(df$COUNT_DV1[df$secondaryAnalysis==1])
   SECONDARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$secondaryAnalysis==0])
-  SECONDARY_DV1_d <- cohen.d(df$COUNT_DV1, as.factor(df$secondaryAnalysis), na.rm=T)$estimate
-  SECONDARY_DV1_d_CI_UPPER <- cohen.d(df$COUNT_DV1[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis), na.rm=T)$conf.int[2]
-  SECONDARY_DV1_d_CI_LOWER <- cohen.d(df$COUNT_DV1[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis), na.rm=T)$conf.int[1]
   SECONDARY_DV1_se <- std.error(df$COUNT_DV1[df$secondaryAnalysis==1 | df$secondaryAnalysis==0])
   
   
@@ -583,8 +566,7 @@ for (lab in labNames) {
   SECONDARY_DV1_descriptives$mean_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_ctrl)
   SECONDARY_DV1_descriptives$sd_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_ctrl)
   
-  if (is.nan(SECONDARY_DV1_d)) {SECONDARY_DV1_d <- 0}
-  SECONDARY_DV1_metaVecES <- c(SECONDARY_DV1_metaVecES, SECONDARY_DV1_d)
+  SECONDARY_DV1_metaVecES <- c(SECONDARY_DV1_metaVecES, SECONDARY_DV1_m_exp - SECONDARY_DV1_m_ctrl)
   SECONDARY_DV1_metaVecSE <- c(SECONDARY_DV1_metaVecSE, SECONDARY_DV1_se)
   
   SECONDARY_DV1_metaVecMeanExp <- c(SECONDARY_DV1_metaVecMeanExp, SECONDARY_DV1_m_exp)
@@ -597,9 +579,6 @@ for (lab in labNames) {
   SECONDARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$secondaryAnalysis==0], na.rm=T)
   SECONDARY_DV2_n_exp <- length(df$COUNT_DV2[df$secondaryAnalysis==1])
   SECONDARY_DV2_n_ctrl <- length(df$COUNT_DV2[df$secondaryAnalysis==0])
-  SECONDARY_DV2_d <- cohen.d(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis), na.rm=T)$estimate
-  SECONDARY_DV2_d_CI_UPPER <- cohen.d(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis), na.rm=T)$conf.int[2]
-  SECONDARY_DV2_d_CI_LOWER <- cohen.d(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0], as.factor(df$secondaryAnalysis), na.rm=T)$conf.int[1]
   SECONDARY_DV2_se <- std.error(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0])
   
   
@@ -609,8 +588,7 @@ for (lab in labNames) {
   SECONDARY_DV2_descriptives$mean_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_m_ctrl)
   SECONDARY_DV2_descriptives$sd_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_sd_ctrl)
   
-  if (is.nan(SECONDARY_DV2_d)) {SECONDARY_DV2_d <- 0}
-  SECONDARY_DV2_metaVecES <- c(SECONDARY_DV2_metaVecES, SECONDARY_DV2_d)
+  SECONDARY_DV2_metaVecES <- c(SECONDARY_DV2_metaVecES, SECONDARY_DV1_m_exp - SECONDARY_DV1_m_ctrl)
   SECONDARY_DV2_metaVecSE <- c(SECONDARY_DV2_metaVecSE, SECONDARY_DV2_se)
   
   SECONDARY_DV2_metaVecMeanExp <- c(SECONDARY_DV2_metaVecMeanExp, SECONDARY_DV2_m_exp)
@@ -737,20 +715,20 @@ Cairo(file=paste0(outDir, "/forest_primary_WG.png"),
       #pointsize=12, 
       dpi=600)
 
-forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Cohen's D", cex.lab=1.4,
+forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(PRIMARY_DV1_metaVecMeanCtrl, digits=2)), format(round(PRIMARY_DV1_metaVecMeanExp, digits=2))),
        ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
                    grconvertX(.34, from = "ndc", "user")),
                    cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       xlim=c(-2.6, 1.9), # This is a hack and uses magic numbers and I hate it but also I rage quit
+       #xlim=c(-2.6, 1.9), # This is a hack and uses magic numbers and I hate it but also I rage quit
        #alim=c(-.8, .8),
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
 text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Pain", cex=1.2)
 text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
-text(grconvertX(.89, from = "ndc", "user"), length(labNames)+2, paste0("Cohen's D", " [95% CI]"), cex=1.2)
+text(grconvertX(.89, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
 addpoly(primary_DV1_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
@@ -767,18 +745,18 @@ Cairo(file=paste0(outDir, "/forest_primary_WC.png"),
       #pointsize=12, 
       dpi=600)
 
-forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Cohen's D", cex.lab=1.4,
+forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(PRIMARY_DV2_metaVecMeanCtrl, digits=2)), format(round(PRIMARY_DV2_metaVecMeanExp, digits=2))),
        ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
                    grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       xlim=c(-4, 2.2), # This is a hack and uses magic numbers and I hate it but also I rage quit
+       #xlim=c(-4, 2.2), # This is a hack and uses magic numbers and I hate it but also I rage quit
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
 text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Pain", cex=1.2)
 text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
-text(grconvertX(.89, from = "ndc", "user"), length(labNames)+2, paste0("Cohen's D", " [95% CI]"), cex=1.2)
+text(grconvertX(.89, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
 addpoly(primary_DV2_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
@@ -814,18 +792,18 @@ Cairo(file=paste0(outDir, "/forest_secondary_WG.png"),
       dpi=600)
 
 
-forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Cohen's D", cex.lab=1.4,
+forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(SECONDARY_DV1_metaVecMeanCtrl, digits=2)), format(round(SECONDARY_DV1_metaVecMeanExp, digits=2))),
        ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
                    grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       xlim=c(-2.1, 1.5), # This is a hack and uses magic numbers and I hate it but also I rage quit
+       # xlim=c(-2.1, 1.5), # This is a hack and uses magic numbers and I hate it but also I rage quit
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
 text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "No\nDelay", cex=1.2)
 text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
-text(grconvertX(.89, from = "ndc", "user"), length(labNames)+2, paste0("Cohen's D", " [95% CI]"), cex=1.2)
+text(grconvertX(.87, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
 addpoly(secondary_DV1_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
@@ -842,18 +820,18 @@ Cairo(file=paste0(outDir, "/forest_secondary_WC.png"),
       #pointsize=12, 
       dpi=600)
 
-forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Cohen's D", cex.lab=1.4,
+forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(SECONDARY_DV2_metaVecMeanCtrl, digits=2)), format(round(SECONDARY_DV2_metaVecMeanExp, digits=2))),
        ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
                    grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       xlim=c(-4.5, 2.9), # This is a hack and uses magic numbers and I hate it but also I rage quit
+       # xlim=c(-4.5, 2.9), # This is a hack and uses magic numbers and I hate it but also I rage quit
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
 text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "No\nDelay", cex=1.2)
 text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
-text(grconvertX(.89, from = "ndc", "user"), length(labNames)+2, paste0("Cohen's D", " [95% CI]"), cex=1.2)
+text(grconvertX(.89, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
 addpoly(secondary_DV2_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
