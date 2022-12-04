@@ -12,9 +12,9 @@
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-#baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
+baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
 #baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
-baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
+#baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
 
 setwd(baseDir)
 
@@ -703,7 +703,7 @@ summary(primary_DV2_meta)
 sink()
 
 
-# Forest plot code snipped from Wagenmakers et al. (2016)
+# Forest plot code based on Wagenmakers et al. (2016)
 
 # Word generation dv
 
@@ -721,8 +721,8 @@ forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean differ
                    grconvertX(.34, from = "ndc", "user")),
                    cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       #xlim=c(-2.6, 1.9), # This is a hack and uses magic numbers and I hate it but also I rage quit
-       #alim=c(-.8, .8),
+       xlim=c(-.9, .78),
+       #alim=c(-.5, .5),
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
@@ -747,16 +747,16 @@ Cairo(file=paste0(outDir, "/forest_primary_WC.png"),
 
 forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(PRIMARY_DV2_metaVecMeanCtrl, digits=2)), format(round(PRIMARY_DV2_metaVecMeanExp, digits=2))),
-       ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
-                   grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
+                   grconvertX(.38, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       #xlim=c(-4, 2.2), # This is a hack and uses magic numbers and I hate it but also I rage quit
+       xlim=c(-3.4, 3.5),
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Pain", cex=1.2)
-text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
-text(grconvertX(.89, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labNames)+2, "Pain", cex=1.2)
+text(grconvertX(.38, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
+text(grconvertX(.87, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
 addpoly(primary_DV2_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
@@ -779,7 +779,7 @@ summary(secondary_DV2_meta)
 sink()
 
 
-# Forest plot code snipped from Wagenmakers et al. (2016)
+# Forest plot code with help from Wagenmakers et al. (2016)
 
 # Word generation dv
 
@@ -794,15 +794,17 @@ Cairo(file=paste0(outDir, "/forest_secondary_WG.png"),
 
 forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(SECONDARY_DV1_metaVecMeanCtrl, digits=2)), format(round(SECONDARY_DV1_metaVecMeanExp, digits=2))),
-       ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
-                   grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
+                   grconvertX(.38, from = "ndc", "user")),
+       cex.axis=1.1,
+       lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       # xlim=c(-2.1, 1.5), # This is a hack and uses magic numbers and I hate it but also I rage quit
+       xlim=c(-.9, .78),
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "No\nDelay", cex=1.2)
-text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labNames)+2, "No Delay", cex=1.2)
+text(grconvertX(.38, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
 text(grconvertX(.87, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
@@ -822,16 +824,16 @@ Cairo(file=paste0(outDir, "/forest_secondary_WC.png"),
 
 forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(SECONDARY_DV2_metaVecMeanCtrl, digits=2)), format(round(SECONDARY_DV2_metaVecMeanExp, digits=2))),
-       ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
-                   grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
+                   grconvertX(.38, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       # xlim=c(-4.5, 2.9), # This is a hack and uses magic numbers and I hate it but also I rage quit
+       xlim=c(-3.9, 2.5),
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "No\nDelay", cex=1.2)
-text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
-text(grconvertX(.89, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labNames)+2, "No Delay", cex=1.2)
+text(grconvertX(.38, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
+text(grconvertX(.87, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
 addpoly(secondary_DV2_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
