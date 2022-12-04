@@ -18,6 +18,11 @@ baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
 
 setwd(baseDir)
 
+
+# Set random seed (used for determination of which word set is selected in Slovak-language labs)
+set.seed(5491) # from random.org - range from 1 to 10000
+
+
 # Set input directory
 # Should contain a summary file for all labs (LabInfo.csv)
 # Should also contain 3 files for each lab (with lab name appended to the beginning):
