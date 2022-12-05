@@ -717,18 +717,17 @@ Cairo(file=paste0(outDir, "/forest_primary_WG.png"),
 
 forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(PRIMARY_DV1_metaVecMeanCtrl, digits=2)), format(round(PRIMARY_DV1_metaVecMeanExp, digits=2))),
-       ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
-                   grconvertX(.34, from = "ndc", "user")),
+       ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
+                   grconvertX(.38, from = "ndc", "user")),
                    cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labNames)+3),
-       xlim=c(-.9, .78),
-       #alim=c(-.5, .5),
+       xlim=c(-1.1, 1),
        slab = labNames)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labNames)+2, "Pain", cex=1.2)
-text(grconvertX(.34, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
-text(grconvertX(.89, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labNames)+2, "Pain", cex=1.2)
+text(grconvertX(.38, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
+text(grconvertX(.87, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
 addpoly(primary_DV1_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
