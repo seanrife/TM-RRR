@@ -128,6 +128,7 @@ readInMainFile <- function(filename) {
   return(df)
 }
 
+# Function to read in exclusions file and return dataframe with exclusions data
 readInExclusionsFile <- function(filename) {
   df <- read.csv(filename, header = T, stringsAsFactors = F, check.names=F)
   colnames(df)[1] <- "id"
@@ -169,6 +170,7 @@ letter_search <- function(word, language) {
   return(match)
 }
 
+# Function to find death-related words (DV1) and return 1 if found
 is_deathword_DV1 <- function(x, language){
   word <- tolower(x)
   word <- gsub(" ", "", word)
@@ -200,6 +202,7 @@ is_deathword_DV1 <- function(x, language){
   }
 }
 
+# Function to find death-related word (DV2) and return 1 if found
 is_deathword_DV2 <- function(x, language, index) {
   if (is.na(x)){
     return(0)
@@ -317,6 +320,7 @@ is_deathword_DV2 <- function(x, language, index) {
       else if (index == 4 & word == "zi") return(1)
       else if (index == 5 & word == "vd") return(1)
       else if (index == 6 & word == "eb") return(1)
+      # Note: Slovak labs had an extra death-related word
       else if (index == 7 & word == "rk") return(1)
       else return(0)
     }
@@ -387,6 +391,9 @@ for (word in raw_deathwords_Slovak) {
 }
 
 
+# This is The Big Loop: for each lab in our list of lab IDs, read in the
+# exclusions file and main dataset, then munge and put needed results into
+# vectors for use in analyses / image generation
 for (lab in labNames) {
   workingLabPathExclusions <- paste0(dataDir,"/",lab,"_coding_completed_normalized.csv")
   df_exclusions <- readInExclusionsFile(workingLabPathExclusions)
@@ -419,15 +426,18 @@ for (lab in labNames) {
   
   # Put N info into labInfo DF (with exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
-
+  
+  # Generate word counts for DV1 questions
   df$COUNT_DV1_Q1 <- mapply(is_deathword_DV1, df$WGTASK_word1_response, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV1_Q2 <- mapply(is_deathword_DV1, df$WGTASK_word2_response, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV1_Q3 <- mapply(is_deathword_DV1, df$WGTASK_word3_response, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV1_Q4 <- mapply(is_deathword_DV1, df$WGTASK_word4_response, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV1_Q5 <- mapply(is_deathword_DV1, df$WGTASK_word5_response, language=df$startlanguage, USE.NAMES=F)
   
+  # Add up count variables for DV1 (Q1-Q5)
   df$COUNT_DV1 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV1_Q1"):which(colnames(df)=="COUNT_DV1_Q5"))], na.rm = TRUE)
 
+  # Generate word counts for DV2 questions
   df$COUNT_DV2_Q1 <- mapply(is_deathword_DV2, df$WSCTASK_S1_response, index=1, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV2_Q2 <- mapply(is_deathword_DV2, df$WSCTASK_S5_response, index=2, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV2_Q3 <- mapply(is_deathword_DV2, df$WSCTASK_S12_response, index=3, language=df$startlanguage, USE.NAMES=F)
@@ -438,8 +448,10 @@ for (lab in labNames) {
   # Deal with extra death-related word in Slovak-language labs
   if (df$startlanguage[1] == 'sk') {
     df$COUNT_DV2_Q7 <- mapply(is_deathword_DV2, df$WSCTASK_S18_response, index=7, language=df$startlanguage, USE.NAMES=F)
+    # Add up count variables for DV2 (Q1-Q7, since Slovak had an extra word)
     df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q7"))], na.rm = TRUE)
   }  else {
+    # Add up count variables for DV2 (Q1-Q6)
     df$COUNT_DV2_Q7 <- 0
     df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = TRUE)
   }
@@ -499,7 +511,6 @@ for (lab in labNames) {
   
 
   # Calculate tests/stats for primary analysis
-
   PRIMARY_DV1_m_exp <- mean(df$COUNT_DV1[df$primaryAnalysis==1], na.rm=T)
   PRIMARY_DV1_sd_exp <- sd(df$COUNT_DV1[df$primaryAnalysis==1], na.rm=T)
   PRIMARY_DV1_m_ctrl <- mean(df$COUNT_DV1[df$primaryAnalysis==0], na.rm=T)
@@ -632,7 +643,7 @@ THes <- .94-.58
 # SE estimate using pooled SD from original study
 THse <- sqrt(((1.21^2)+(.67^2)+(.73^2)+(.67^2))/4)/sqrt(120)
 
-# Forest plot code snipped from Wagenmakers et al. (2016)
+# Forest plot with help from Wagenmakers et al. (2016)
 
 # Forest plot with word generation dv
 
@@ -702,8 +713,6 @@ primary_DV2_meta <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVe
 summary(primary_DV2_meta)
 sink()
 
-
-# Forest plot code based on Wagenmakers et al. (2016)
 
 # Word generation dv
 
@@ -777,8 +786,6 @@ secondary_DV2_meta <- rma.uni(yi = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_
 summary(secondary_DV2_meta)
 sink()
 
-
-# Forest plot code with help from Wagenmakers et al. (2016)
 
 # Word generation dv
 
