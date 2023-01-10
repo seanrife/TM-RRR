@@ -64,8 +64,9 @@ SECONDARY_DV1_descriptives <- labInfo
 SECONDARY_DV2_descriptives <- labInfo
 
 # Lab names; used for reading in data and labeling
-labNames <- as.vector(labInfo$labID)
+labIDs <- as.vector(labInfo$labID)
 
+labID_name_mappings <- read.csv(paste0(dataDir,"/labID_name_mappings.csv"), stringsAsFactors=FALSE)
 
 # ANALYSES INCLUDES THREE APPROACHES:
 
@@ -394,7 +395,7 @@ for (word in raw_deathwords_Slovak) {
 # This is The Big Loop: for each lab in our list of lab IDs, read in the
 # exclusions file and main dataset, then munge and put needed results into
 # vectors for use in analyses / image generation
-for (lab in labNames) {
+for (lab in labIDs) {
   workingLabPathExclusions <- paste0(dataDir,"/",lab,"_coding_completed_normalized.csv")
   df_exclusions <- readInExclusionsFile(workingLabPathExclusions)
 
@@ -475,6 +476,8 @@ for (lab in labNames) {
   df$secondaryAnalysis[df$essayGroup==2] <- 0
   df$secondaryAnalysis[df$essayGroup==1] <- 1
   
+  df$labname <- labID_name_mappings$labname[labID_name_mappings$labID == lab]
+  df$labname_short <- labID_name_mappings$labname_short[labID_name_mappings$labID == lab]
   
   # Add to merged dataframe
   mergedDF <- rbind(mergedDF, df)
@@ -660,17 +663,17 @@ f = forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaV
        ilab=cbind(c(".58", format(round(ORIGINAL_DV1_metaVecMeanCtrl, digits=2))), c(".94", format(round(ORIGINAL_DV1_metaVecMeanExp, digits=2)))),
        ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
                    grconvertX(.34, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
-       rows=c(length(labNames)+7, (length(labNames)+2):3),
-       slab = c("Original Study", labNames),
-       ylim=c(-2, length(labNames)+11),
+       rows=c(length(labIDs)+7, (length(labIDs)+2):3),
+       slab = c("Original Study", labIDs),
+       ylim=c(-2, length(labIDs)+11),
        xlim = c(-1.15, 1.15))
 
-abline(h=length(labNames)+5, lwd=1.4)
-text(grconvertX(.019, from = "ndc", "user"), length(labNames)+3.75, "RRR Studies", cex=1.2, pos = 4)
-text(grconvertX(.053, from = "ndc", "user"), length(labNames)+10, "Study", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labNames)+10, "Other", cex=1.2)
-text(grconvertX(.34, from = "ndc", "user"), length(labNames)+10, "Delay", cex=1.2)
-text(grconvertX(.875, from = "ndc", "user"), length(labNames)+10, paste0("Mean difference", " [95% CI]"), cex=1.2)
+abline(h=length(labIDs)+5, lwd=1.4)
+text(grconvertX(.019, from = "ndc", "user"), length(labIDs)+3.75, "RRR Studies", cex=1.2, pos = 4)
+text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+10, "Study", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labIDs)+10, "Other", cex=1.2)
+text(grconvertX(.34, from = "ndc", "user"), length(labIDs)+10, "Delay", cex=1.2)
+text(grconvertX(.875, from = "ndc", "user"), length(labIDs)+10, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=1, lwd=1.4)
 addpoly(metaRAW_DV1, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
@@ -681,19 +684,31 @@ dev.off()
   
 # Line graphs of each lab's findings
 
+# Alphabetize by lab ID
+
+mergedDF <- mergedDF[order(mergedDF$labID),]
+
 all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV1, group = labID)) +
   labs(x = "Delay Time", y = "Word Count") +
-  geom_smooth(method = "loess", se = T, color = "darkgrey") +
+  geom_smooth(method = "lm", se = T, color = "darkgrey") +
   geom_point(alpha = 0.3, size = 0) +
-  facet_wrap(~labID, scales = "free")
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        axis.title.x = element_blank()) +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        axis.title.y = element_blank()) +
+  facet_wrap(~labname_short, scales = "free")
 
 ggsave(paste0(outDir, "/ORIGINAL_WG_line-graphs.png"))
 
 all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV2, group = labID)) +
   labs(x = "Delay Time", y = "Word Count") +
-  geom_smooth(method = "loess", se = T, color = "darkgrey") +
+  geom_smooth(method = "lm", se = T, color = "darkgrey") +
   geom_point(alpha = 0.3, size = 0) +
-  facet_wrap(~labID, scales = "free")
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        axis.title.x = element_blank()) +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        axis.title.y = element_blank()) +
+  facet_wrap(~labname_short, scales = "free")
 
 ggsave(paste0(outDir, "/ORIGINAL_WC_line-graphs.png"))
 
@@ -729,14 +744,14 @@ forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean differ
        ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
                    grconvertX(.38, from = "ndc", "user")),
                    cex.axis=1.1, lwd=1.4,
-       ylim=c(-2, length(labNames)+3),
+       ylim=c(-2, length(labIDs)+3),
        xlim=c(-1.1, 1),
-       slab = labNames)
+       slab = labIDs)
 
-text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
-text(grconvertX(.3, from = "ndc", "user"), length(labNames)+2, "Pain", cex=1.2)
-text(grconvertX(.38, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
-text(grconvertX(.87, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
+text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Pain", cex=1.2)
+text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Death", cex=1.2)
+text(grconvertX(.87, from = "ndc", "user"), length(labIDs)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
 addpoly(primary_DV1_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
@@ -757,14 +772,14 @@ forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean differ
        ilab=cbind(format(round(PRIMARY_DV2_metaVecMeanCtrl, digits=2)), format(round(PRIMARY_DV2_metaVecMeanExp, digits=2))),
        ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
                    grconvertX(.38, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
-       ylim=c(-2, length(labNames)+3),
+       ylim=c(-2, length(labIDs)+3),
        xlim=c(-3.4, 3.5),
-       slab = labNames)
+       slab = labIDs)
 
-text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
-text(grconvertX(.3, from = "ndc", "user"), length(labNames)+2, "Pain", cex=1.2)
-text(grconvertX(.38, from = "ndc", "user"), length(labNames)+2, "Death", cex=1.2)
-text(grconvertX(.87, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
+text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Pain", cex=1.2)
+text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Death", cex=1.2)
+text(grconvertX(.87, from = "ndc", "user"), length(labIDs)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
 addpoly(primary_DV2_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
@@ -804,14 +819,14 @@ forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean di
                    grconvertX(.38, from = "ndc", "user")),
        cex.axis=1.1,
        lwd=1.4,
-       ylim=c(-2, length(labNames)+3),
+       ylim=c(-2, length(labIDs)+3),
        xlim=c(-.9, .78),
-       slab = labNames)
+       slab = labIDs)
 
-text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
-text(grconvertX(.3, from = "ndc", "user"), length(labNames)+2, "No Delay", cex=1.2)
-text(grconvertX(.38, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
-text(grconvertX(.87, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
+text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "No Delay", cex=1.2)
+text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Delay", cex=1.2)
+text(grconvertX(.87, from = "ndc", "user"), length(labIDs)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
 addpoly(secondary_DV1_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
@@ -832,14 +847,14 @@ forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean di
        ilab=cbind(format(round(SECONDARY_DV2_metaVecMeanCtrl, digits=2)), format(round(SECONDARY_DV2_metaVecMeanExp, digits=2))),
        ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
                    grconvertX(.38, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
-       ylim=c(-2, length(labNames)+3),
+       ylim=c(-2, length(labIDs)+3),
        xlim=c(-3.9, 2.5),
-       slab = labNames)
+       slab = labIDs)
 
-text(grconvertX(.053, from = "ndc", "user"), length(labNames)+2, "Study", cex=1.2)
-text(grconvertX(.3, from = "ndc", "user"), length(labNames)+2, "No Delay", cex=1.2)
-text(grconvertX(.38, from = "ndc", "user"), length(labNames)+2, "Delay", cex=1.2)
-text(grconvertX(.87, from = "ndc", "user"), length(labNames)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
+text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "No Delay", cex=1.2)
+text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Delay", cex=1.2)
+text(grconvertX(.87, from = "ndc", "user"), length(labIDs)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
 addpoly(secondary_DV2_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
