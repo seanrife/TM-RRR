@@ -28,6 +28,8 @@ dataDir <- paste0(baseDir, "/data")
 # Location for output (text and graphs)
 outDir <- paste0(baseDir, "/output")
 
+# Languages to skip (for post-hoc analyses)
+skipLangs <- c('de')
 
 # CODE BELOW NEED NOT BE MODIFIED
 
