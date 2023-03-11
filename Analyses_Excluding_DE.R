@@ -26,7 +26,7 @@ setwd(baseDir)
 dataDir <- paste0(baseDir, "/data")
 
 # Location for output (text and graphs)
-outDir <- paste0(baseDir, "/output")
+outDir <- paste0(baseDir, "/output/excluding_de")
 
 # CODE BELOW NEED NOT BE MODIFIED
 
@@ -54,6 +54,8 @@ mergedDF <- data.frame()
 
 # Read in lab info
 labInfo <- read.csv(paste0(dataDir,"/LabInfo.csv"), stringsAsFactors=FALSE)
+
+labInfo <- labInfo[!labInfo$language == "German",]
 
 # Create dataframes for descriptive tables
 ORIGINAL_DV1_descriptives <- labInfo
@@ -202,6 +204,9 @@ for (lab in labIDs) {
   # Exclude if participant took less than 5 minutes to complete the survey
   df <- df[!is.na(df$interviewtime) & df$interviewtime > 300,]
   
+  # Exclude German-language participants
+  df <- df[!df$startlanguage=='de',]
+  
   # Put N info into labInfo DF (with exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
   
@@ -222,7 +227,7 @@ for (lab in labIDs) {
   df$COUNT_DV2_Q4 <- mapply(is_deathword_DV2, df$WSCTASK_S15_response, index=4, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV2_Q5 <- mapply(is_deathword_DV2, df$WSCTASK_S19_response, index=5, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV2_Q6 <- mapply(is_deathword_DV2, df$WSCTASK_S22_response, index=6, language=df$startlanguage, USE.NAMES=F)
-  
+
   # Deal with extra death-related word in Slovak-language labs
   if (df$startlanguage[1] == 'sk') {
     df$COUNT_DV2_Q7 <- mapply(is_deathword_DV2, df$WSCTASK_S18_response, index=7, language=df$startlanguage, USE.NAMES=F)
