@@ -12,9 +12,9 @@
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
+#baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
 #baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
-#baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
+baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
 
 setwd(baseDir)
 
