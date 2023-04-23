@@ -12,9 +12,9 @@
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-#baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
+baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
 #baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
-baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
+#baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
 
 setwd(baseDir)
 
@@ -26,7 +26,7 @@ setwd(baseDir)
 dataDir <- paste0(baseDir, "/data")
 
 # Location for output (text and graphs)
-outDir <- paste0(baseDir, "/output")
+outDir <- paste0(baseDir, "/output/excluding_de")
 
 # CODE BELOW NEED NOT BE MODIFIED
 
@@ -54,6 +54,8 @@ mergedDF <- data.frame()
 
 # Read in lab info
 labInfo <- read.csv(paste0(dataDir,"/LabInfo.csv"), stringsAsFactors=FALSE)
+
+labInfo <- labInfo[!labInfo$language == "German",]
 
 # Create dataframes for descriptive tables
 ORIGINAL_DV1_descriptives <- labInfo
@@ -202,6 +204,9 @@ for (lab in labIDs) {
   # Exclude if participant took less than 5 minutes to complete the survey
   df <- df[!is.na(df$interviewtime) & df$interviewtime > 300,]
   
+  # Exclude German-language participants
+  df <- df[!df$startlanguage=='de',]
+  
   # Put N info into labInfo DF (with exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
   
@@ -222,7 +227,7 @@ for (lab in labIDs) {
   df$COUNT_DV2_Q4 <- mapply(is_deathword_DV2, df$WSCTASK_S15_response, index=4, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV2_Q5 <- mapply(is_deathword_DV2, df$WSCTASK_S19_response, index=5, language=df$startlanguage, USE.NAMES=F)
   df$COUNT_DV2_Q6 <- mapply(is_deathword_DV2, df$WSCTASK_S22_response, index=6, language=df$startlanguage, USE.NAMES=F)
-  
+
   # Deal with extra death-related word in Slovak-language labs
   if (df$startlanguage[1] == 'sk') {
     df$COUNT_DV2_Q7 <- mapply(is_deathword_DV2, df$WSCTASK_S18_response, index=7, language=df$startlanguage, USE.NAMES=F)
@@ -395,22 +400,22 @@ for (lab in labIDs) {
 #### REPLICATION ANALYSES ####
 
 # Create descriptive statistics tables
-write.csv(ORIGINAL_DV1_descriptives, paste0(outDir, "/ORIGINAL_WG_descriptives.csv"), row.names = F)
-write.csv(PRIMARY_DV1_descriptives, paste0(outDir, "/PRIMARY_WG_descriptives.csv"), row.names = F)
-write.csv(PRIMARY_DV2_descriptives, paste0(outDir, "/PRIMARY_WC_descriptives.csv"), row.names = F)
-write.csv(SECONDARY_DV1_descriptives, paste0(outDir, "/SECONDARY_WG_descriptives.csv"), row.names = F)
-write.csv(SECONDARY_DV2_descriptives, paste0(outDir, "/SECONDARY_WC_descriptives.csv"), row.names = F)
-write.csv(labInfo, paste0(outDir, "/labDescriptives.csv"), row.names = F)
+write.csv(ORIGINAL_DV1_descriptives, paste0(outDir, "/excluding_DE_ORIGINAL_WG_descriptives.csv"), row.names = F)
+write.csv(PRIMARY_DV1_descriptives, paste0(outDir, "/excluding_DE_PRIMARY_WG_descriptives.csv"), row.names = F)
+write.csv(PRIMARY_DV2_descriptives, paste0(outDir, "/excluding_DE_PRIMARY_WC_descriptives.csv"), row.names = F)
+write.csv(SECONDARY_DV1_descriptives, paste0(outDir, "/excluding_DE_SECONDARY_WG_descriptives.csv"), row.names = F)
+write.csv(SECONDARY_DV2_descriptives, paste0(outDir, "/excluding_DE_SECONDARY_WC_descriptives.csv"), row.names = F)
+write.csv(labInfo, paste0(outDir, "/excluding_DE_labDescriptives.csv"), row.names = F)
 
 # Meta analysis
-sink(paste0(outDir, "/ma-original-WG-bg.txt"))
+sink(paste0(outDir, "/excluding_DE_ma-original-WG-bg.txt"))
 metaRAW_DV1 <- rma.uni(yi = ORIGINAL_DV1_metaVecES, sei = ORIGINAL_DV1_metaVecSE)
 summary(metaRAW_DV1)
 sink()
 
 # Meta analysis
 es <- escalc(measure="COR", ri=ORIGINAL_DV1_metaVecR, ni=ORIGINAL_DV1_metaVecN)
-sink(paste0(outDir, "/ma-original-WG-cont.txt"))
+sink(paste0(outDir, "/excluding_DE_ma-original-WG-cont.txt"))
 metaR_DV1 <- rma.uni(es)
 summary(metaR_DV1)
 sink()
@@ -427,7 +432,7 @@ THse <- sqrt(((1.21^2)+(.67^2)+(.73^2)+(.67^2))/4)/sqrt(120)
 
 # Forest plot with word generation dv
 
-Cairo(file=paste0(outDir, "/forest_original_WG.png"), 
+Cairo(file=paste0(outDir, "/excluding_DE_forest_original_WG.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -475,7 +480,7 @@ all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV1, group = labID))
         axis.title.y = element_blank()) +
   facet_wrap(~labname_short, scales = "free")
 
-ggsave(paste0(outDir, "/ORIGINAL_WG_line-graphs.png"))
+ggsave(paste0(outDir, "/excluding_DE_ORIGINAL_WG_line-graphs.png"))
 
 all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV2, group = labID)) +
   labs(x = "Delay Time", y = "Word Count") +
@@ -487,20 +492,20 @@ all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV2, group = labID))
         axis.title.y = element_blank()) +
   facet_wrap(~labname_short, scales = "free")
 
-ggsave(paste0(outDir, "/ORIGINAL_WC_line-graphs.png"))
+ggsave(paste0(outDir, "/excluding_DE_ORIGINAL_WC_line-graphs.png"))
 
 
 
 #### PRIMARY ANALYSES ####
 
 # Meta analysis
-sink(paste0(outDir, "/ma-primary-WG.txt"))
+sink(paste0(outDir, "/excluding_DE_ma-primary-WG.txt"))
 primary_DV1_meta <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE)
 summary(primary_DV1_meta)
 sink()
 
 # Meta analysis
-sink(paste0(outDir, "/ma-primary-WC.txt"))
+sink(paste0(outDir, "/excluding_DE_ma-primary-WC.txt"))
 primary_DV2_meta <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE)
 summary(primary_DV2_meta)
 sink()
@@ -508,7 +513,7 @@ sink()
 
 # Word generation dv
 
-Cairo(file=paste0(outDir, "/forest_primary_WG.png"), 
+Cairo(file=paste0(outDir, "/excluding_DE_forest_primary_WG.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -537,7 +542,7 @@ dev.off()
 
 # Word completion dv
 
-Cairo(file=paste0(outDir, "/forest_primary_WC.png"), 
+Cairo(file=paste0(outDir, "/excluding_DE_forest_primary_WC.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -567,13 +572,13 @@ dev.off()
 #### SECONDARY ANALYSES ####
 
 # Meta analysis
-sink(paste0(outDir, "/ma-secondary-WG.txt"))
+sink(paste0(outDir, "/excluding_DE_ma-secondary-WG.txt"))
 secondary_DV1_meta <- rma.uni(yi = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE)
 summary(secondary_DV1_meta)
 sink()
 
 # Meta analysis
-sink(paste0(outDir, "/ma-secondary-WC.txt"))
+sink(paste0(outDir, "/excluding_DE_ma-secondary-WC.txt"))
 secondary_DV2_meta <- rma.uni(yi = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE)
 summary(secondary_DV2_meta)
 sink()
@@ -581,7 +586,7 @@ sink()
 
 # Word generation dv
 
-Cairo(file=paste0(outDir, "/forest_secondary_WG.png"), 
+Cairo(file=paste0(outDir, "/excluding_DE_forest_secondary_WG.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -612,7 +617,7 @@ dev.off()
 
 # Word completion dv
 
-Cairo(file=paste0(outDir, "/forest_secondary_WC.png"), 
+Cairo(file=paste0(outDir, "/excluding_DE_forest_secondary_WC.png"), 
       bg="white",
       type="png",
       units="in", 
