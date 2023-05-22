@@ -222,3 +222,17 @@ is_deathword_DV2 <- function(x, language, index) {
     }
   }
 }
+
+
+# Function to remove zero variance SE instances from ES/SE vectors
+clean_zero_variance <- function(esVec, seVec) {
+  out_es <- vector()
+  out_se <- vector()
+  for (i in 1:length(esVec)) {
+    if (seVec[i] > 0) {
+      out_es <- c(out_es, esVec[i])
+      out_se <- c(out_se, seVec[i])
+      }
+  }
+  return(data.frame(es=out_es, se=out_se))
+}
