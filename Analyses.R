@@ -403,9 +403,13 @@ write.csv(SECONDARY_DV1_descriptives, paste0(outDir, "/SECONDARY_WG_descriptives
 write.csv(SECONDARY_DV2_descriptives, paste0(outDir, "/SECONDARY_WC_descriptives.csv"), row.names = F)
 write.csv(labInfo, paste0(outDir, "/labDescriptives.csv"), row.names = F)
 
+
+# Prep for meta analyses
+original_DV1_cleaned <- clean_zero_variance(ORIGINAL_DV1_metaVecES, ORIGINAL_DV1_metaVecSE)
+
 # Meta analysis
 sink(paste0(outDir, "/ma-original-WG-bg.txt"))
-metaRAW_DV1 <- rma.uni(yi = ORIGINAL_DV1_metaVecES, sei = ORIGINAL_DV1_metaVecSE)
+metaRAW_DV1 <- rma.uni(yi = original_DV1_cleaned$es, sei = original_DV1_cleaned$se)
 summary(metaRAW_DV1)
 sink()
 
@@ -494,15 +498,19 @@ ggsave(paste0(outDir, "/ORIGINAL_WC_line-graphs.png"))
 
 #### PRIMARY ANALYSES ####
 
+primary_DV1_cleaned <- clean_zero_variance(PRIMARY_DV1_metaVecES, PRIMARY_DV1_metaVecSE)
+
 # Meta analysis
 sink(paste0(outDir, "/ma-primary-WG.txt"))
-primary_DV1_meta <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE)
+primary_DV1_meta <- rma.uni(yi = primary_DV1_cleaned$es, sei = primary_DV1_cleaned$se)
 summary(primary_DV1_meta)
 sink()
 
+primary_DV2_cleaned <- clean_zero_variance(PRIMARY_DV2_metaVecES, PRIMARY_DV2_metaVecSE)
+
 # Meta analysis
 sink(paste0(outDir, "/ma-primary-WC.txt"))
-primary_DV2_meta <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE)
+primary_DV2_meta <- rma.uni(yi = primary_DV2_cleaned$es, sei = primary_DV2_cleaned$se)
 summary(primary_DV2_meta)
 sink()
 
@@ -567,15 +575,19 @@ dev.off()
 
 #### SECONDARY ANALYSES ####
 
+secondary_DV1_cleaned <- clean_zero_variance(SECONDARY_DV1_metaVecES, SECONDARY_DV1_metaVecSE)
+
 # Meta analysis
 sink(paste0(outDir, "/ma-secondary-WG.txt"))
-secondary_DV1_meta <- rma.uni(yi = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE)
+secondary_DV1_meta <- rma.uni(yi = secondary_DV1_cleaned$es, sei = secondary_DV1_cleaned$se)
 summary(secondary_DV1_meta)
 sink()
 
+secondary_DV2_cleaned <- clean_zero_variance(SECONDARY_DV2_metaVecES, SECONDARY_DV2_metaVecSE)
+
 # Meta analysis
 sink(paste0(outDir, "/ma-secondary-WC.txt"))
-secondary_DV2_meta <- rma.uni(yi = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE)
+secondary_DV2_meta <- rma.uni(yi = secondary_DV2_cleaned$es, sei = secondary_DV2_cleaned$se)
 summary(secondary_DV2_meta)
 sink()
 
