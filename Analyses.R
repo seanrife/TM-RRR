@@ -12,10 +12,10 @@
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-#baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
+baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
 #baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
 #baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
-baseDir <- "C:/Users/Sean/Dropbox/Research/TM RRR"
+#baseDir <- "C:/Users/Sean/Dropbox/Research/TM RRR"
 
 setwd(baseDir)
 
@@ -243,14 +243,24 @@ for (lab in labIDs) {
   labInfo$ageMean[labInfo$labID == as.factor(lab)] <- format(mean(df$Age, na.rm=T))
   labInfo$ageSD[labInfo$labID == as.factor(lab)] <- format(sd(df$Age, na.rm=T))
   
+  
+  # For the following: essayGroup=1 is death cond., essayGroup=2 is control (dental pain)
+  # delayGroup=1 received the delay, delayGroup=2 did not.
+  # The original experiment compared the death/delay group with the other three
+  # groups (death/no delay, control/no delay, death/no delay)
+  
+  # For the three blocks below, we create new variables that indicate groups
+  # (e.g., experimental/control) as 1 or 0, leaving any other rows empty
+  
   # Create group identifiers for original experiment
   df$originalExperiment <- 0
-  df$originalExperiment[df$essayGroup==1 & df$delayGroup==1] <- 1
+  df$originalExperiment[df$essayGroup==1 & df$delayGroup==2] <- 1
   
+  # Create group identifiers for primary analysis (death/dental pain)
   df$primaryAnalysis[df$delayGroup==1 & df$essayGroup==1] <- 0
   df$primaryAnalysis[df$delayGroup==2 & df$essayGroup==1] <- 1
   
-  # Create group identifiers for secondary analysis
+  # Create group identifiers for secondary analysis (delay/no delay)
   df$secondaryAnalysis[df$essayGroup==2] <- 0
   df$secondaryAnalysis[df$essayGroup==1] <- 1
   
