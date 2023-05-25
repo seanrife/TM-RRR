@@ -415,20 +415,29 @@ write.csv(labInfo, paste0(outDir, "/labDescriptives.csv"), row.names = F)
 
 
 # Prep for meta analyses
+# We need to run two MAs: one for point estimates with all cases and another
+# omitting labs with zero variance.
 original_DV1_cleaned <- clean_zero_variance(ORIGINAL_DV1_metaVecES, ORIGINAL_DV1_metaVecSE)
 
-# Meta analysis
-sink(paste0(outDir, "/ma-original-WG-bg.txt"))
+# Meta analysis (between groups, zero variance omitted)
+sink(paste0(outDir, "/ma-original-WG-bg-nozero.txt"))
 metaRAW_DV1 <- rma.uni(yi = original_DV1_cleaned$es, sei = original_DV1_cleaned$se)
 summary(metaRAW_DV1)
 sink()
 
-# Meta analysis
+# Meta analysis (between groups)
+sink(paste0(outDir, "/ma-original-WG-bg.txt"))
+metaRAW_DV1 <- rma.uni(yi = ORIGINAL_DV1_metaVecES, sei = ORIGINAL_DV1_metaVecSE)
+summary(metaRAW_DV1)
+sink()
+
+# Meta analysis (continuous time)
 es <- escalc(measure="COR", ri=ORIGINAL_DV1_metaVecR, ni=ORIGINAL_DV1_metaVecN)
 sink(paste0(outDir, "/ma-original-WG-cont.txt"))
 metaR_DV1 <- rma.uni(es)
 summary(metaR_DV1)
 sink()
+
 
 
 # Forest plot
@@ -510,19 +519,32 @@ ggsave(paste0(outDir, "/ORIGINAL_WC_line-graphs.png"))
 
 primary_DV1_cleaned <- clean_zero_variance(PRIMARY_DV1_metaVecES, PRIMARY_DV1_metaVecSE)
 
-# Meta analysis
-sink(paste0(outDir, "/ma-primary-WG.txt"))
+# Meta analysis (word generation, zero variance omitted)
+sink(paste0(outDir, "/ma-primary-WG-nozero.txt"))
 primary_DV1_meta <- rma.uni(yi = primary_DV1_cleaned$es, sei = primary_DV1_cleaned$se)
 summary(primary_DV1_meta)
 sink()
 
 primary_DV2_cleaned <- clean_zero_variance(PRIMARY_DV2_metaVecES, PRIMARY_DV2_metaVecSE)
 
-# Meta analysis
-sink(paste0(outDir, "/ma-primary-WC.txt"))
+# Meta analysis (word creation, zero variance omitted)
+sink(paste0(outDir, "/ma-primary-WC-nozero.txt"))
 primary_DV2_meta <- rma.uni(yi = primary_DV2_cleaned$es, sei = primary_DV2_cleaned$se)
 summary(primary_DV2_meta)
 sink()
+
+# Meta analysis (word generation, zero variance included)
+sink(paste0(outDir, "/ma-primary-WG.txt"))
+primary_DV1_meta <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV2_metaVecSE)
+summary(primary_DV1_meta)
+sink()
+
+# Meta analysis (word creation, zero variance included)
+sink(paste0(outDir, "/ma-primary-WC.txt"))
+primary_DV2_meta <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV1_metaVecSE)
+summary(primary_DV2_meta)
+sink()
+
 
 
 # Word generation dv
@@ -588,7 +610,7 @@ dev.off()
 secondary_DV1_cleaned <- clean_zero_variance(SECONDARY_DV1_metaVecES, SECONDARY_DV1_metaVecSE)
 
 # Meta analysis
-sink(paste0(outDir, "/ma-secondary-WG.txt"))
+sink(paste0(outDir, "/ma-secondary-WG-nozero.txt"))
 secondary_DV1_meta <- rma.uni(yi = secondary_DV1_cleaned$es, sei = secondary_DV1_cleaned$se)
 summary(secondary_DV1_meta)
 sink()
@@ -596,7 +618,7 @@ sink()
 secondary_DV2_cleaned <- clean_zero_variance(SECONDARY_DV2_metaVecES, SECONDARY_DV2_metaVecSE)
 
 # Meta analysis
-sink(paste0(outDir, "/ma-secondary-WC.txt"))
+sink(paste0(outDir, "/ma-secondary-WC-nozero.txt"))
 secondary_DV2_meta <- rma.uni(yi = secondary_DV2_cleaned$es, sei = secondary_DV2_cleaned$se)
 summary(secondary_DV2_meta)
 sink()
