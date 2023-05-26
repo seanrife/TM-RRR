@@ -63,7 +63,7 @@ PRIMARY_DV2_descriptives <- labInfo
 SECONDARY_DV1_descriptives <- labInfo
 SECONDARY_DV2_descriptives <- labInfo
 
-# Lab names; used for reading in data and labeling
+# Lab names; used for reading in data
 labIDs <- as.vector(labInfo$labID)
 
 labID_name_mappings <- read.csv(paste0(dataDir,"/labID_name_mappings.csv"), stringsAsFactors=FALSE)
@@ -253,16 +253,16 @@ for (lab in labIDs) {
   # (e.g., experimental/control) as 1 or 0, leaving any other rows empty
   
   # Create group identifiers for original experiment
-  df$originalExperiment <- 0
-  df$originalExperiment[df$essayGroup==1 & df$delayGroup==2] <- 1
+  df$originalExperiment <- 0 # all cases
+  df$originalExperiment[df$essayGroup==1 & df$delayGroup==2] <- 1 # only death/no delay
   
   # Create group identifiers for primary analysis (death/dental pain)
-  df$primaryAnalysis[df$delayGroup==1 & df$essayGroup==1] <- 0
-  df$primaryAnalysis[df$delayGroup==2 & df$essayGroup==1] <- 1
+  df$primaryAnalysis[df$essayGroup==2] <- 0 # dental pain
+  df$primaryAnalysis[df$essayGroup==1] <- 1 # death
   
   # Create group identifiers for secondary analysis (delay/no delay)
-  df$secondaryAnalysis[df$essayGroup==2] <- 0
-  df$secondaryAnalysis[df$essayGroup==1] <- 1
+  df$secondaryAnalysis[df$essayGroup==1 & df$delayGroup==2] <- 0 # death/no delay
+  df$secondaryAnalysis[df$essayGroup==1 & df$delayGroup==1] <- 1 # death/delay
   
   df$labname <- labID_name_mappings$labname[labID_name_mappings$labID == lab]
   df$labname_short <- labID_name_mappings$labname_short[labID_name_mappings$labID == lab]
@@ -464,9 +464,9 @@ f = forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaV
        ilab=cbind(c(".58", format(round(ORIGINAL_DV1_metaVecMeanExp, digits=2))), c(".94", format(round(ORIGINAL_DV1_metaVecMeanCtrl, digits=2)))),
        ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
                    grconvertX(.36, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
-       rows=c(length(labIDs)+7, (length(labIDs)+2):3),
-       slab = c("Original Study", labIDs),
-       ylim=c(-2, length(labIDs)+11),
+       rows=c(length(labID_name_mappings$labname_short)+7, (length(labID_name_mappings$labname_short)+2):3),
+       slab = c("Original Study", labID_name_mappings$labname_short),
+       ylim=c(-2, length(labID_name_mappings$labname_short)+11),
        xlim = c(-1.75, 1.15))
 
 abline(h=length(labIDs)+5, lwd=1.4)
@@ -562,9 +562,9 @@ forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean differ
        ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
                    grconvertX(.38, from = "ndc", "user")),
                    cex.axis=1.1, lwd=1.4,
-       ylim=c(-2, length(labIDs)+3),
+       ylim=c(-2, length(labID_name_mappings$labname_short)+3),
        xlim=c(-1.1, 1),
-       slab = labIDs)
+       slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
 text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Pain", cex=1.2)
@@ -590,9 +590,9 @@ forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean differ
        ilab=cbind(format(round(PRIMARY_DV2_metaVecMeanCtrl, digits=2)), format(round(PRIMARY_DV2_metaVecMeanExp, digits=2))),
        ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
                    grconvertX(.38, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
-       ylim=c(-2, length(labIDs)+3),
+       ylim=c(-2, length(labID_name_mappings$labname_short)+3),
        xlim=c(-3.4, 3.5),
-       slab = labIDs)
+       slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
 text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Pain", cex=1.2)
@@ -641,9 +641,9 @@ forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean di
                    grconvertX(.38, from = "ndc", "user")),
        cex.axis=1.1,
        lwd=1.4,
-       ylim=c(-2, length(labIDs)+3),
+       ylim=c(-2, length(labID_name_mappings$labname_short)+3),
        xlim=c(-.9, .78),
-       slab = labIDs)
+       slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
 text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "No Delay", cex=1.2)
@@ -669,9 +669,9 @@ forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean di
        ilab=cbind(format(round(SECONDARY_DV2_metaVecMeanCtrl, digits=2)), format(round(SECONDARY_DV2_metaVecMeanExp, digits=2))),
        ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
                    grconvertX(.38, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
-       ylim=c(-2, length(labIDs)+3),
+       ylim=c(-2, length(labID_name_mappings$labname_short)+3),
        xlim=c(-3.9, 2.5),
-       slab = labIDs)
+       slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
 text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "No Delay", cex=1.2)
