@@ -591,7 +591,7 @@ forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean differ
        ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
                    grconvertX(.38, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labID_name_mappings$labname_short)+3),
-       xlim=c(-3.4, 3.5),
+       xlim=c(-4.4, 3.5),
        slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
@@ -642,7 +642,7 @@ forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean di
        cex.axis=1.1,
        lwd=1.4,
        ylim=c(-2, length(labID_name_mappings$labname_short)+3),
-       xlim=c(-.9, .78),
+       xlim=c(-1.7, .88),
        slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
