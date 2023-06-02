@@ -294,7 +294,7 @@ for (lab in labIDs) {
   ORIGINAL_DV1_metaVecR <- c(ORIGINAL_DV1_metaVecR, ORIGINAL_DV1_r$estimate)
   ORIGINAL_DV1_metaVecN <- c(ORIGINAL_DV1_metaVecN, (ORIGINAL_DV1_r$parameter + 2))
   
-  ORIGINAL_DV1_metaVecES <- c(ORIGINAL_DV1_metaVecES, ORIGINAL_DV1_m_ctrl-ORIGINAL_DV1_m_exp)
+  ORIGINAL_DV1_metaVecES <- c(ORIGINAL_DV1_metaVecES, ORIGINAL_DV1_m_exp-ORIGINAL_DV1_m_ctrl)
   ORIGINAL_DV1_metaVecSE <- c(ORIGINAL_DV1_metaVecSE, ORIGINAL_DV1_se)
   
   ORIGINAL_DV1_metaVecMeanExp <- c(ORIGINAL_DV1_metaVecMeanExp, ORIGINAL_DV1_m_exp)
@@ -317,7 +317,7 @@ for (lab in labIDs) {
   PRIMARY_DV1_descriptives$mean_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_m_ctrl)
   PRIMARY_DV1_descriptives$sd_ctrl[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_sd_ctrl)
 
-  PRIMARY_DV1_metaVecES <- c(PRIMARY_DV1_metaVecES, PRIMARY_DV1_m_exp - PRIMARY_DV1_m_ctrl)
+  PRIMARY_DV1_metaVecES <- c(PRIMARY_DV1_metaVecES, PRIMARY_DV1_m_exp-PRIMARY_DV1_m_ctrl)
   PRIMARY_DV1_metaVecSE <- c(PRIMARY_DV1_metaVecSE, PRIMARY_DV1_se)
   
   PRIMARY_DV1_metaVecMeanExp <- c(PRIMARY_DV1_metaVecMeanExp, PRIMARY_DV1_m_exp)
@@ -339,7 +339,7 @@ for (lab in labIDs) {
   PRIMARY_DV2_descriptives$mean_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_m_ctrl)
   PRIMARY_DV2_descriptives$sd_ctrl[PRIMARY_DV2_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV2_sd_ctrl)
   
-  PRIMARY_DV2_metaVecES <- c(PRIMARY_DV2_metaVecES, PRIMARY_DV2_m_exp - PRIMARY_DV2_m_ctrl)
+  PRIMARY_DV2_metaVecES <- c(PRIMARY_DV2_metaVecES, PRIMARY_DV2_m_exp-PRIMARY_DV2_m_ctrl)
   PRIMARY_DV2_metaVecSE <- c(PRIMARY_DV2_metaVecSE, PRIMARY_DV2_se)
   
   PRIMARY_DV2_metaVecMeanExp <- c(PRIMARY_DV2_metaVecMeanExp, PRIMARY_DV2_m_exp)
@@ -368,7 +368,7 @@ for (lab in labIDs) {
   SECONDARY_DV1_descriptives$mean_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_ctrl)
   SECONDARY_DV1_descriptives$sd_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_ctrl)
   
-  SECONDARY_DV1_metaVecES <- c(SECONDARY_DV1_metaVecES, SECONDARY_DV1_m_exp - SECONDARY_DV1_m_ctrl)
+  SECONDARY_DV1_metaVecES <- c(SECONDARY_DV1_metaVecES, SECONDARY_DV1_m_exp-SECONDARY_DV1_m_ctrl)
   SECONDARY_DV1_metaVecSE <- c(SECONDARY_DV1_metaVecSE, SECONDARY_DV1_se)
   
   SECONDARY_DV1_metaVecMeanExp <- c(SECONDARY_DV1_metaVecMeanExp, SECONDARY_DV1_m_exp)
@@ -390,7 +390,7 @@ for (lab in labIDs) {
   SECONDARY_DV2_descriptives$mean_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_m_ctrl)
   SECONDARY_DV2_descriptives$sd_ctrl[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_sd_ctrl)
   
-  SECONDARY_DV2_metaVecES <- c(SECONDARY_DV2_metaVecES, SECONDARY_DV1_m_exp - SECONDARY_DV1_m_ctrl)
+  SECONDARY_DV2_metaVecES <- c(SECONDARY_DV2_metaVecES, SECONDARY_DV2_m_exp-SECONDARY_DV2_m_ctrl)
   SECONDARY_DV2_metaVecSE <- c(SECONDARY_DV2_metaVecSE, SECONDARY_DV2_se)
   
   SECONDARY_DV2_metaVecMeanExp <- c(SECONDARY_DV2_metaVecMeanExp, SECONDARY_DV2_m_exp)
@@ -443,7 +443,7 @@ sink()
 # Forest plot
 
 # Raw ES of original study
-THes <- .58-.94
+THes <- .94-.58
 # SE estimate using pooled SD from original study
 THse <- sqrt(((1.21^2)+(.67^2)+(.73^2)+(.67^2))/4)/sqrt(120)
 
@@ -461,7 +461,7 @@ Cairo(file=paste0(outDir, "/forest_original_WG.png"),
 
 
 f = forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaVecSE), xlab="Mean difference", cex.lab=1.2,
-       ilab=cbind(c(".94", format(round(ORIGINAL_DV1_metaVecMeanExp, digits=2))), c(".58", format(round(ORIGINAL_DV1_metaVecMeanCtrl, digits=2)))),
+       ilab=cbind(c(".58", format(round(ORIGINAL_DV1_metaVecMeanCtrl, digits=2))), c(".94", format(round(ORIGINAL_DV1_metaVecMeanExp, digits=2)))),
        ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
                    grconvertX(.36, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        rows=c(length(labID_name_mappings$labname_short)+7, (length(labID_name_mappings$labname_short)+2):3),
@@ -472,8 +472,8 @@ f = forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaV
 abline(h=length(labIDs)+5, lwd=1.4)
 text(grconvertX(.019, from = "ndc", "user"), length(labIDs)+3.75, "RRR Studies", cex=1.2, pos = 4)
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+10, "Study", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labIDs)+10, "No Delay", cex=1.2)
-text(grconvertX(.36, from = "ndc", "user"), length(labIDs)+10, "Other", cex=1.2)
+text(grconvertX(.28, from = "ndc", "user"), length(labIDs)+10, "Other", cex=1.2)
+text(grconvertX(.36, from = "ndc", "user"), length(labIDs)+10, "No Delay", cex=1.2)
 text(grconvertX(.875, from = "ndc", "user"), length(labIDs)+10, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=1, lwd=1.4)
@@ -558,7 +558,7 @@ Cairo(file=paste0(outDir, "/forest_primary_WG.png"),
       dpi=600)
 
 forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
-       ilab=cbind(format(round(PRIMARY_DV1_metaVecMeanExp, digits=2)), format(round(PRIMARY_DV1_metaVecMeanCtrl, digits=2))),
+       ilab=cbind(format(round(PRIMARY_DV1_metaVecMeanCtrl, digits=2)), format(round(PRIMARY_DV1_metaVecMeanExp, digits=2))),
        ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
                    grconvertX(.38, from = "ndc", "user")),
                    cex.axis=1.1, lwd=1.4,
@@ -567,8 +567,8 @@ forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean differ
        slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
-text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Death", cex=1.2)
-text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Pain", cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Pain", cex=1.2)
+text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Death", cex=1.2)
 text(grconvertX(.87, from = "ndc", "user"), length(labIDs)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
@@ -587,7 +587,7 @@ Cairo(file=paste0(outDir, "/forest_primary_WC.png"),
       dpi=600)
 
 forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
-       ilab=cbind(format(round(PRIMARY_DV2_metaVecMeanExp, digits=2)), format(round(PRIMARY_DV2_metaVecMeanCtrl, digits=2))),
+       ilab=cbind(format(round(PRIMARY_DV2_metaVecMeanCtrl, digits=2)), format(round(PRIMARY_DV2_metaVecMeanExp, digits=2))),
        ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
                    grconvertX(.38, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labID_name_mappings$labname_short)+3),
@@ -595,8 +595,8 @@ forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean differ
        slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
-text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Death", cex=1.2)
-text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Pain", cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Pain", cex=1.2)
+text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Death", cex=1.2)
 text(grconvertX(.87, from = "ndc", "user"), length(labIDs)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
@@ -647,7 +647,7 @@ Cairo(file=paste0(outDir, "/forest_secondary_WG.png"),
 
 
 forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
-       ilab=cbind(format(round(SECONDARY_DV1_metaVecMeanExp, digits=2)), format(round(SECONDARY_DV1_metaVecMeanCtrl, digits=2))),
+       ilab=cbind(format(round(SECONDARY_DV1_metaVecMeanCtrl, digits=2)), format(round(SECONDARY_DV1_metaVecMeanExp, digits=2))),
        ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
                    grconvertX(.38, from = "ndc", "user")),
        cex.axis=1.1,
@@ -657,8 +657,8 @@ forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean di
        slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
-text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Delay", cex=1.2)
-text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "No Delay", cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "No Delay", cex=1.2)
+text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Delay", cex=1.2)
 text(grconvertX(.87, from = "ndc", "user"), length(labIDs)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
@@ -677,7 +677,7 @@ Cairo(file=paste0(outDir, "/forest_secondary_WC.png"),
       dpi=600)
 
 forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
-       ilab=cbind(format(round(SECONDARY_DV2_metaVecMeanExp, digits=2)), format(round(SECONDARY_DV2_metaVecMeanCtrl, digits=2))),
+       ilab=cbind(format(round(SECONDARY_DV2_metaVecMeanCtrl, digits=2)), format(round(SECONDARY_DV2_metaVecMeanExp, digits=2))),
        ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
                    grconvertX(.38, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labID_name_mappings$labname_short)+3),
@@ -685,8 +685,8 @@ forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean di
        slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
-text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Delay", cex=1.2)
-text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "No Delay", cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "No Delay", cex=1.2)
+text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Delay", cex=1.2)
 text(grconvertX(.87, from = "ndc", "user"), length(labIDs)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
