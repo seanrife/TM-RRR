@@ -513,6 +513,29 @@ all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV2, group = labID))
 
 ggsave(paste0(outDir, "/ORIGINAL_WC_line-graphs.png"))
 
+all_loess <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV1, group = labID)) +
+  labs(x = "Delay Time", y = "Word Count") +
+  geom_smooth(method = "loess", se = T, color = "darkgrey") +
+  geom_point(alpha = 0.3, size = 0) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        axis.title.x = element_blank()) +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        axis.title.y = element_blank()) +
+  facet_wrap(~labname_short, scales = "free")
+
+ggsave(paste0(outDir, "/ORIGINAL_WG_loess-graphs.png"))
+
+all_loess <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV2, group = labID)) +
+  labs(x = "Delay Time", y = "Word Count") +
+  geom_smooth(method = "loess", se = T, color = "darkgrey") +
+  geom_point(alpha = 0.3, size = 0) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        axis.title.x = element_blank()) +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        axis.title.y = element_blank()) +
+  facet_wrap(~labname_short, scales = "free")
+
+ggsave(paste0(outDir, "/ORIGINAL_WC_loess-graphs.png"))
 
 
 #### PRIMARY ANALYSES ####
