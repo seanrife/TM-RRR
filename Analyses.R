@@ -460,7 +460,7 @@ Cairo(file=paste0(outDir, "/forest_original_WG.png"),
       dpi=600)
 
 
-f = forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaVecSE), xlab="Mean difference", cex.lab=1.2,
+forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaVecSE), xlab="Mean difference", cex.lab=1.2,
        ilab=cbind(c(".58", format(round(ORIGINAL_DV1_metaVecMeanCtrl, digits=2))), c(".94", format(round(ORIGINAL_DV1_metaVecMeanExp, digits=2)))),
        ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
                    grconvertX(.36, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
