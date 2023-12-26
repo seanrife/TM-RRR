@@ -54,7 +54,7 @@ library(tidyverse)
 mergedDF <- data.frame()
 
 # Read in lab info
-labInfo <- read.csv(paste0(dataDir,"/LabInfo.csv"), stringsAsFactors=FALSE)
+labInfo <- read.csv(paste0(baseDir,"/LabInfo.csv"), stringsAsFactors=FALSE)
 
 # Create dataframes for descriptive tables
 ORIGINAL_DV1_descriptives <- labInfo
@@ -66,7 +66,7 @@ SECONDARY_DV2_descriptives <- labInfo
 # Lab names; used for reading in data
 labIDs <- as.vector(labInfo$labID)
 
-labID_name_mappings <- read.csv(paste0(dataDir,"/labID_name_mappings.csv"), stringsAsFactors=FALSE)
+labID_name_mappings <- read.csv(paste0(baseDir,"/labID_name_mappings.csv"), stringsAsFactors=FALSE)
 
 # ANALYSES INCLUDES THREE APPROACHES:
 
