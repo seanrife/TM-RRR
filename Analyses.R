@@ -12,6 +12,7 @@
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
+# If you're loading this from the Rproj file in the GH repo, you can skip this.
 baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
 #baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
 #baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
@@ -20,8 +21,7 @@ baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
 setwd(baseDir)
 
 # Set input directory
-# Should contain a summary file for all labs (LabInfo.csv)
-# Should also contain 3 files for each lab (with lab name appended to the beginning):
+# Should contain 2 files for each lab (with lab name appended to the beginning):
 #   1. _main.csv - main dataset
 #   2. _coding_completed_normalized.csv - manually-identified exclusions
 dataDir <- paste0(baseDir, "/data")
@@ -195,13 +195,14 @@ for (lab in labIDs) {
   
   # Get rid of rows with critical missing data
   df <- df[(!is.na(df$Gender) & !is.na(df$Age)),]
-
+  
   # Exclude flagged cases or those who failed exit interview
   # df <- df[df$Purpose=="",]
   df <- df[!is.na(df$Understand) & df$Understand==0,]
   # df <- df[df$Familiar==0,]
   # Exclude if participant took less than 5 minutes to complete the survey
   df <- df[!is.na(df$interviewtime) & df$interviewtime > 300,]
+  
   
   # Put N info into labInfo DF (with exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
