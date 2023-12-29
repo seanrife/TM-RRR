@@ -12,7 +12,6 @@
 
 # Set base directory
 # Uses this to look for main datasets, ratings & exclusions
-# If you're loading this from the Rproj file in the GH repo, you can skip this.
 baseDir <- "H:/Dropbox/Research/TM RRR" # DESKTOP
 #baseDir <- "C:/Users/srife1/Dropbox/Research/TM RRR" # OFFICE
 #baseDir <- "/home/sean/Dropbox/Research/TM RRR" # XPS13
@@ -86,28 +85,48 @@ ORIGINAL_DV1_metaVecES <- vector()
 ORIGINAL_DV1_metaVecSE <- vector()
 ORIGINAL_DV1_metaVecMeanExp <- vector()
 ORIGINAL_DV1_metaVecMeanCtrl <- vector()
+ORIGINAL_DV1_metaVecSDExp <- vector()
+ORIGINAL_DV1_metaVecSDCtrl <- vector()
+ORIGINAL_DV1_metaVecNExp <- vector()
+ORIGINAL_DV1_metaVecNCtrl <- vector()
 ORIGINAL_DV1_metaVecR <- vector()
 ORIGINAL_DV1_metaVecN <- vector()
 
 PRIMARY_DV1_metaVecES <- vector()
 PRIMARY_DV1_metaVecSE <- vector()
 PRIMARY_DV1_metaVecMeanExp <- vector()
+PRIMARY_DV1_metaVecSDExp <- vector()
 PRIMARY_DV1_metaVecMeanCtrl <- vector()
+PRIMARY_DV1_metaVecSDCtrl <- vector()
+PRIMARY_DV1_metaVecNExp <- vector()
+PRIMARY_DV1_metaVecNCtrl <- vector()
 
 PRIMARY_DV2_metaVecES <- vector()
 PRIMARY_DV2_metaVecSE <- vector()
 PRIMARY_DV2_metaVecMeanExp <- vector()
+PRIMARY_DV2_metaVecSDExp <- vector()
 PRIMARY_DV2_metaVecMeanCtrl <- vector()
+PRIMARY_DV2_metaVecSDCtrl <- vector()
+PRIMARY_DV2_metaVecNExp <- vector()
+PRIMARY_DV2_metaVecNCtrl <- vector()
 
 SECONDARY_DV1_metaVecES <- vector()
 SECONDARY_DV1_metaVecSE <- vector()
 SECONDARY_DV1_metaVecMeanExp <- vector()
+SECONDARY_DV1_metaVecSDExp <- vector()
 SECONDARY_DV1_metaVecMeanCtrl <- vector()
+SECONDARY_DV1_metaVecSDCtrl <- vector()
+SECONDARY_DV1_metaVecNExp <- vector()
+SECONDARY_DV1_metaVecNCtrl <- vector()
 
 SECONDARY_DV2_metaVecES <- vector()
 SECONDARY_DV2_metaVecSE <- vector()
 SECONDARY_DV2_metaVecMeanExp <- vector()
+SECONDARY_DV2_metaVecSDExp <- vector()
 SECONDARY_DV2_metaVecMeanCtrl <- vector()
+SECONDARY_DV2_metaVecSDCtrl <- vector()
+SECONDARY_DV2_metaVecNExp <- vector()
+SECONDARY_DV2_metaVecNCtrl <- vector()
 
 #setwd(getSrcDirectory(function(){})[1])
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
@@ -281,8 +300,10 @@ for (lab in labIDs) {
   # Calculate tests/stats for primary analysis
   ORIGINAL_DV1_m_exp <- mean(df$COUNT_DV1[df$originalExperiment==1])
   ORIGINAL_DV1_sd_exp <- sd(df$COUNT_DV1[df$originalExperiment==1])
+  ORIGINAL_DV1_n_exp <- length(df$COUNT_DV1[df$originalExperiment==1])
   ORIGINAL_DV1_m_ctrl <- mean(df$COUNT_DV1[df$originalExperiment==0])
   ORIGINAL_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$originalExperiment==0])
+  ORIGINAL_DV1_n_ctrl <- length(df$COUNT_DV1[df$originalExperiment==0])
   ORIGINAL_DV1_r <- cor.test(df$COUNT_DV1, df$DelayTime, na.rm=T)
   ORIGINAL_DV1_se <- std.error(df$COUNT_DV1)
   
@@ -299,7 +320,11 @@ for (lab in labIDs) {
   ORIGINAL_DV1_metaVecSE <- c(ORIGINAL_DV1_metaVecSE, ORIGINAL_DV1_se)
   
   ORIGINAL_DV1_metaVecMeanExp <- c(ORIGINAL_DV1_metaVecMeanExp, ORIGINAL_DV1_m_exp)
+  ORIGINAL_DV1_metaVecSDExp <- c(ORIGINAL_DV1_metaVecSDExp, ORIGINAL_DV1_sd_exp)
+  ORIGINAL_DV1_metaVecNExp <- c(ORIGINAL_DV1_metaVecNExp, ORIGINAL_DV1_n_exp)
   ORIGINAL_DV1_metaVecMeanCtrl <- c(ORIGINAL_DV1_metaVecMeanCtrl, ORIGINAL_DV1_m_ctrl)
+  ORIGINAL_DV1_metaVecSDCtrl <- c(ORIGINAL_DV1_metaVecSDCtrl, ORIGINAL_DV1_sd_ctrl)
+  ORIGINAL_DV1_metaVecNCtrl <- c(ORIGINAL_DV1_metaVecNCtrl, ORIGINAL_DV1_n_ctrl)
   
 
   # Calculate tests/stats for primary analysis
@@ -320,9 +345,13 @@ for (lab in labIDs) {
 
   PRIMARY_DV1_metaVecES <- c(PRIMARY_DV1_metaVecES, PRIMARY_DV1_m_exp-PRIMARY_DV1_m_ctrl)
   PRIMARY_DV1_metaVecSE <- c(PRIMARY_DV1_metaVecSE, PRIMARY_DV1_se)
-  
+
   PRIMARY_DV1_metaVecMeanExp <- c(PRIMARY_DV1_metaVecMeanExp, PRIMARY_DV1_m_exp)
+  PRIMARY_DV1_metaVecSDExp <- c(PRIMARY_DV1_metaVecSDExp, PRIMARY_DV1_sd_exp)
+  PRIMARY_DV1_metaVecNExp <- c(PRIMARY_DV1_metaVecNExp, PRIMARY_DV1_n_exp)
   PRIMARY_DV1_metaVecMeanCtrl <- c(PRIMARY_DV1_metaVecMeanCtrl, PRIMARY_DV1_m_ctrl)
+  PRIMARY_DV1_metaVecSDCtrl <- c(PRIMARY_DV1_metaVecSDCtrl, PRIMARY_DV1_sd_ctrl)
+  PRIMARY_DV1_metaVecNCtrl <- c(PRIMARY_DV1_metaVecNCtrl, PRIMARY_DV1_n_ctrl)
   
   
   PRIMARY_DV2_m_exp <- mean(df$COUNT_DV2[df$primaryAnalysis==1], na.rm=T)
@@ -344,7 +373,11 @@ for (lab in labIDs) {
   PRIMARY_DV2_metaVecSE <- c(PRIMARY_DV2_metaVecSE, PRIMARY_DV2_se)
   
   PRIMARY_DV2_metaVecMeanExp <- c(PRIMARY_DV2_metaVecMeanExp, PRIMARY_DV2_m_exp)
+  PRIMARY_DV2_metaVecSDExp <- c(PRIMARY_DV2_metaVecSDExp, PRIMARY_DV2_sd_exp)
+  PRIMARY_DV2_metaVecNExp <- c(PRIMARY_DV2_metaVecNExp, PRIMARY_DV2_n_exp)
   PRIMARY_DV2_metaVecMeanCtrl <- c(PRIMARY_DV2_metaVecMeanCtrl, PRIMARY_DV2_m_ctrl)
+  PRIMARY_DV2_metaVecSDCtrl <- c(PRIMARY_DV2_metaVecSDCtrl, PRIMARY_DV2_sd_ctrl)
+  PRIMARY_DV2_metaVecNCtrl <- c(PRIMARY_DV2_metaVecNCtrl, PRIMARY_DV2_n_ctrl)
   
   
   # Calculate tests/stats for secondary analysis
@@ -373,7 +406,11 @@ for (lab in labIDs) {
   SECONDARY_DV1_metaVecSE <- c(SECONDARY_DV1_metaVecSE, SECONDARY_DV1_se)
   
   SECONDARY_DV1_metaVecMeanExp <- c(SECONDARY_DV1_metaVecMeanExp, SECONDARY_DV1_m_exp)
+  SECONDARY_DV1_metaVecSDExp <- c(SECONDARY_DV1_metaVecSDExp, SECONDARY_DV1_sd_exp)
+  SECONDARY_DV1_metaVecNExp <- c(SECONDARY_DV1_metaVecNExp, SECONDARY_DV1_n_exp)
   SECONDARY_DV1_metaVecMeanCtrl <- c(SECONDARY_DV1_metaVecMeanCtrl, SECONDARY_DV1_m_ctrl)
+  SECONDARY_DV1_metaVecSDCtrl <- c(SECONDARY_DV1_metaVecSDCtrl, SECONDARY_DV1_sd_ctrl)
+  SECONDARY_DV1_metaVecNCtrl <- c(SECONDARY_DV1_metaVecNCtrl, SECONDARY_DV1_n_ctrl)
   
   
   SECONDARY_DV2_m_exp <- mean(df$COUNT_DV2[df$secondaryAnalysis==1], na.rm=T)
@@ -395,7 +432,11 @@ for (lab in labIDs) {
   SECONDARY_DV2_metaVecSE <- c(SECONDARY_DV2_metaVecSE, SECONDARY_DV2_se)
   
   SECONDARY_DV2_metaVecMeanExp <- c(SECONDARY_DV2_metaVecMeanExp, SECONDARY_DV2_m_exp)
+  SECONDARY_DV2_metaVecSDExp <- c(SECONDARY_DV2_metaVecSDExp, SECONDARY_DV2_sd_exp)
+  SECONDARY_DV2_metaVecNExp <- c(SECONDARY_DV2_metaVecNExp, SECONDARY_DV2_n_exp)
   SECONDARY_DV2_metaVecMeanCtrl <- c(SECONDARY_DV2_metaVecMeanCtrl, SECONDARY_DV2_m_ctrl)
+  SECONDARY_DV2_metaVecSDCtrl <- c(SECONDARY_DV2_metaVecSDCtrl, SECONDARY_DV2_sd_ctrl)
+  SECONDARY_DV2_metaVecNCtrl <- c(SECONDARY_DV2_metaVecNCtrl, SECONDARY_DV2_n_ctrl)
 
 }
 
@@ -430,6 +471,14 @@ sink()
 sink(paste0(outDir, "/ma-original-WG-bg.txt"))
 metaRAW_DV1 <- rma.uni(yi = ORIGINAL_DV1_metaVecES, sei = ORIGINAL_DV1_metaVecSE)
 summary(metaRAW_DV1)
+sink()
+
+# Meta analysis (between groups, SMD)
+sink(paste0(outDir, "/ma-original-WG-bg-SMD.txt"))
+rma(escalc(m1i=ORIGINAL_DV1_metaVecMeanExp, m2i=ORIGINAL_DV1_metaVecMeanCtrl,
+           sd1i=ORIGINAL_DV1_metaVecSDExp, sd2i=ORIGINAL_DV1_metaVecSDCtrl,
+           n1i=ORIGINAL_DV1_metaVecNExp, n2i=ORIGINAL_DV1_metaVecNCtrl,
+           measure="SMD"))
 sink()
 
 # Meta analysis (continuous time)
@@ -563,12 +612,27 @@ primary_DV1_meta <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV2_metaVe
 summary(primary_DV1_meta)
 sink()
 
+# Meta analysis (word generation, SMD)
+sink(paste0(outDir, "/ma-primary-WG-bg-SMD.txt"))
+rma(escalc(m1i=PRIMARY_DV1_metaVecMeanExp, m2i=PRIMARY_DV1_metaVecMeanCtrl,
+           sd1i=PRIMARY_DV1_metaVecSDExp, sd2i=PRIMARY_DV1_metaVecSDCtrl,
+           n1i=PRIMARY_DV1_metaVecNExp, n2i=PRIMARY_DV1_metaVecNCtrl,
+           measure="SMD"))
+sink()
+
 # Meta analysis (word creation, zero variance included)
 sink(paste0(outDir, "/ma-primary-WC.txt"))
 primary_DV2_meta <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV1_metaVecSE)
 summary(primary_DV2_meta)
 sink()
 
+# Meta analysis (word creation, SMD)
+sink(paste0(outDir, "/ma-primary-WC-bg-SMD.txt"))
+rma(escalc(m1i=PRIMARY_DV2_metaVecMeanExp, m2i=PRIMARY_DV2_metaVecMeanCtrl,
+           sd1i=PRIMARY_DV2_metaVecSDExp, sd2i=PRIMARY_DV2_metaVecSDCtrl,
+           n1i=PRIMARY_DV2_metaVecNExp, n2i=PRIMARY_DV2_metaVecNCtrl,
+           measure="SMD"))
+sink()
 
 
 # Word generation dv
@@ -653,10 +717,26 @@ secondary_DV1_meta <- rma.uni(yi = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_
 summary(secondary_DV1_meta)
 sink()
 
+# Meta analysis (word generation, SMD)
+sink(paste0(outDir, "/ma-secondary-WG-bg-SMD.txt"))
+rma(escalc(m1i=SECONDARY_DV1_metaVecMeanExp, m2i=SECONDARY_DV1_metaVecMeanCtrl,
+           sd1i=SECONDARY_DV1_metaVecSDExp, sd2i=SECONDARY_DV1_metaVecSDCtrl,
+           n1i=SECONDARY_DV1_metaVecNExp, n2i=SECONDARY_DV1_metaVecNCtrl,
+           measure="SMD"))
+sink()
+
 # Meta analysis, word creation, zero variance included
 sink(paste0(outDir, "/ma-secondary-WC.txt"))
 secondary_DV2_meta <- rma.uni(yi = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE)
 summary(secondary_DV2_meta)
+sink()
+
+# Meta analysis (word creation, SMD)
+sink(paste0(outDir, "/ma-secondary-WC-bg-SMD.txt"))
+rma(escalc(m1i=SECONDARY_DV2_metaVecMeanExp, m2i=SECONDARY_DV2_metaVecMeanCtrl,
+           sd1i=SECONDARY_DV2_metaVecSDExp, sd2i=SECONDARY_DV2_metaVecSDCtrl,
+           n1i=SECONDARY_DV2_metaVecNExp, n2i=SECONDARY_DV2_metaVecNCtrl,
+           measure="SMD"))
 sink()
 
 # Word generation dv
