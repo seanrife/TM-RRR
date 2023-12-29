@@ -475,10 +475,10 @@ sink()
 
 # Meta analysis (between groups, SMD)
 sink(paste0(outDir, "/ma-original-WG-bg-SMD.txt"))
-rma(escalc(m1i=ORIGINAL_DV1_metaVecMeanExp, m2i=ORIGINAL_DV1_metaVecMeanCtrl,
-           sd1i=ORIGINAL_DV1_metaVecSDExp, sd2i=ORIGINAL_DV1_metaVecSDCtrl,
-           n1i=ORIGINAL_DV1_metaVecNExp, n2i=ORIGINAL_DV1_metaVecNCtrl,
-           measure="SMD"))
+rma(m1i=ORIGINAL_DV1_metaVecMeanExp, m2i=ORIGINAL_DV1_metaVecMeanCtrl,
+    sd1i=ORIGINAL_DV1_metaVecSDExp, sd2i=ORIGINAL_DV1_metaVecSDCtrl,
+    n1i=ORIGINAL_DV1_metaVecNExp, n2i=ORIGINAL_DV1_metaVecNCtrl,
+    measure="SMD")
 sink()
 
 # Meta analysis (continuous time)
@@ -608,16 +608,16 @@ sink()
 
 # Meta analysis (word generation, zero variance included)
 sink(paste0(outDir, "/ma-primary-WG.txt"))
-primary_DV1_meta <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV2_metaVecSE)
+primary_DV1_meta <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE)
 summary(primary_DV1_meta)
 sink()
 
 # Meta analysis (word generation, SMD)
 sink(paste0(outDir, "/ma-primary-WG-bg-SMD.txt"))
-rma(escalc(m1i=PRIMARY_DV1_metaVecMeanExp, m2i=PRIMARY_DV1_metaVecMeanCtrl,
-           sd1i=PRIMARY_DV1_metaVecSDExp, sd2i=PRIMARY_DV1_metaVecSDCtrl,
-           n1i=PRIMARY_DV1_metaVecNExp, n2i=PRIMARY_DV1_metaVecNCtrl,
-           measure="SMD"))
+rma(m1i=PRIMARY_DV1_metaVecMeanExp, m2i=PRIMARY_DV1_metaVecMeanCtrl,
+    sd1i=PRIMARY_DV1_metaVecSDExp, sd2i=PRIMARY_DV1_metaVecSDCtrl,
+    n1i=PRIMARY_DV1_metaVecNExp, n2i=PRIMARY_DV1_metaVecNCtrl,
+    measure="SMD")
 sink()
 
 # Meta analysis (word creation, zero variance included)
@@ -628,10 +628,10 @@ sink()
 
 # Meta analysis (word creation, SMD)
 sink(paste0(outDir, "/ma-primary-WC-bg-SMD.txt"))
-rma(escalc(m1i=PRIMARY_DV2_metaVecMeanExp, m2i=PRIMARY_DV2_metaVecMeanCtrl,
-           sd1i=PRIMARY_DV2_metaVecSDExp, sd2i=PRIMARY_DV2_metaVecSDCtrl,
-           n1i=PRIMARY_DV2_metaVecNExp, n2i=PRIMARY_DV2_metaVecNCtrl,
-           measure="SMD"))
+rma(m1i=PRIMARY_DV2_metaVecMeanExp, m2i=PRIMARY_DV2_metaVecMeanCtrl,
+    sd1i=PRIMARY_DV2_metaVecSDExp, sd2i=PRIMARY_DV2_metaVecSDCtrl,
+    n1i=PRIMARY_DV2_metaVecNExp, n2i=PRIMARY_DV2_metaVecNCtrl,
+    measure="SMD")
 sink()
 
 
@@ -719,10 +719,10 @@ sink()
 
 # Meta analysis (word generation, SMD)
 sink(paste0(outDir, "/ma-secondary-WG-bg-SMD.txt"))
-rma(escalc(m1i=SECONDARY_DV1_metaVecMeanExp, m2i=SECONDARY_DV1_metaVecMeanCtrl,
-           sd1i=SECONDARY_DV1_metaVecSDExp, sd2i=SECONDARY_DV1_metaVecSDCtrl,
-           n1i=SECONDARY_DV1_metaVecNExp, n2i=SECONDARY_DV1_metaVecNCtrl,
-           measure="SMD"))
+rma(m1i=SECONDARY_DV1_metaVecMeanExp, m2i=SECONDARY_DV1_metaVecMeanCtrl,
+    sd1i=SECONDARY_DV1_metaVecSDExp, sd2i=SECONDARY_DV1_metaVecSDCtrl,
+    n1i=SECONDARY_DV1_metaVecNExp, n2i=SECONDARY_DV1_metaVecNCtrl,
+    measure="SMD")
 sink()
 
 # Meta analysis, word creation, zero variance included
@@ -732,11 +732,11 @@ summary(secondary_DV2_meta)
 sink()
 
 # Meta analysis (word creation, SMD)
-sink(paste0(outDir, "/ma-secondary-WC-bg-SMD.txt"))
-rma(escalc(m1i=SECONDARY_DV2_metaVecMeanExp, m2i=SECONDARY_DV2_metaVecMeanCtrl,
-           sd1i=SECONDARY_DV2_metaVecSDExp, sd2i=SECONDARY_DV2_metaVecSDCtrl,
-           n1i=SECONDARY_DV2_metaVecNExp, n2i=SECONDARY_DV2_metaVecNCtrl,
-           measure="SMD"))
+sink(paste0(outDir, "/ma-secondary-WC-SMD.txt"))
+rma(m1i=SECONDARY_DV2_metaVecMeanExp, m2i=SECONDARY_DV2_metaVecMeanCtrl,
+    sd1i=SECONDARY_DV2_metaVecSDExp, sd2i=SECONDARY_DV2_metaVecSDCtrl,
+    n1i=SECONDARY_DV2_metaVecNExp, n2i=SECONDARY_DV2_metaVecNCtrl,
+    measure="SMD")
 sink()
 
 # Word generation dv
