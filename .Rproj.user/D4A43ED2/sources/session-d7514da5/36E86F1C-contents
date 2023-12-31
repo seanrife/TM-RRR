@@ -1,0 +1,73 @@
+ORIGINAL_DV1_m_exp <- mean(df$COUNT_DV1[df$originalExperiment==1])
+ORIGINAL_DV1_sd_exp <- sd(df$COUNT_DV1[df$originalExperiment==1])
+ORIGINAL_DV1_n_exp <- length(df$COUNT_DV1[df$originalExperiment==1])
+ORIGINAL_DV1_m_ctrl <- mean(df$COUNT_DV1[df$originalExperiment==0])
+ORIGINAL_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$originalExperiment==0])
+ORIGINAL_DV1_n_ctrl <- length(df$COUNT_DV1[df$originalExperiment==0])
+
+v1 <- as.vector(na.omit(escalc(m1i=SECONDARY_DV2_metaVecMeanExp, m2i=SECONDARY_DV2_metaVecMeanCtrl,
+                               sd1i=SECONDARY_DV2_metaVecSDExp, sd2i=SECONDARY_DV2_metaVecSDCtrl,
+                               n1i=SECONDARY_DV2_metaVecNExp, n2i=SECONDARY_DV2_metaVecNCtrl,
+                               measure="SMD")$yi))
+    
+v2 <- SECONDARY_DV2_metaVecES[SECONDARY_DV2_metaVecES != 0]
+
+SECONDARY_DV2_metaVecSE
+
+
+md_escalc <- escalc(m1i=SECONDARY_DV2_metaVecMeanExp, m2i=SECONDARY_DV2_metaVecMeanCtrl,
+                               sd1i=SECONDARY_DV2_metaVecSDExp, sd2i=SECONDARY_DV2_metaVecSDCtrl,
+                               n1i=SECONDARY_DV2_metaVecNExp, n2i=SECONDARY_DV2_metaVecNCtrl,
+                               measure="MD")
+
+smd_escalc <- escalc(m1i=SECONDARY_DV2_metaVecMeanExp, m2i=SECONDARY_DV2_metaVecMeanCtrl,
+                     sd1i=SECONDARY_DV2_metaVecSDExp, sd2i=SECONDARY_DV2_metaVecSDCtrl,
+                     n1i=SECONDARY_DV2_metaVecNExp, n2i=SECONDARY_DV2_metaVecNCtrl,
+                     measure="SMD")
+
+
+
+
+> rma.uni(yi = ORIGINAL_DV1_metaVecES, sei = ORIGINAL_DV1_metaVecSE)
+
+Random-Effects Model (k = 23; tau^2 estimator: REML)
+
+tau^2 (estimated amount of total heterogeneity): 0.0089 (SE = 0.0030)
+tau (square root of estimated tau^2 value):      0.0944
+
+Model Results:
+  
+  estimate      se    zval    pval   ci.lb   ci.ub     
+0.0571  0.0207  2.7576  0.0058  0.0165  0.0977  ** 
+  
+  ---
+  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+
+
+
+Random-Effects Model (k = 22; tau^2 estimator: REML)
+
+tau^2 (estimated amount of total heterogeneity): 0.0007 (SE = 0.0009)
+tau (square root of estimated tau^2 value):      0.0268
+I^2 (total heterogeneity / total variability):   23.78%
+H^2 (total variability / sampling variability):  1.31
+
+Test for Heterogeneity:
+  Q(df = 21) = 27.9615, p-val = 0.1412
+
+Model Results:
+  
+  estimate      se    zval    pval    ci.lb   ci.ub    
+0.0048  0.0128  0.3755  0.7073  -0.0203  0.0300  
+
+
+
+
+
+
+if (ORIGINAL_DV1_se != 0){
+  ORIGINAL_DV1_metaVecES <- c(ORIGINAL_DV1_metaVecES, ORIGINAL_DV1_m_exp-ORIGINAL_DV1_m_ctrl)
+  ORIGINAL_DV1_metaVecSE <- c(ORIGINAL_DV1_metaVecSE, ORIGINAL_DV1_se)
+}
