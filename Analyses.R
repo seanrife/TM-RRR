@@ -305,7 +305,13 @@ for (lab in labIDs) {
   ORIGINAL_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$originalExperiment==0])
   ORIGINAL_DV1_n_ctrl <- length(df$COUNT_DV1[df$originalExperiment==0])
   ORIGINAL_DV1_r <- cor.test(df$COUNT_DV1, df$DelayTime, na.rm=T)
-  ORIGINAL_DV1_se <- std.error(df$COUNT_DV1)
+  ORIGINAL_DV1_t <- unname(t.test(df$COUNT_DV1[df$originalExperiment==1],
+                                  df$COUNT_DV1[df$originalExperiment==0])$statistic)
+  
+  ORIGINAL_DV1_se <- (ORIGINAL_DV1_m_exp-ORIGINAL_DV1_m_ctrl)/ORIGINAL_DV1_t
+  
+  ORIGINAL_DV1_metaVecES <- c(ORIGINAL_DV1_metaVecES, ORIGINAL_DV1_m_exp-ORIGINAL_DV1_m_ctrl)
+  ORIGINAL_DV1_metaVecSE <- c(ORIGINAL_DV1_metaVecSE, ORIGINAL_DV1_se)
   
   # For descriptive stats tables
   ORIGINAL_DV1_descriptives$mean_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_m_exp)
@@ -315,9 +321,6 @@ for (lab in labIDs) {
   
   ORIGINAL_DV1_metaVecR <- c(ORIGINAL_DV1_metaVecR, ORIGINAL_DV1_r$estimate)
   ORIGINAL_DV1_metaVecN <- c(ORIGINAL_DV1_metaVecN, (ORIGINAL_DV1_r$parameter + 2))
-  
-  ORIGINAL_DV1_metaVecES <- c(ORIGINAL_DV1_metaVecES, ORIGINAL_DV1_m_exp-ORIGINAL_DV1_m_ctrl)
-  ORIGINAL_DV1_metaVecSE <- c(ORIGINAL_DV1_metaVecSE, ORIGINAL_DV1_se)
   
   ORIGINAL_DV1_metaVecMeanExp <- c(ORIGINAL_DV1_metaVecMeanExp, ORIGINAL_DV1_m_exp)
   ORIGINAL_DV1_metaVecSDExp <- c(ORIGINAL_DV1_metaVecSDExp, ORIGINAL_DV1_sd_exp)
@@ -334,7 +337,10 @@ for (lab in labIDs) {
   PRIMARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$primaryAnalysis==0], na.rm=T)
   PRIMARY_DV1_n_exp <- length(df$COUNT_DV1[df$primaryAnalysis==1])
   PRIMARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$primaryAnalysis==0])
-  PRIMARY_DV1_se <- std.error(df$COUNT_DV1)
+  PRIMARY_DV1_t <- unname(t.test(df$COUNT_DV1[df$primaryAnalysis==1],
+                                 df$COUNT_DV1[df$primaryAnalysis==0])$statistic)
+  
+  PRIMARY_DV1_se <- (PRIMARY_DV1_m_exp-PRIMARY_DV1_m_ctrl)/PRIMARY_DV1_t
   
   
   # For descriptive stats table
@@ -360,7 +366,10 @@ for (lab in labIDs) {
   PRIMARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$primaryAnalysis==0], na.rm=T)
   PRIMARY_DV2_n_exp <- length(df$COUNT_DV2[df$primaryAnalysis==1])
   PRIMARY_DV2_n_ctrl <- length(df$COUNT_DV2[df$primaryAnalysis==0])
-  PRIMARY_DV2_se <- std.error(df$COUNT_DV2)
+  PRIMARY_DV2_t <- unname(t.test(df$COUNT_DV2[df$primaryAnalysis==1],
+                                 df$COUNT_DV2[df$primaryAnalysis==0])$statistic)
+  
+  PRIMARY_DV2_se <- (PRIMARY_DV2_m_exp-PRIMARY_DV2_m_ctrl)/PRIMARY_DV2_t
   
   
   # For descriptive stats table
@@ -393,7 +402,10 @@ for (lab in labIDs) {
   SECONDARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$secondaryAnalysis==0], na.rm=T)
   SECONDARY_DV1_n_exp <- length(df$COUNT_DV1[df$secondaryAnalysis==1])
   SECONDARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$secondaryAnalysis==0])
-  SECONDARY_DV1_se <- std.error(df$COUNT_DV1[df$secondaryAnalysis==1 | df$secondaryAnalysis==0])
+  SECONDARY_DV1_t <- unname(t.test(df$COUNT_DV1[df$secondaryAnalysis==1],
+                                 df$COUNT_DV1[df$secondaryAnalysis==0])$statistic)
+  
+  SECONDARY_DV1_se <- (SECONDARY_DV1_m_exp-SECONDARY_DV1_m_ctrl)/SECONDARY_DV1_t
   
   
   # For descriptive stats table
@@ -419,8 +431,10 @@ for (lab in labIDs) {
   SECONDARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$secondaryAnalysis==0], na.rm=T)
   SECONDARY_DV2_n_exp <- length(df$COUNT_DV2[df$secondaryAnalysis==1])
   SECONDARY_DV2_n_ctrl <- length(df$COUNT_DV2[df$secondaryAnalysis==0])
-  SECONDARY_DV2_se <- std.error(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0])
+  SECONDARY_DV2_t <- unname(t.test(df$COUNT_DV2[df$secondaryAnalysis==1],
+                                   df$COUNT_DV2[df$secondaryAnalysis==0])$statistic)
   
+  SECONDARY_DV2_se <- (SECONDARY_DV2_m_exp-SECONDARY_DV2_m_ctrl)/SECONDARY_DV2_t
   
   # For descriptive stats table
   SECONDARY_DV2_descriptives$mean_exp[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_m_exp)
@@ -454,18 +468,6 @@ write.csv(PRIMARY_DV2_descriptives, paste0(outDir, "/PRIMARY_WC_descriptives.csv
 write.csv(SECONDARY_DV1_descriptives, paste0(outDir, "/SECONDARY_WG_descriptives.csv"), row.names = F)
 write.csv(SECONDARY_DV2_descriptives, paste0(outDir, "/SECONDARY_WC_descriptives.csv"), row.names = F)
 write.csv(labInfo, paste0(outDir, "/labDescriptives.csv"), row.names = F)
-
-
-# Prep for meta analyses
-# We need to run two MAs: one for point estimates with all cases and another
-# omitting labs with zero variance.
-original_DV1_cleaned <- clean_zero_variance(ORIGINAL_DV1_metaVecES, ORIGINAL_DV1_metaVecSE)
-
-# Meta analysis (between groups, zero variance omitted)
-sink(paste0(outDir, "/ma-original-WG-bg-nozero.txt"))
-metaRAW_DV1_nozero <- rma.uni(yi = original_DV1_cleaned$es, sei = original_DV1_cleaned$se)
-summary(metaRAW_DV1_nozero)
-sink()
 
 # Meta analysis (between groups)
 sink(paste0(outDir, "/ma-original-WG-bg.txt"))
@@ -590,23 +592,7 @@ ggsave(paste0(outDir, "/ORIGINAL_WC_loess-graphs.png"))
 
 #### PRIMARY ANALYSES ####
 
-primary_DV1_cleaned <- clean_zero_variance(PRIMARY_DV1_metaVecES, PRIMARY_DV1_metaVecSE)
-
-# Meta analysis (word generation, zero variance omitted)
-sink(paste0(outDir, "/ma-primary-WG-nozero.txt"))
-primary_DV1_meta_nozero <- rma.uni(yi = primary_DV1_cleaned$es, sei = primary_DV1_cleaned$se)
-summary(primary_DV1_meta_nozero)
-sink()
-
-primary_DV2_cleaned <- clean_zero_variance(PRIMARY_DV2_metaVecES, PRIMARY_DV2_metaVecSE)
-
-# Meta analysis (word creation, zero variance omitted)
-sink(paste0(outDir, "/ma-primary-WC-nozero.txt"))
-primary_DV2_meta_nozero <- rma.uni(yi = primary_DV2_cleaned$es, sei = primary_DV2_cleaned$se)
-summary(primary_DV2_meta_nozero)
-sink()
-
-# Meta analysis (word generation, zero variance included)
+# Meta analysis (word generation)
 sink(paste0(outDir, "/ma-primary-WG.txt"))
 primary_DV1_meta <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE)
 summary(primary_DV1_meta)
@@ -620,7 +606,7 @@ rma(m1i=PRIMARY_DV1_metaVecMeanExp, m2i=PRIMARY_DV1_metaVecMeanCtrl,
     measure="SMD")
 sink()
 
-# Meta analysis (word creation, zero variance included)
+# Meta analysis (word creation)
 sink(paste0(outDir, "/ma-primary-WC.txt"))
 primary_DV2_meta <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV1_metaVecSE)
 summary(primary_DV2_meta)
@@ -695,23 +681,7 @@ dev.off()
 
 #### SECONDARY ANALYSES ####
 
-secondary_DV1_cleaned <- clean_zero_variance(SECONDARY_DV1_metaVecES, SECONDARY_DV1_metaVecSE)
-
-# Meta analysis, word generation, zero variance omitted
-sink(paste0(outDir, "/ma-secondary-WG-nozero.txt"))
-secondary_DV1_meta_nozero <- rma.uni(yi = secondary_DV1_cleaned$es, sei = secondary_DV1_cleaned$se)
-summary(secondary_DV1_meta_nozero)
-sink()
-
-secondary_DV2_cleaned <- clean_zero_variance(SECONDARY_DV2_metaVecES, SECONDARY_DV2_metaVecSE)
-
-# Meta analysis, word creation, zero variance omitted
-sink(paste0(outDir, "/ma-secondary-WC-nozero.txt"))
-secondary_DV2_meta_nozero <- rma.uni(yi = secondary_DV2_cleaned$es, sei = secondary_DV2_cleaned$se)
-summary(secondary_DV2_meta_nozero)
-sink()
-
-# Meta analysis, word generation, zero variance included
+# Meta analysis, word generation
 sink(paste0(outDir, "/ma-secondary-WG.txt"))
 secondary_DV1_meta <- rma.uni(yi = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE)
 summary(secondary_DV1_meta)
@@ -725,7 +695,7 @@ rma(m1i=SECONDARY_DV1_metaVecMeanExp, m2i=SECONDARY_DV1_metaVecMeanCtrl,
     measure="SMD")
 sink()
 
-# Meta analysis, word creation, zero variance included
+# Meta analysis, word creation
 sink(paste0(outDir, "/ma-secondary-WC.txt"))
 secondary_DV2_meta <- rma.uni(yi = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE)
 summary(secondary_DV2_meta)
