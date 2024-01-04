@@ -128,6 +128,9 @@ SECONDARY_DV2_metaVecSDCtrl <- vector()
 SECONDARY_DV2_metaVecNExp <- vector()
 SECONDARY_DV2_metaVecNCtrl <- vector()
 
+ds <- vector()
+ds_var <- vector()
+
 #setwd(getSrcDirectory(function(){})[1])
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 source("requirements.R")
@@ -474,18 +477,6 @@ sink(paste0(outDir, "/ma-original-WG-bg.txt"))
 metaRAW_DV1 <- rma.uni(yi = ORIGINAL_DV1_metaVecES, sei = ORIGINAL_DV1_metaVecSE)
 summary(metaRAW_DV1)
 sink()
-
-
-yi <- ORIGINAL_DV1_metaVecES/sqrt(((ORIGINAL_DV1_metaVecNExp-1)*(ORIGINAL_DV1_metaVecSDExp^2) + (ORIGINAL_DV1_metaVecNCtrl-1)*(ORIGINAL_DV1_metaVecSDCtrl^2))/ORIGINAL_DV1_metaVecNExp+ORIGINAL_DV1_metaVecNCtrl-2)
-vi <- (ORIGINAL_DV1_metaVecSDExp^2 + ORIGINAL_DV1_metaVecSDCtrl^2)/2
-vi2 <- (ORIGINAL_DV1_metaVecNExp+ORIGINAL_DV1_metaVecNCtrl)/(ORIGINAL_DV1_metaVecNExp*ORIGINAL_DV1_metaVecNCtrl) + (yi^2)/(2*(ORIGINAL_DV1_metaVecNExp+ORIGINAL_DV1_metaVecNCtrl))
-
-yi <- yi[yi != 0]
-vi <- vi[vi != 0]
-
-ORIGINAL_DV1_metaVecES_new <- ORIGINAL_DV1_metaVecES[ORIGINAL_DV1_metaVecES!=0]
-
-#rma(yi, vi)
 
 # Meta analysis (between groups, SMD)
 sink(paste0(outDir, "/ma-original-WG-bg-SMD.txt"))
