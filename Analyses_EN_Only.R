@@ -29,6 +29,7 @@ dataDir <- paste0(baseDir, "/data")
 
 # Location for output (text and graphs)
 outDir <- paste0(baseDir, "/output/en_only")
+dir.create(outDir)
 
 # CODE BELOW NEED NOT BE MODIFIED
 
@@ -55,7 +56,7 @@ library(tidyverse)
 mergedDF <- data.frame()
 
 # Read in lab info
-labInfo <- read.csv(paste0(dataDir,"/LabInfo.csv"), stringsAsFactors=FALSE)
+labInfo <- read.csv(paste0(baseDir,"/LabInfo.csv"), stringsAsFactors=FALSE)
 
 labInfo <- labInfo[grepl("English", labInfo$language, fixed = TRUE),]
 
@@ -71,7 +72,7 @@ SECONDARY_DV2_descriptives <- labInfo
 # Lab names; used for reading in data and labeling
 labIDs <- as.vector(labInfo$labID)
 
-labID_name_mappings <- read.csv(paste0(dataDir,"/labID_name_mappings.csv"), stringsAsFactors=FALSE)
+labID_name_mappings <- read.csv(paste0(baseDir,"/labID_name_mappings.csv"), stringsAsFactors=FALSE)
 
 labID_name_mappings <- merge(labInfo, labID_name_mappings, by='labID')
 labID_name_mappings <- subset(labID_name_mappings, select = c(labID, labname, labname_short))
@@ -241,7 +242,10 @@ for (lab in labIDs) {
   ORIGINAL_DV1_m_ctrl <- mean(df$COUNT_DV1[df$originalExperiment==0])
   ORIGINAL_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$originalExperiment==0])
   ORIGINAL_DV1_r <- cor.test(df$COUNT_DV1, df$DelayTime, na.rm=T)
-  ORIGINAL_DV1_se <- std.error(df$COUNT_DV1)
+  ORIGINAL_DV1_t <- unname(t.test(df$COUNT_DV1[df$originalExperiment==1],
+                                  df$COUNT_DV1[df$originalExperiment==0])$statistic)
+  
+  ORIGINAL_DV1_se <- (ORIGINAL_DV1_m_exp-ORIGINAL_DV1_m_ctrl)/ORIGINAL_DV1_t
   
   # For descriptive stats tables
   ORIGINAL_DV1_descriptives$mean_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_m_exp)
@@ -266,7 +270,10 @@ for (lab in labIDs) {
   PRIMARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$primaryAnalysis==0], na.rm=T)
   PRIMARY_DV1_n_exp <- length(df$COUNT_DV1[df$primaryAnalysis==1])
   PRIMARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$primaryAnalysis==0])
-  PRIMARY_DV1_se <- std.error(df$COUNT_DV1)
+  PRIMARY_DV1_t <- unname(t.test(df$COUNT_DV1[df$primaryAnalysis==1],
+                                 df$COUNT_DV1[df$primaryAnalysis==0])$statistic)
+  
+  PRIMARY_DV1_se <- (PRIMARY_DV1_m_exp-PRIMARY_DV1_m_ctrl)/PRIMARY_DV1_t
   
   
   # For descriptive stats table
@@ -288,7 +295,9 @@ for (lab in labIDs) {
   PRIMARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$primaryAnalysis==0], na.rm=T)
   PRIMARY_DV2_n_exp <- length(df$COUNT_DV2[df$primaryAnalysis==1])
   PRIMARY_DV2_n_ctrl <- length(df$COUNT_DV2[df$primaryAnalysis==0])
-  PRIMARY_DV2_se <- std.error(df$COUNT_DV2)
+  PRIMARY_DV2_t <- unname(t.test(df$COUNT_DV2[df$primaryAnalysis==1],
+                                 df$COUNT_DV2[df$primaryAnalysis==0])$statistic)
+  PRIMARY_DV2_se <- (PRIMARY_DV2_m_exp-PRIMARY_DV2_m_ctrl)/PRIMARY_DV2_t
   
   
   # For descriptive stats table
@@ -317,7 +326,9 @@ for (lab in labIDs) {
   SECONDARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$secondaryAnalysis==0], na.rm=T)
   SECONDARY_DV1_n_exp <- length(df$COUNT_DV1[df$secondaryAnalysis==1])
   SECONDARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$secondaryAnalysis==0])
-  SECONDARY_DV1_se <- std.error(df$COUNT_DV1[df$secondaryAnalysis==1 | df$secondaryAnalysis==0])
+  SECONDARY_DV1_t <- unname(t.test(df$COUNT_DV1[df$secondaryAnalysis==1],
+                                   df$COUNT_DV1[df$secondaryAnalysis==0])$statistic)
+  SECONDARY_DV1_se <- (SECONDARY_DV1_m_exp-SECONDARY_DV1_m_ctrl)/SECONDARY_DV1_t
   
   
   # For descriptive stats table
@@ -339,7 +350,9 @@ for (lab in labIDs) {
   SECONDARY_DV2_sd_ctrl <- sd(df$COUNT_DV2[df$secondaryAnalysis==0], na.rm=T)
   SECONDARY_DV2_n_exp <- length(df$COUNT_DV2[df$secondaryAnalysis==1])
   SECONDARY_DV2_n_ctrl <- length(df$COUNT_DV2[df$secondaryAnalysis==0])
-  SECONDARY_DV2_se <- std.error(df$COUNT_DV2[df$secondaryAnalysis==1 | df$secondaryAnalysis==0])
+  SECONDARY_DV2_t <- unname(t.test(df$COUNT_DV2[df$secondaryAnalysis==1],
+                                   df$COUNT_DV2[df$secondaryAnalysis==0])$statistic)
+  SECONDARY_DV2_se <- (SECONDARY_DV2_m_exp-SECONDARY_DV2_m_ctrl)/SECONDARY_DV2_t
   
   
   # For descriptive stats table
@@ -364,38 +377,25 @@ for (lab in labIDs) {
 #### REPLICATION ANALYSES ####
 
 # Create descriptive statistics tables
-write.csv(ORIGINAL_DV1_descriptives, paste0(outDir, "/en_only_ORIGINAL_WG_descriptives.csv"), row.names = F)
-write.csv(PRIMARY_DV1_descriptives, paste0(outDir, "/en_only_PRIMARY_WG_descriptives.csv"), row.names = F)
-write.csv(PRIMARY_DV2_descriptives, paste0(outDir, "/en_only_PRIMARY_WC_descriptives.csv"), row.names = F)
-write.csv(SECONDARY_DV1_descriptives, paste0(outDir, "/en_only_SECONDARY_WG_descriptives.csv"), row.names = F)
-write.csv(SECONDARY_DV2_descriptives, paste0(outDir, "/en_only_SECONDARY_WC_descriptives.csv"), row.names = F)
-write.csv(labInfo, paste0(outDir, "/en_only_labDescriptives.csv"), row.names = F)
-
-
-# Prep for meta analyses
-# We need to run two MAs: one for point estimates with all cases and another
-# omitting labs with zero variance.
-original_DV1_cleaned <- clean_zero_variance(ORIGINAL_DV1_metaVecES, ORIGINAL_DV1_metaVecSE)
-
-# Meta analysis (between groups, zero variance omitted)
-sink(paste0(outDir, "/en_only_ma-original-WG-bg-nozero.txt"))
-metaRAW_DV1_nozero <- rma.uni(yi = original_DV1_cleaned$es, sei = original_DV1_cleaned$se)
-summary(metaRAW_DV1_nozero)
-sink()
+write.csv(ORIGINAL_DV1_descriptives, paste0(outDir, "/en_ORIGINAL_WG_descriptives.csv"), row.names = F)
+write.csv(PRIMARY_DV1_descriptives, paste0(outDir, "/en_PRIMARY_WG_descriptives.csv"), row.names = F)
+write.csv(PRIMARY_DV2_descriptives, paste0(outDir, "/en_PRIMARY_WC_descriptives.csv"), row.names = F)
+write.csv(SECONDARY_DV1_descriptives, paste0(outDir, "/en_SECONDARY_WG_descriptives.csv"), row.names = F)
+write.csv(SECONDARY_DV2_descriptives, paste0(outDir, "/en_SECONDARY_WC_descriptives.csv"), row.names = F)
+write.csv(labInfo, paste0(outDir, "/en_labDescriptives.csv"), row.names = F)
 
 # Meta analysis (between groups)
-sink(paste0(outDir, "/en_only_ma-original-WG-bg.txt"))
+sink(paste0(outDir, "/en_ma-original-WG-bg.txt"))
 metaRAW_DV1 <- rma.uni(yi = ORIGINAL_DV1_metaVecES, sei = ORIGINAL_DV1_metaVecSE)
 summary(metaRAW_DV1)
 sink()
 
 # Meta analysis (continuous time)
 es <- escalc(measure="COR", ri=ORIGINAL_DV1_metaVecR, ni=ORIGINAL_DV1_metaVecN)
-sink(paste0(outDir, "/en_only_ma-original-WG-cont.txt"))
+sink(paste0(outDir, "/en_ma-original-WG-cont.txt"))
 metaR_DV1 <- rma.uni(es)
 summary(metaR_DV1)
 sink()
-
 
 
 # Forest plot
@@ -409,7 +409,9 @@ THse <- sqrt(((1.21^2)+(.67^2)+(.73^2)+(.67^2))/4)/sqrt(120)
 
 # Forest plot with word generation dv
 
-Cairo(file=paste0(outDir, "/en_only_forest_original_WG.png"), 
+ORIGINAL_DV1_metaVecSE[is.na(ORIGINAL_DV1_metaVecSE)] <- 0
+
+Cairo(file=paste0(outDir, "/en_forest_original_WG.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -417,21 +419,20 @@ Cairo(file=paste0(outDir, "/en_only_forest_original_WG.png"),
       #pointsize=12, 
       dpi=600)
 
-
-f = forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaVecSE), xlab="Mean difference", cex.lab=1.2,
-           ilab=cbind(c(".58", format(round(ORIGINAL_DV1_metaVecMeanCtrl, digits=2))), c(".94", format(round(ORIGINAL_DV1_metaVecMeanExp, digits=2)))),
-           ilab.xpos=c(grconvertX(.28, from = "ndc", "user"),
-                       grconvertX(.36, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
-           rows=c(length(labID_name_mappings$labname_short)+7, (length(labID_name_mappings$labname_short)+2):3),
-           slab = c("Original Study", labID_name_mappings$labname_short),
-           ylim=c(-2, length(labID_name_mappings$labname_short)+11),
-           xlim = c(-1.35, 1.25))
+forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaVecSE), xlab="Mean difference", cex.lab=1.2,
+       ilab=cbind(c(".58", format(round(ORIGINAL_DV1_metaVecMeanCtrl, digits=2))), c(".94", format(round(ORIGINAL_DV1_metaVecMeanExp, digits=2)))),
+       ilab.xpos=c(grconvertX(.22, from = "ndc", "user"),
+                   grconvertX(.30, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       rows=c(length(labID_name_mappings$labname_short)+7, (length(labID_name_mappings$labname_short)+2):3),
+       slab = c("Original Study", labID_name_mappings$labname_short),
+       ylim=c(-2, length(labID_name_mappings$labname_short)+11),
+       xlim = c(-2.95, 2.75))
 
 abline(h=length(labIDs)+5, lwd=1.4)
 text(grconvertX(.019, from = "ndc", "user"), length(labIDs)+3.75, "RRR Studies", cex=1.2, pos = 4)
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+10, "Study", cex=1.2)
-text(grconvertX(.28, from = "ndc", "user"), length(labIDs)+10, "Other", cex=1.2)
-text(grconvertX(.36, from = "ndc", "user"), length(labIDs)+10, "No Delay", cex=1.2)
+text(grconvertX(.22, from = "ndc", "user"), length(labIDs)+10, "Other", cex=1.2)
+text(grconvertX(.30, from = "ndc", "user"), length(labIDs)+10, "No Delay", cex=1.2)
 text(grconvertX(.875, from = "ndc", "user"), length(labIDs)+10, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=1, lwd=1.4)
@@ -457,7 +458,7 @@ all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV1, group = labID))
         axis.title.y = element_blank()) +
   facet_wrap(~labname_short, scales = "free")
 
-ggsave(paste0(outDir, "/en_only_ORIGINAL_WG_line-graphs.png"))
+ggsave(paste0(outDir, "en_ORIGINAL_WG_line-graphs.png"))
 
 all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV2, group = labID)) +
   labs(x = "Delay Time", y = "Word Count") +
@@ -469,45 +470,53 @@ all_linear <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV2, group = labID))
         axis.title.y = element_blank()) +
   facet_wrap(~labname_short, scales = "free")
 
-ggsave(paste0(outDir, "/en_only_ORIGINAL_WC_line-graphs.png"))
+ggsave(paste0(outDir, "/en_ORIGINAL_WC_line-graphs.png"))
 
+all_loess <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV1, group = labID)) +
+  labs(x = "Delay Time", y = "Word Count") +
+  geom_smooth(method = "loess", se = T, color = "darkgrey") +
+  geom_point(alpha = 0.3, size = 0) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        axis.title.x = element_blank()) +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        axis.title.y = element_blank()) +
+  facet_wrap(~labname_short, scales = "free")
+
+ggsave(paste0(outDir, "/en_ORIGINAL_WG_loess-graphs.png"))
+
+all_loess <- ggplot(mergedDF, aes(x = DelayTime, y = COUNT_DV2, group = labID)) +
+  labs(x = "Delay Time", y = "Word Count") +
+  geom_smooth(method = "loess", se = T, color = "darkgrey") +
+  geom_point(alpha = 0.3, size = 0) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        axis.title.x = element_blank()) +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        axis.title.y = element_blank()) +
+  facet_wrap(~labname_short, scales = "free")
+
+ggsave(paste0(outDir, "/en_ORIGINAL_WC_loess-graphs.png"))
 
 
 #### PRIMARY ANALYSES ####
 
-primary_DV1_cleaned <- clean_zero_variance(PRIMARY_DV1_metaVecES, PRIMARY_DV1_metaVecSE)
-
-# Meta analysis (word generation, zero variance omitted)
-sink(paste0(outDir, "/en_only_ma-primary-WG-nozero.txt"))
-primary_DV1_meta_nozero <- rma.uni(yi = primary_DV1_cleaned$es, sei = primary_DV1_cleaned$se)
-summary(primary_DV1_meta_nozero)
-sink()
-
-primary_DV2_cleaned <- clean_zero_variance(PRIMARY_DV2_metaVecES, PRIMARY_DV2_metaVecSE)
-
-# Meta analysis (word creation, zero variance omitted)
-sink(paste0(outDir, "/en_only_ma-primary-WC-nozero.txt"))
-primary_DV2_meta_nozero <- rma.uni(yi = primary_DV2_cleaned$es, sei = primary_DV2_cleaned$se)
-summary(primary_DV2_meta_nozero)
-sink()
-
-# Meta analysis (word generation, zero variance included)
-sink(paste0(outDir, "/en_only_ma-primary-WG.txt"))
-primary_DV1_meta <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV2_metaVecSE)
+# Meta analysis (word generation)
+sink(paste0(outDir, "/en_ma-primary-WG.txt"))
+primary_DV1_meta <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE)
 summary(primary_DV1_meta)
 sink()
 
-# Meta analysis (word creation, zero variance included)
-sink(paste0(outDir, "/en_only_ma-primary-WC.txt"))
+# Meta analysis (word creation)
+sink(paste0(outDir, "/en_ma-primary-WC.txt"))
 primary_DV2_meta <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV1_metaVecSE)
 summary(primary_DV2_meta)
 sink()
 
 
-
 # Word generation dv
 
-Cairo(file=paste0(outDir, "/en_only_forest_primary_WG.png"), 
+PRIMARY_DV1_metaVecSE[is.na(PRIMARY_DV1_metaVecSE)] <- 0
+
+Cairo(file=paste0(outDir, "/en_forest_primary_WG.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -517,16 +526,16 @@ Cairo(file=paste0(outDir, "/en_only_forest_primary_WG.png"),
 
 forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(PRIMARY_DV1_metaVecMeanCtrl, digits=2)), format(round(PRIMARY_DV1_metaVecMeanExp, digits=2))),
-       ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
-                   grconvertX(.38, from = "ndc", "user")),
+       ilab.xpos=c(grconvertX(.22, from = "ndc", "user"),
+                   grconvertX(.30, from = "ndc", "user")),
        cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labID_name_mappings$labname_short)+3),
-       xlim=c(-1, .85),
+       xlim=c(-1.1, 1),
        slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
-text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Pain", cex=1.2)
-text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Death", cex=1.2)
+text(grconvertX(.22, from = "ndc", "user"), length(labIDs)+2, "Pain", cex=1.2)
+text(grconvertX(.30, from = "ndc", "user"), length(labIDs)+2, "Death", cex=1.2)
 text(grconvertX(.87, from = "ndc", "user"), length(labIDs)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
@@ -536,7 +545,7 @@ dev.off()
 
 # Word completion dv
 
-Cairo(file=paste0(outDir, "/en_only_forest_primary_WC.png"), 
+Cairo(file=paste0(outDir, "/en_forest_primary_WC.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -546,15 +555,15 @@ Cairo(file=paste0(outDir, "/en_only_forest_primary_WC.png"),
 
 forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(PRIMARY_DV2_metaVecMeanCtrl, digits=2)), format(round(PRIMARY_DV2_metaVecMeanExp, digits=2))),
-       ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
-                   grconvertX(.38, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ilab.xpos=c(grconvertX(.22, from = "ndc", "user"),
+                   grconvertX(.3, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labID_name_mappings$labname_short)+3),
-       xlim=c(-4.7, 3.9),
+       xlim=c(-4.4, 4.9),
        slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
-text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Pain", cex=1.2)
-text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Death", cex=1.2)
+text(grconvertX(.22, from = "ndc", "user"), length(labIDs)+2, "Pain", cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Death", cex=1.2)
 text(grconvertX(.87, from = "ndc", "user"), length(labIDs)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
@@ -565,37 +574,24 @@ dev.off()
 
 #### SECONDARY ANALYSES ####
 
-secondary_DV1_cleaned <- clean_zero_variance(SECONDARY_DV1_metaVecES, SECONDARY_DV1_metaVecSE)
-
-# Meta analysis, word generation, zero variance omitted
-sink(paste0(outDir, "/en_only_ma-secondary-WG-nozero.txt"))
-secondary_DV1_meta_nozero <- rma.uni(yi = secondary_DV1_cleaned$es, sei = secondary_DV1_cleaned$se)
-summary(secondary_DV1_meta_nozero)
-sink()
-
-secondary_DV2_cleaned <- clean_zero_variance(SECONDARY_DV2_metaVecES, SECONDARY_DV2_metaVecSE)
-
-# Meta analysis, word creation, zero variance omitted
-sink(paste0(outDir, "/en_only_ma-secondary-WC-nozero.txt"))
-secondary_DV2_meta_nozero <- rma.uni(yi = secondary_DV2_cleaned$es, sei = secondary_DV2_cleaned$se)
-summary(secondary_DV2_meta_nozero)
-sink()
-
-# Meta analysis, word generation, zero variance included
-sink(paste0(outDir, "/en_only_ma-secondary-WG.txt"))
+# Meta analysis, word generation
+sink(paste0(outDir, "/en_ma-secondary-WG.txt"))
 secondary_DV1_meta <- rma.uni(yi = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE)
 summary(secondary_DV1_meta)
 sink()
 
-# Meta analysis, word creation, zero variance included
-sink(paste0(outDir, "/en_only_ma-secondary-WC.txt"))
+# Meta analysis, word creation
+sink(paste0(outDir, "/en_ma-secondary-WC.txt"))
 secondary_DV2_meta <- rma.uni(yi = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE)
 summary(secondary_DV2_meta)
 sink()
 
+
 # Word generation dv
 
-Cairo(file=paste0(outDir, "/en_only_forest_secondary_WG.png"), 
+SECONDARY_DV1_metaVecSE[is.na(SECONDARY_DV1_metaVecSE)] <- 0
+
+Cairo(file=paste0(outDir, "/en_forest_secondary_WG.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -605,17 +601,17 @@ Cairo(file=paste0(outDir, "/en_only_forest_secondary_WG.png"),
 
 forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(SECONDARY_DV1_metaVecMeanCtrl, digits=2)), format(round(SECONDARY_DV1_metaVecMeanExp, digits=2))),
-       ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
-                   grconvertX(.38, from = "ndc", "user")),
+       ilab.xpos=c(grconvertX(.22, from = "ndc", "user"),
+                   grconvertX(.3, from = "ndc", "user")),
        cex.axis=1.1,
        lwd=1.4,
        ylim=c(-2, length(labID_name_mappings$labname_short)+3),
-       xlim=c(-1.9, 1.1),
+       xlim=c(-3.7, 2.3),
        slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
-text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "No Delay", cex=1.2)
-text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Delay", cex=1.2)
+text(grconvertX(.22, from = "ndc", "user"), length(labIDs)+2, "No Delay", cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Delay", cex=1.2)
 text(grconvertX(.87, from = "ndc", "user"), length(labIDs)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
@@ -625,7 +621,7 @@ dev.off()
 
 # Word completion dv
 
-Cairo(file=paste0(outDir, "/en_only_forest_secondary_WC.png"), 
+Cairo(file=paste0(outDir, "/en_forest_secondary_WC.png"), 
       bg="white",
       type="png",
       units="in", 
@@ -635,20 +631,19 @@ Cairo(file=paste0(outDir, "/en_only_forest_secondary_WC.png"),
 
 forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean difference", cex.lab=1.4,
        ilab=cbind(format(round(SECONDARY_DV2_metaVecMeanCtrl, digits=2)), format(round(SECONDARY_DV2_metaVecMeanExp, digits=2))),
-       ilab.xpos=c(grconvertX(.3, from = "ndc", "user"),
-                   grconvertX(.38, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
+       ilab.xpos=c(grconvertX(.22, from = "ndc", "user"),
+                   grconvertX(.3, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labID_name_mappings$labname_short)+3),
-       xlim=c(-6.8, 3.4),
+       xlim=c(-9.8, 7.4),
        slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
-text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "No Delay", cex=1.2)
-text(grconvertX(.38, from = "ndc", "user"), length(labIDs)+2, "Delay", cex=1.2)
+text(grconvertX(.22, from = "ndc", "user"), length(labIDs)+2, "No Delay", cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Delay", cex=1.2)
 text(grconvertX(.87, from = "ndc", "user"), length(labIDs)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
 addpoly(secondary_DV2_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
 
 dev.off()
-
 

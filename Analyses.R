@@ -310,7 +310,6 @@ for (lab in labIDs) {
   ORIGINAL_DV1_r <- cor.test(df$COUNT_DV1, df$DelayTime, na.rm=T)
   ORIGINAL_DV1_t <- unname(t.test(df$COUNT_DV1[df$originalExperiment==1],
                                   df$COUNT_DV1[df$originalExperiment==0])$statistic)
-  
   ORIGINAL_DV1_se <- (ORIGINAL_DV1_m_exp-ORIGINAL_DV1_m_ctrl)/ORIGINAL_DV1_t
   
   ORIGINAL_DV1_metaVecES <- c(ORIGINAL_DV1_metaVecES, ORIGINAL_DV1_m_exp-ORIGINAL_DV1_m_ctrl)
@@ -342,7 +341,6 @@ for (lab in labIDs) {
   PRIMARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$primaryAnalysis==0])
   PRIMARY_DV1_t <- unname(t.test(df$COUNT_DV1[df$primaryAnalysis==1],
                                  df$COUNT_DV1[df$primaryAnalysis==0])$statistic)
-  
   PRIMARY_DV1_se <- (PRIMARY_DV1_m_exp-PRIMARY_DV1_m_ctrl)/PRIMARY_DV1_t
   
   
@@ -371,7 +369,6 @@ for (lab in labIDs) {
   PRIMARY_DV2_n_ctrl <- length(df$COUNT_DV2[df$primaryAnalysis==0])
   PRIMARY_DV2_t <- unname(t.test(df$COUNT_DV2[df$primaryAnalysis==1],
                                  df$COUNT_DV2[df$primaryAnalysis==0])$statistic)
-  
   PRIMARY_DV2_se <- (PRIMARY_DV2_m_exp-PRIMARY_DV2_m_ctrl)/PRIMARY_DV2_t
   
   
@@ -407,7 +404,6 @@ for (lab in labIDs) {
   SECONDARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$secondaryAnalysis==0])
   SECONDARY_DV1_t <- unname(t.test(df$COUNT_DV1[df$secondaryAnalysis==1],
                                  df$COUNT_DV1[df$secondaryAnalysis==0])$statistic)
-  
   SECONDARY_DV1_se <- (SECONDARY_DV1_m_exp-SECONDARY_DV1_m_ctrl)/SECONDARY_DV1_t
   
   
@@ -436,7 +432,6 @@ for (lab in labIDs) {
   SECONDARY_DV2_n_ctrl <- length(df$COUNT_DV2[df$secondaryAnalysis==0])
   SECONDARY_DV2_t <- unname(t.test(df$COUNT_DV2[df$secondaryAnalysis==1],
                                    df$COUNT_DV2[df$secondaryAnalysis==0])$statistic)
-  
   SECONDARY_DV2_se <- (SECONDARY_DV2_m_exp-SECONDARY_DV2_m_ctrl)/SECONDARY_DV2_t
   
   # For descriptive stats table
