@@ -530,11 +530,6 @@ metaRAW_DV1 <- rma.uni(yi = ORIGINAL_DV1_metaVecES, sei = ORIGINAL_DV1_metaVecSE
 summary(metaRAW_DV1)
 sink()
 
-# Meta analysis (between groups, SMD)
-sink(paste0(outDir, "/ma-original-WG-bg-SMD.txt"))
-rma.uni(yi = ORIGINAL_DV1_metavecD, sei = ORIGINAL_DV1_metavecD_SE, measure="SMD")
-sink()
-
 # Meta analysis (continuous time)
 es <- escalc(measure="COR", ri=ORIGINAL_DV1_metaVecR, ni=ORIGINAL_DV1_metaVecN)
 sink(paste0(outDir, "/ma-original-WG-cont.txt"))
@@ -650,20 +645,10 @@ primary_DV1_meta <- rma.uni(yi = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVe
 summary(primary_DV1_meta)
 sink()
 
-# Meta analysis (word generation, SMD)
-sink(paste0(outDir, "/ma-primary-WG-bg-SMD.txt"))
-rma.uni(yi = PRIMARY_DV1_metavecD, sei = PRIMARY_DV1_metavecD_SE, measure="SMD")
-sink()
-
 # Meta analysis (word creation)
 sink(paste0(outDir, "/ma-primary-WC.txt"))
 primary_DV2_meta <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV1_metaVecSE)
 summary(primary_DV2_meta)
-sink()
-
-# Meta analysis (word creation, SMD)
-sink(paste0(outDir, "/ma-primary-WC-bg-SMD.txt"))
-rma.uni(yi = PRIMARY_DV2_metavecD, sei = PRIMARY_DV2_metavecD_SE, measure="SMD")
 sink()
 
 
@@ -735,21 +720,12 @@ secondary_DV1_meta <- rma.uni(yi = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_
 summary(secondary_DV1_meta)
 sink()
 
-# Meta analysis (word generation, SMD)
-sink(paste0(outDir, "/ma-secondary-WG-bg-SMD.txt"))
-rma.uni(yi = SECONDARY_DV1_metavecD, sei = SECONDARY_DV1_metavecD_SE, measure="SMD")
-sink()
-
 # Meta analysis, word creation
 sink(paste0(outDir, "/ma-secondary-WC.txt"))
 secondary_DV2_meta <- rma.uni(yi = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE)
 summary(secondary_DV2_meta)
 sink()
 
-# Meta analysis (word creation, SMD)
-sink(paste0(outDir, "/ma-secondary-WC-SMD.txt"))
-rma.uni(yi = SECONDARY_DV2_metavecD, sei = SECONDARY_DV2_metavecD_SE, measure="SMD")
-sink()
 
 # Word generation dv
 
