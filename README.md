@@ -10,4 +10,4 @@ Code for Registered Replication of Trafimow and Hughes (2012)
 - DeathWordList_: Lists of death-related words for each language
 
 
-Data and further documentation is available at https://osf.io/atc39/
+Data and further documentation are available at https://osf.io/atc39/
