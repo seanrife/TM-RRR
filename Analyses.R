@@ -72,6 +72,8 @@ SECONDARY_DV2_descriptives <- labInfo
 labIDs <- as.vector(labInfo$labID)
 
 labID_name_mappings <- read.csv(paste0(baseDir,"/labID_name_mappings.csv"), stringsAsFactors=FALSE)
+# TEMPORARY: REMOVE PROBLEMATIC LAB WITH LOW N
+labID_name_mappings <- labID_name_mappings[-c(13,13),]
 
 # ANALYSES INCLUDES THREE APPROACHES:
 
@@ -210,6 +212,9 @@ for (word in raw_deathwords_Slovak) {
 # exclusions file and main dataset, then munge and put needed results into
 # vectors for use in analyses / image generation
 for (lab in labIDs) {
+  # TEMPORARY: REMOVE PROBLEMATIC LAB WITH LOW N
+  if (lab == "METAlab") {next}
+  
   workingLabPathExclusions <- paste0(dataDir,"/",lab,"_coding_completed_normalized.csv")
   df_exclusions <- readInExclusionsFile(workingLabPathExclusions)
   
@@ -223,7 +228,7 @@ for (lab in labIDs) {
   
   rm(merged_df_exclusions)
   
-  # Make labID the actual lab ID (not part of raw data files)
+  # Make labID the actual lab ID (not part of raw data files as this is not always used)
   df$labID <- lab
   
   # Put N info into labInfo DF
@@ -239,6 +244,10 @@ for (lab in labIDs) {
   # Exclude if participant took less than 5 minutes to complete the survey
   df <- df[!is.na(df$interviewtime) & df$interviewtime > 300,]
   
+  # Remove computed values for participants assigned to ther other DV
+  # dvGroup = 1 is WGTASK (DV1), dvGroup = 2 is WSCTASK (DV2)
+  #df$COUNT_DV1[df$dvGroup == 2] <- NA
+  #df$COUNT_DV2[df$dvGroup == 1] <- NA
   
   # Put N info into labInfo DF (with exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
@@ -271,6 +280,10 @@ for (lab in labIDs) {
     df$COUNT_DV2_Q7 <- 0
     df$COUNT_DV2 <- rowSums(df[, c(which(colnames(df)=="COUNT_DV2_Q1"):which(colnames(df)=="COUNT_DV2_Q6"))], na.rm = TRUE)
   }
+
+  # Null values for wrong dvGroups
+  df$COUNT_DV1[df$dvGroup == 2] <- NA
+  df$COUNT_DV2[df$dvGroup == 1] <- NA
   
   # Put % female into LabInfo DF
   TotalWithGender <- table(df$Gender)[names(table(df$Gender))==2] + table(df$Gender)[names(table(df$Gender))==1]
@@ -315,11 +328,11 @@ for (lab in labIDs) {
   # SECONDARY_ - additional analysis of delay effect
   
   # Calculate tests/stats for primary analysis
-  ORIGINAL_DV1_m_exp <- mean(df$COUNT_DV1[df$originalExperiment==1])
-  ORIGINAL_DV1_sd_exp <- sd(df$COUNT_DV1[df$originalExperiment==1])
+  ORIGINAL_DV1_m_exp <- mean(df$COUNT_DV1[df$originalExperiment==1], na.rm=T)
+  ORIGINAL_DV1_sd_exp <- sd(df$COUNT_DV1[df$originalExperiment==1], na.rm=T)
+  ORIGINAL_DV1_m_ctrl <- mean(df$COUNT_DV1[df$originalExperiment==0], na.rm=T)
+  ORIGINAL_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$originalExperiment==0], na.rm=T)
   ORIGINAL_DV1_n_exp <- length(df$COUNT_DV1[df$originalExperiment==1])
-  ORIGINAL_DV1_m_ctrl <- mean(df$COUNT_DV1[df$originalExperiment==0])
-  ORIGINAL_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$originalExperiment==0])
   ORIGINAL_DV1_n_ctrl <- length(df$COUNT_DV1[df$originalExperiment==0])
   ORIGINAL_DV1_r <- cor.test(df$COUNT_DV1, df$DelayTime, na.rm=T)
   ORIGINAL_DV1_t <- unname(t.test(df$COUNT_DV1[df$originalExperiment==1],
