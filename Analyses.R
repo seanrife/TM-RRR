@@ -73,7 +73,7 @@ labIDs <- as.vector(labInfo$labID)
 
 labID_name_mappings <- read.csv(paste0(baseDir,"/labID_name_mappings.csv"), stringsAsFactors=FALSE)
 # TEMPORARY: REMOVE PROBLEMATIC LAB WITH LOW N
-labID_name_mappings <- labID_name_mappings[-c(13,13),]
+#labID_name_mappings <- labID_name_mappings[-c(13,13),]
 
 # ANALYSES INCLUDES THREE APPROACHES:
 
@@ -213,7 +213,7 @@ for (word in raw_deathwords_Slovak) {
 # vectors for use in analyses / image generation
 for (lab in labIDs) {
   # TEMPORARY: REMOVE PROBLEMATIC LAB WITH LOW N
-  if (lab == "METAlab") {next}
+  #if (lab == "METAlab") {next}
   
   workingLabPathExclusions <- paste0(dataDir,"/",lab,"_coding_completed_normalized.csv")
   df_exclusions <- readInExclusionsFile(workingLabPathExclusions)
@@ -327,45 +327,46 @@ for (lab in labIDs) {
   # PRIMARY_ - primary TM analysis
   # SECONDARY_ - additional analysis of delay effect
   
-  # Calculate tests/stats for primary analysis
-  ORIGINAL_DV1_m_exp <- mean(df$COUNT_DV1[df$originalExperiment==1], na.rm=T)
-  ORIGINAL_DV1_sd_exp <- sd(df$COUNT_DV1[df$originalExperiment==1], na.rm=T)
-  ORIGINAL_DV1_m_ctrl <- mean(df$COUNT_DV1[df$originalExperiment==0], na.rm=T)
-  ORIGINAL_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$originalExperiment==0], na.rm=T)
-  ORIGINAL_DV1_n_exp <- length(df$COUNT_DV1[df$originalExperiment==1])
-  ORIGINAL_DV1_n_ctrl <- length(df$COUNT_DV1[df$originalExperiment==0])
-  ORIGINAL_DV1_r <- cor.test(df$COUNT_DV1, df$DelayTime, na.rm=T)
-  ORIGINAL_DV1_t <- unname(t.test(df$COUNT_DV1[df$originalExperiment==1],
-                                  df$COUNT_DV1[df$originalExperiment==0])$statistic)
-  ORIGINAL_DV1_se <- (ORIGINAL_DV1_m_exp-ORIGINAL_DV1_m_ctrl)/ORIGINAL_DV1_t
-  
-  ORIGINAL_DV1_D <- ci.stdmean2(.05, ORIGINAL_DV1_m_exp, ORIGINAL_DV1_m_ctrl,
-                                ORIGINAL_DV1_sd_exp, ORIGINAL_DV1_sd_ctrl,
-                                ORIGINAL_DV1_n_exp, ORIGINAL_DV1_n_ctrl)
-  
-  ORIGINAL_DV1_metavecD <- c(ORIGINAL_DV1_metavecD, ORIGINAL_DV1_D[1,2])
-  ORIGINAL_DV1_metavecD_SE <- c(ORIGINAL_DV1_metavecD_SE, ORIGINAL_DV1_D[1,3])
-  
-  ORIGINAL_DV1_metaVecES <- c(ORIGINAL_DV1_metaVecES, ORIGINAL_DV1_m_exp-ORIGINAL_DV1_m_ctrl)
-  #ORIGINAL_DV1_metaVecES[ORIGINAL_DV1_metaVecES == 0] <- NaN
-  ORIGINAL_DV1_metaVecSE <- c(ORIGINAL_DV1_metaVecSE, ORIGINAL_DV1_se)
-  #ORIGINAL_DV1_metaVecSE[ORIGINAL_DV1_metaVecSE == 0] <- NaN
 
-  # For descriptive stats tables
-  ORIGINAL_DV1_descriptives$mean_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_m_exp)
-  ORIGINAL_DV1_descriptives$sd_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_sd_exp)
-  ORIGINAL_DV1_descriptives$mean_ctrl[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_m_ctrl)
-  ORIGINAL_DV1_descriptives$sd_ctrl[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_sd_ctrl)
+  if (lab != "METAlab") { # Skip lab without enough participants in each category
+    # Calculate tests/stats for primary analysis
+    ORIGINAL_DV1_m_exp <- mean(df$COUNT_DV1[df$originalExperiment==1], na.rm=T)
+    ORIGINAL_DV1_sd_exp <- sd(df$COUNT_DV1[df$originalExperiment==1], na.rm=T)
+    ORIGINAL_DV1_m_ctrl <- mean(df$COUNT_DV1[df$originalExperiment==0], na.rm=T)
+    ORIGINAL_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$originalExperiment==0], na.rm=T)
+    ORIGINAL_DV1_n_exp <- length(df$COUNT_DV1[df$originalExperiment==1])
+    ORIGINAL_DV1_n_ctrl <- length(df$COUNT_DV1[df$originalExperiment==0])
+    ORIGINAL_DV1_r <- cor.test(df$COUNT_DV1, df$DelayTime, na.rm=T)
+    ORIGINAL_DV1_t <- unname(t.test(df$COUNT_DV1[df$originalExperiment==1],
+                                    df$COUNT_DV1[df$originalExperiment==0])$statistic)
+    ORIGINAL_DV1_se <- (ORIGINAL_DV1_m_exp-ORIGINAL_DV1_m_ctrl)/ORIGINAL_DV1_t
+    
+    ORIGINAL_DV1_D <- ci.stdmean2(.05, ORIGINAL_DV1_m_exp, ORIGINAL_DV1_m_ctrl,
+                                  ORIGINAL_DV1_sd_exp, ORIGINAL_DV1_sd_ctrl,
+                                  ORIGINAL_DV1_n_exp, ORIGINAL_DV1_n_ctrl)
+    
+    ORIGINAL_DV1_metavecD <- c(ORIGINAL_DV1_metavecD, ORIGINAL_DV1_D[1,2])
+    ORIGINAL_DV1_metavecD_SE <- c(ORIGINAL_DV1_metavecD_SE, ORIGINAL_DV1_D[1,3])
+    
+    ORIGINAL_DV1_metaVecES <- c(ORIGINAL_DV1_metaVecES, ORIGINAL_DV1_m_exp-ORIGINAL_DV1_m_ctrl)
+    ORIGINAL_DV1_metaVecSE <- c(ORIGINAL_DV1_metaVecSE, ORIGINAL_DV1_se)
   
-  ORIGINAL_DV1_metaVecR <- c(ORIGINAL_DV1_metaVecR, ORIGINAL_DV1_r$estimate)
-  ORIGINAL_DV1_metaVecN <- c(ORIGINAL_DV1_metaVecN, (ORIGINAL_DV1_r$parameter + 2))
-  
-  ORIGINAL_DV1_metaVecMeanExp <- c(ORIGINAL_DV1_metaVecMeanExp, ORIGINAL_DV1_m_exp)
-  ORIGINAL_DV1_metaVecSDExp <- c(ORIGINAL_DV1_metaVecSDExp, ORIGINAL_DV1_sd_exp)
-  ORIGINAL_DV1_metaVecNExp <- c(ORIGINAL_DV1_metaVecNExp, ORIGINAL_DV1_n_exp)
-  ORIGINAL_DV1_metaVecMeanCtrl <- c(ORIGINAL_DV1_metaVecMeanCtrl, ORIGINAL_DV1_m_ctrl)
-  ORIGINAL_DV1_metaVecSDCtrl <- c(ORIGINAL_DV1_metaVecSDCtrl, ORIGINAL_DV1_sd_ctrl)
-  ORIGINAL_DV1_metaVecNCtrl <- c(ORIGINAL_DV1_metaVecNCtrl, ORIGINAL_DV1_n_ctrl)
+    # For descriptive stats tables
+    ORIGINAL_DV1_descriptives$mean_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_m_exp)
+    ORIGINAL_DV1_descriptives$sd_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_sd_exp)
+    ORIGINAL_DV1_descriptives$mean_ctrl[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_m_ctrl)
+    ORIGINAL_DV1_descriptives$sd_ctrl[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_sd_ctrl)
+    
+    ORIGINAL_DV1_metaVecR <- c(ORIGINAL_DV1_metaVecR, ORIGINAL_DV1_r$estimate)
+    ORIGINAL_DV1_metaVecN <- c(ORIGINAL_DV1_metaVecN, (ORIGINAL_DV1_r$parameter + 2))
+    
+    ORIGINAL_DV1_metaVecMeanExp <- c(ORIGINAL_DV1_metaVecMeanExp, ORIGINAL_DV1_m_exp)
+    ORIGINAL_DV1_metaVecSDExp <- c(ORIGINAL_DV1_metaVecSDExp, ORIGINAL_DV1_sd_exp)
+    ORIGINAL_DV1_metaVecNExp <- c(ORIGINAL_DV1_metaVecNExp, ORIGINAL_DV1_n_exp)
+    ORIGINAL_DV1_metaVecMeanCtrl <- c(ORIGINAL_DV1_metaVecMeanCtrl, ORIGINAL_DV1_m_ctrl)
+    ORIGINAL_DV1_metaVecSDCtrl <- c(ORIGINAL_DV1_metaVecSDCtrl, ORIGINAL_DV1_sd_ctrl)
+    ORIGINAL_DV1_metaVecNCtrl <- c(ORIGINAL_DV1_metaVecNCtrl, ORIGINAL_DV1_n_ctrl)
+  }
   
   
   # Calculate tests/stats for primary analysis
@@ -423,9 +424,7 @@ for (lab in labIDs) {
   PRIMARY_DV2_metavecD_SE <- c(PRIMARY_DV2_metavecD_SE, PRIMARY_DV2_D[1,3])
   
   PRIMARY_DV2_metaVecES <- c(PRIMARY_DV2_metaVecES, PRIMARY_DV2_m_exp-PRIMARY_DV2_m_ctrl)
-  #PRIMARY_DV2_metaVecES[PRIMARY_DV2_metaVecES == 0] <- NaN
   PRIMARY_DV2_metaVecSE <- c(PRIMARY_DV2_metaVecSE, PRIMARY_DV2_se)
-  #PRIMARY_DV2_metaVecSE[PRIMARY_DV2_metaVecSE == 0] <- NaN
   
   
   # For descriptive stats table
@@ -449,41 +448,40 @@ for (lab in labIDs) {
   # essayGroup == 1: death; essayGroup == 2: dental pain
   # delayGroup == 1: delay cond; delayGroup == 2: no delay cond
   
-  SECONDARY_DV1_m_exp <- mean(df$COUNT_DV1[df$secondaryAnalysis==1], na.rm=T)
-  SECONDARY_DV1_sd_exp <- sd(df$COUNT_DV1[df$secondaryAnalysis==1], na.rm=T)
-  SECONDARY_DV1_m_ctrl <- mean(df$COUNT_DV1[df$secondaryAnalysis==0], na.rm=T)
-  SECONDARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$secondaryAnalysis==0], na.rm=T)
-  SECONDARY_DV1_n_exp <- length(df$COUNT_DV1[df$secondaryAnalysis==1])
-  SECONDARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$secondaryAnalysis==0])
-  SECONDARY_DV1_t <- unname(t.test(df$COUNT_DV1[df$secondaryAnalysis==1],
-                                   df$COUNT_DV1[df$secondaryAnalysis==0])$statistic)
-  SECONDARY_DV1_se <- (SECONDARY_DV1_m_exp-SECONDARY_DV1_m_ctrl)/SECONDARY_DV1_t
+  if (lab != "METAlab") { # Skip lab without enough participants in each category
+    SECONDARY_DV1_m_exp <- mean(df$COUNT_DV1[df$secondaryAnalysis==1], na.rm=T)
+    SECONDARY_DV1_sd_exp <- sd(df$COUNT_DV1[df$secondaryAnalysis==1], na.rm=T)
+    SECONDARY_DV1_m_ctrl <- mean(df$COUNT_DV1[df$secondaryAnalysis==0], na.rm=T)
+    SECONDARY_DV1_sd_ctrl <- sd(df$COUNT_DV1[df$secondaryAnalysis==0], na.rm=T)
+    SECONDARY_DV1_n_exp <- length(df$COUNT_DV1[df$secondaryAnalysis==1])
+    SECONDARY_DV1_n_ctrl <- length(df$COUNT_DV1[df$secondaryAnalysis==0])
+    SECONDARY_DV1_t <- unname(t.test(df$COUNT_DV1[df$secondaryAnalysis==1],
+                                     df$COUNT_DV1[df$secondaryAnalysis==0])$statistic)
+    SECONDARY_DV1_se <- (SECONDARY_DV1_m_exp-SECONDARY_DV1_m_ctrl)/SECONDARY_DV1_t
+    
+    SECONDARY_DV1_D <- ci.stdmean2(.05, SECONDARY_DV1_m_exp, SECONDARY_DV1_m_ctrl,
+                                 SECONDARY_DV1_sd_exp, SECONDARY_DV1_sd_ctrl,
+                                 SECONDARY_DV1_n_exp, SECONDARY_DV1_n_ctrl)
+    
+    SECONDARY_DV1_metavecD <- c(SECONDARY_DV1_metavecD, SECONDARY_DV1_D[1,2])
+    SECONDARY_DV1_metavecD_SE <- c(SECONDARY_DV1_metavecD_SE, SECONDARY_DV1_D[1,3])
+    
+    SECONDARY_DV1_metaVecES <- c(SECONDARY_DV1_metaVecES, SECONDARY_DV1_m_exp-SECONDARY_DV1_m_ctrl)
+    SECONDARY_DV1_metaVecSE <- c(SECONDARY_DV1_metaVecSE, SECONDARY_DV1_se)
+    
+    # For descriptive stats table
+    SECONDARY_DV1_descriptives$mean_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_exp)
+    SECONDARY_DV1_descriptives$sd_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_exp)
+    SECONDARY_DV1_descriptives$mean_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_ctrl)
+    SECONDARY_DV1_descriptives$sd_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_ctrl)
   
-  SECONDARY_DV1_D <- ci.stdmean2(.05, SECONDARY_DV1_m_exp, SECONDARY_DV1_m_ctrl,
-                               SECONDARY_DV1_sd_exp, SECONDARY_DV1_sd_ctrl,
-                               SECONDARY_DV1_n_exp, SECONDARY_DV1_n_ctrl)
-  
-  SECONDARY_DV1_metavecD <- c(SECONDARY_DV1_metavecD, SECONDARY_DV1_D[1,2])
-  SECONDARY_DV1_metavecD_SE <- c(SECONDARY_DV1_metavecD_SE, SECONDARY_DV1_D[1,3])
-  
-  SECONDARY_DV1_metaVecES <- c(SECONDARY_DV1_metaVecES, SECONDARY_DV1_m_exp-SECONDARY_DV1_m_ctrl)
-  #SECONDARY_DV1_metaVecES[SECONDARY_DV1_metaVecES == 0] <- NaN
-  SECONDARY_DV1_metaVecSE <- c(SECONDARY_DV1_metaVecSE, SECONDARY_DV1_se)
-  #SECONDARY_DV1_metaVecSE[SECONDARY_DV1_metaVecSE == 0] <- NaN
-  
-  # For descriptive stats table
-  SECONDARY_DV1_descriptives$mean_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_exp)
-  SECONDARY_DV1_descriptives$sd_exp[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_exp)
-  SECONDARY_DV1_descriptives$mean_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_m_ctrl)
-  SECONDARY_DV1_descriptives$sd_ctrl[SECONDARY_DV1_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV1_sd_ctrl)
-
-  SECONDARY_DV1_metaVecMeanExp <- c(SECONDARY_DV1_metaVecMeanExp, SECONDARY_DV1_m_exp)
-  SECONDARY_DV1_metaVecSDExp <- c(SECONDARY_DV1_metaVecSDExp, SECONDARY_DV1_sd_exp)
-  SECONDARY_DV1_metaVecNExp <- c(SECONDARY_DV1_metaVecNExp, SECONDARY_DV1_n_exp)
-  SECONDARY_DV1_metaVecMeanCtrl <- c(SECONDARY_DV1_metaVecMeanCtrl, SECONDARY_DV1_m_ctrl)
-  SECONDARY_DV1_metaVecSDCtrl <- c(SECONDARY_DV1_metaVecSDCtrl, SECONDARY_DV1_sd_ctrl)
-  SECONDARY_DV1_metaVecNCtrl <- c(SECONDARY_DV1_metaVecNCtrl, SECONDARY_DV1_n_ctrl)
-  
+    SECONDARY_DV1_metaVecMeanExp <- c(SECONDARY_DV1_metaVecMeanExp, SECONDARY_DV1_m_exp)
+    SECONDARY_DV1_metaVecSDExp <- c(SECONDARY_DV1_metaVecSDExp, SECONDARY_DV1_sd_exp)
+    SECONDARY_DV1_metaVecNExp <- c(SECONDARY_DV1_metaVecNExp, SECONDARY_DV1_n_exp)
+    SECONDARY_DV1_metaVecMeanCtrl <- c(SECONDARY_DV1_metaVecMeanCtrl, SECONDARY_DV1_m_ctrl)
+    SECONDARY_DV1_metaVecSDCtrl <- c(SECONDARY_DV1_metaVecSDCtrl, SECONDARY_DV1_sd_ctrl)
+    SECONDARY_DV1_metaVecNCtrl <- c(SECONDARY_DV1_metaVecNCtrl, SECONDARY_DV1_n_ctrl)
+  }
   
   SECONDARY_DV2_m_exp <- mean(df$COUNT_DV2[df$secondaryAnalysis==1], na.rm=T)
   SECONDARY_DV2_sd_exp <- sd(df$COUNT_DV2[df$secondaryAnalysis==1], na.rm=T)
@@ -503,9 +501,7 @@ for (lab in labIDs) {
   SECONDARY_DV2_metavecD_SE <- c(SECONDARY_DV2_metavecD_SE, SECONDARY_DV2_D[1,3])
   
   SECONDARY_DV2_metaVecES <- c(SECONDARY_DV2_metaVecES, SECONDARY_DV2_m_exp-SECONDARY_DV2_m_ctrl)
-  #SECONDARY_DV2_metaVecES[SECONDARY_DV2_metaVecES == 0] <- NaN
   SECONDARY_DV2_metaVecSE <- c(SECONDARY_DV2_metaVecSE, SECONDARY_DV2_se)
-  #SECONDARY_DV2_metaVecES[SECONDARY_DV2_metaVecES == 0] <- NaN
   
   # For descriptive stats table
   SECONDARY_DV2_descriptives$mean_exp[SECONDARY_DV2_descriptives$labID == as.factor(lab)] <- format(SECONDARY_DV2_m_exp)
@@ -576,17 +572,17 @@ forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaVecSE
        ilab=cbind(c(".58", format(round(ORIGINAL_DV1_metaVecMeanCtrl, digits=2))), c(".94", format(round(ORIGINAL_DV1_metaVecMeanExp, digits=2)))),
        ilab.xpos=c(grconvertX(.24, from = "ndc", "user"),
                    grconvertX(.32, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
-       rows=c(length(labID_name_mappings$labname_short)+7, (length(labID_name_mappings$labname_short)+2):3),
-       slab = c("Original Study", labID_name_mappings$labname_short),
-       ylim=c(-2, length(labID_name_mappings$labname_short)+11),
+       rows=c(length(labID_name_mappings$labname_short[-13])+7, (length(labID_name_mappings$labname_short[-13])+2):3),
+       slab = c("Original Study", labID_name_mappings$labname_short[-13]),
+       ylim=c(-2, length(labID_name_mappings$labname_short[-13])+11),
        xlim = c(-1.8, 1.8))
 
-abline(h=length(labIDs)+5, lwd=1.4)
-text(grconvertX(.019, from = "ndc", "user"), length(labIDs)+3.75, "RRR Studies", cex=1.2, pos = 4)
-text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+10, "Study", cex=1.2)
-text(grconvertX(.24, from = "ndc", "user"), length(labIDs)+10, "Delay", cex=1.2)
-text(grconvertX(.32, from = "ndc", "user"), length(labIDs)+10, "Other", cex=1.2)
-text(grconvertX(.875, from = "ndc", "user"), length(labIDs)+10, paste0("Mean difference", " [95% CI]"), cex=1.2)
+abline(h=length(labIDs[-13])+5, lwd=1.4)
+text(grconvertX(.019, from = "ndc", "user"), length(labIDs[-13])+3.75, "RRR Studies", cex=1.2, pos = 4)
+text(grconvertX(.053, from = "ndc", "user"), length(labIDs[-13])+10, "Study", cex=1.2)
+text(grconvertX(.24, from = "ndc", "user"), length(labIDs[-13])+10, "Delay", cex=1.2)
+text(grconvertX(.32, from = "ndc", "user"), length(labIDs[-13])+10, "Other", cex=1.2)
+text(grconvertX(.875, from = "ndc", "user"), length(labIDs[-13])+10, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=1, lwd=1.4)
 addpoly(metaRAW_DV1, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
@@ -758,14 +754,14 @@ forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean di
                    grconvertX(.3, from = "ndc", "user")),
        cex.axis=1.1,
        lwd=1.4,
-       ylim=c(-2, length(labID_name_mappings$labname_short)+3),
+       ylim=c(-2, length(labID_name_mappings$labname_short[-13])+3),
        xlim=c(-2.3, 1.3),
-       slab = labID_name_mappings$labname_short)
+       slab = labID_name_mappings$labname_short[-13])
 
-text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
-text(grconvertX(.22, from = "ndc", "user"), length(labIDs)+2, "No Delay", cex=1.2)
-text(grconvertX(.3, from = "ndc", "user"), length(labIDs)+2, "Delay", cex=1.2)
-text(grconvertX(.87, from = "ndc", "user"), length(labIDs)+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
+text(grconvertX(.053, from = "ndc", "user"), length(labIDs[-13])+2, "Study", cex=1.2)
+text(grconvertX(.22, from = "ndc", "user"), length(labIDs[-13])+2, "No Delay", cex=1.2)
+text(grconvertX(.3, from = "ndc", "user"), length(labIDs[-13])+2, "Delay", cex=1.2)
+text(grconvertX(.87, from = "ndc", "user"), length(labIDs[-13])+2, paste0("Mean difference", " [95% CI]"), cex=1.2)
 
 abline(h=0, lwd=1.4)
 addpoly(secondary_DV1_meta, atransf=FALSE, row=-1, cex=1.3, mlab="Meta-Analytic Effect Size:")
