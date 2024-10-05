@@ -207,9 +207,6 @@ for (word in raw_deathwords_Slovak) {
 # exclusions file and main dataset, then munge and put needed results into
 # vectors for use in analyses / image generation
 for (lab in labIDs) {
-  # TEMPORARY: REMOVE PROBLEMATIC LAB WITH LOW N
-  #if (lab == "METAlab") {next}
-  
   workingLabPathExclusions <- paste0(dataDir,"/",lab,"_coding_completed_normalized.csv")
   df_exclusions <- readInExclusionsFile(workingLabPathExclusions)
   
@@ -233,17 +230,10 @@ for (lab in labIDs) {
   df <- df[(!is.na(df$Gender) & !is.na(df$Age)),]
   
   # Exclude flagged cases or those who failed exit interview
-  # df <- df[df$Purpose=="",]
   df <- df[!is.na(df$Understand) & df$Understand==0,]
-  # df <- df[df$Familiar==0,]
   # Exclude if participant took less than 5 minutes to complete the survey
   df <- df[!is.na(df$interviewtime) & df$interviewtime > 300,]
-  
-  # Remove computed values for participants assigned to ther other DV
-  # dvGroup = 1 is WGTASK (DV1), dvGroup = 2 is WSCTASK (DV2)
-  #df$COUNT_DV1[df$dvGroup == 2] <- NA
-  #df$COUNT_DV2[df$dvGroup == 1] <- NA
-  
+
   # Put N info into labInfo DF (with exclusions)
   labInfo$Nused[labInfo$labID == as.factor(lab)] <- nrow(df)
   
@@ -277,6 +267,7 @@ for (lab in labIDs) {
   }
 
   # Null values for wrong dvGroups
+  # dvGroup = 1 is WGTASK (DV1), dvGroup = 2 is WSCTASK (DV2)
   df$COUNT_DV1[df$dvGroup == 2] <- NA
   df$COUNT_DV2[df$dvGroup == 1] <- NA
   
@@ -322,7 +313,6 @@ for (lab in labIDs) {
   # PRIMARY_ - primary TM analysis
   # SECONDARY_ - additional analysis of delay effect
   
-
   if (lab != "METAlab") { # Skip lab without enough participants in each category
     # Calculate tests/stats for primary analysis
     ORIGINAL_DV1_m_exp <- mean(df$COUNT_DV1[df$originalExperiment==1], na.rm=T)
@@ -337,12 +327,6 @@ for (lab in labIDs) {
     
     ORIGINAL_DV1_metaVecES <- c(ORIGINAL_DV1_metaVecES, ORIGINAL_DV1_m_exp-ORIGINAL_DV1_m_ctrl)
     ORIGINAL_DV1_metaVecSE <- c(ORIGINAL_DV1_metaVecSE, ORIGINAL_DV1_se)
-    
-    #cohens_d <- cohen.d(df$COUNT_DV1, as.factor(df$originalExperiment), na.rm=T)
-    #d_se <- (unname(cohens_d$conf.int[2])-unname(cohens_d$conf.int[1]))/3.92
-    
-    #ORIGINAL_DV1_metaVecD <- c(ORIGINAL_DV1_metaVecD, cohens_d$estimate)
-    #ORIGINAL_DV1_metaVecDSE <- c(ORIGINAL_DV1_metaVecDSE, d_se)
   
     # For descriptive stats tables
     ORIGINAL_DV1_descriptives$mean_exp[ORIGINAL_DV1_descriptives$labID == as.factor(lab)] <- format(ORIGINAL_DV1_m_exp)
@@ -373,9 +357,7 @@ for (lab in labIDs) {
   PRIMARY_DV1_se <- sqrt((PRIMARY_DV1_sd_exp^2 / PRIMARY_DV1_n_exp) + (PRIMARY_DV1_sd_ctrl^2 / PRIMARY_DV1_n_ctrl))
   
   PRIMARY_DV1_metaVecES <- c(PRIMARY_DV1_metaVecES, PRIMARY_DV1_m_exp-PRIMARY_DV1_m_ctrl)
-  #PRIMARY_DV1_metaVecES[PRIMARY_DV1_metaVecES == 0] <- NaN
   PRIMARY_DV1_metaVecSE <- c(PRIMARY_DV1_metaVecSE, PRIMARY_DV1_se)
-  #PRIMARY_DV1_metaVecSE[PRIMARY_DV1_metaVecSE == 0] <- NaN
   
   # For descriptive stats table
   PRIMARY_DV1_descriptives$mean_exp[PRIMARY_DV1_descriptives$labID == as.factor(lab)] <- format(PRIMARY_DV1_m_exp)
@@ -389,7 +371,6 @@ for (lab in labIDs) {
   PRIMARY_DV1_metaVecMeanCtrl <- c(PRIMARY_DV1_metaVecMeanCtrl, PRIMARY_DV1_m_ctrl)
   PRIMARY_DV1_metaVecSDCtrl <- c(PRIMARY_DV1_metaVecSDCtrl, PRIMARY_DV1_sd_ctrl)
   PRIMARY_DV1_metaVecNCtrl <- c(PRIMARY_DV1_metaVecNCtrl, PRIMARY_DV1_n_ctrl)
-  
   
   PRIMARY_DV2_m_exp <- mean(df$COUNT_DV2[df$primaryAnalysis==1], na.rm=T)
   PRIMARY_DV2_sd_exp <- sd(df$COUNT_DV2[df$primaryAnalysis==1], na.rm=T)
