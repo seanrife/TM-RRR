@@ -493,7 +493,7 @@ THes <- .94-.58
 # SE estimate using pooled SD from original study
 THse <- sqrt(((1.21^2)+(.67^2)+(.73^2)+(.67^2))/4)/sqrt(120)
 
-# Forest plot with help from Wagenmakers et al. (2016)
+# Forest plots with help from Wagenmakers et al. (2016)
 
 # Forest plot with word generation dv
 
@@ -595,7 +595,7 @@ sink()
 
 # Meta analysis (word creation)
 sink(paste0(outDir, "/ma-primary-WC.txt"))
-primary_DV2_meta <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV1_metaVecSE)
+primary_DV2_meta <- rma.uni(yi = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE)
 summary(primary_DV2_meta)
 sink()
 
