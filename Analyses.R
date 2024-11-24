@@ -514,7 +514,7 @@ forest(x = c(THes, ORIGINAL_DV1_metaVecES), sei = c(THse, ORIGINAL_DV1_metaVecSE
        rows=c(length(labID_name_mappings$labname_short[-13])+7, (length(labID_name_mappings$labname_short[-13])+2):3),
        slab = c("Original Study", labID_name_mappings$labname_short[-13]),
        ylim=c(-2, length(labID_name_mappings$labname_short[-13])+11),
-       xlim = c(-1.8, 1.8))
+       xlim = c(-1.9, 2.2))
 
 abline(h=length(labIDs[-13])+5, lwd=1.4)
 text(grconvertX(.019, from = "ndc", "user"), length(labIDs[-13])+3.75, "RRR Studies", cex=1.2, pos = 4)
@@ -618,7 +618,7 @@ forest(x = PRIMARY_DV1_metaVecES, sei = PRIMARY_DV1_metaVecSE, xlab="Mean differ
                    grconvertX(.30, from = "ndc", "user")),
        cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labID_name_mappings$labname_short)+3),
-       xlim=c(-1.1, 1),
+       xlim=c(-1.7, 1.7),
        slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
@@ -646,7 +646,7 @@ forest(x = PRIMARY_DV2_metaVecES, sei = PRIMARY_DV2_metaVecSE, xlab="Mean differ
        ilab.xpos=c(grconvertX(.22, from = "ndc", "user"),
                    grconvertX(.3, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labID_name_mappings$labname_short)+3),
-       xlim=c(-4.4, 4.9),
+       xlim=c(-4.4, 4.5),
        slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
@@ -694,7 +694,7 @@ forest(x = SECONDARY_DV1_metaVecES, sei = SECONDARY_DV1_metaVecSE, xlab="Mean di
        cex.axis=1.1,
        lwd=1.4,
        ylim=c(-2, length(labID_name_mappings$labname_short[-13])+3),
-       xlim=c(-2.3, 1.3),
+       xlim=c(-2.85, 1.4),
        slab = labID_name_mappings$labname_short[-13])
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs[-13])+2, "Study", cex=1.2)
@@ -722,7 +722,7 @@ forest(x = SECONDARY_DV2_metaVecES, sei = SECONDARY_DV2_metaVecSE, xlab="Mean di
        ilab.xpos=c(grconvertX(.22, from = "ndc", "user"),
                    grconvertX(.3, from = "ndc", "user")), cex.axis=1.1, lwd=1.4,
        ylim=c(-2, length(labID_name_mappings$labname_short)+3),
-       xlim=c(-9.4, 5.4),
+       xlim=c(-3.9, 2.7),
        slab = labID_name_mappings$labname_short)
 
 text(grconvertX(.053, from = "ndc", "user"), length(labIDs)+2, "Study", cex=1.2)
